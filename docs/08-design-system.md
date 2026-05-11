@@ -144,7 +144,7 @@
 
 | 이름 | 참조 라인 | 상태 | 단계 | 위치 |
 |---|---|---|---|---|
-| `InvitationVideo` (썸네일 ↔ iframe) | 943-963 + 1350-1364 | 🔧 | S03 | `components/public/InvitationVideo.tsx` |
+| `InvitationVideo` (썸네일 ↔ iframe) | 943-963 + 1350-1364 | ✅ | S03 | `components/public/InvitationVideo.tsx` |
 
 ### 3.6 폼·검색
 

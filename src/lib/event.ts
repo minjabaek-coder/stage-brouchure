@@ -14,6 +14,11 @@ export const EVENT = {
   time: "PM 7:30",
   organizer: "(사)한국예술가곡총연합회",
   welcomeEn: "WELCOME TO THE EVENING",
+  /**
+   * 초청 영상 YouTube ID (PRD §1, FR-G02). S05 부터는 `assets.video_youtube_id`
+   * 로 운영자가 교체 가능해지지만, 그 전까지는 본 상수가 단일 출처.
+   */
+  videoYoutubeId: "0aT4IdHXZW8",
 } as const;
 
 export type EventInfo = typeof EVENT;

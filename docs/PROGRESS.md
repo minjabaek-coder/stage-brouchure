@@ -11,7 +11,7 @@
 | S00 | 프로젝트 부트스트랩 | ✅ | `0df9b92`, `fdf9452` | ✅ |
 | S01 | 디자인 토큰 + 글로벌 레이아웃 | 🔍 검토 대기 | `741527e` | — |
 | S02 | 홈 헤더 + 푸터 | 🔍 검토 대기 | `0a25fd5` | — |
-| S03 | 초대 영상 인라인 재생 | ⏳ 대기 | — | — |
+| S03 | 초대 영상 인라인 재생 | 🔍 검토 대기 | (커밋 직전) | — |
 | S04 | 홈 메뉴 카드 + 라우트 스텁 | ⏳ 대기 | — | — |
 | S05 | DB 스키마 + 시드 | ⏳ 대기 | — | — |
 | S06 | 검색 API + Rate Limit | ⏳ 대기 | — | — |
@@ -54,9 +54,9 @@
 - [ ] 사용자 검토 OK
 
 ### S03 · 초대 영상 인라인 재생
-- [ ] 구현 (`InvitationVideo` 썸네일↔iframe)
-- [ ] typecheck/lint
-- [ ] `pnpm test:e2e -- s03`
+- [x] 구현 (`InvitationVideo` 썸네일↔iframe, maxres→hq 폴백, `EVENT.videoYoutubeId` 추가)
+- [x] typecheck/lint
+- [x] `pnpm test:e2e` (36/36, 회귀 0)
 - [ ] `git commit feat(s03): inline youtube video player (FR-G02)`
 - [ ] 사용자 검토 OK
 
