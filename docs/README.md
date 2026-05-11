@@ -22,6 +22,7 @@
 | 05 | [관리자 기능](./05-admin-features.md) | 단일 페이지 3 섹션 (CSV / 좌석맵 / 브로셔) 명세 |
 | 06 | [기술 스택](./06-tech-stack.md) | Next.js + Supabase 스택과 라이브러리 선정 |
 | 07 | [구현 계획](./07-implementation-plan.md) | S00–S14 단계별 구현 + Playwright E2E + 검토 게이트 |
+| 08 | [디자인 시스템](./08-design-system.md) | 디자인 토큰 + 컴포넌트 카탈로그 + shadcn 매핑 |
 
 부속 자료
 - [참고용 원본 HTML](./assets/reference-original.html) — 디자인 토큰·문구의 출처 (1,524줄 단일 페이지)

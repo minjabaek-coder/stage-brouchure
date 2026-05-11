@@ -40,7 +40,7 @@ E2E: ✓ 시나리오 ...
 
 - Next.js 15+ (App Router, RSC) · React 19 · TypeScript strict
 - Tailwind CSS 4 + shadcn/ui · 폰트는 `next/font` 의 Noto Serif KR + Cormorant Garamond
-- PostgreSQL (Supabase) + Prisma · 인증 없음 (관리자도 로그인 없음, PRD §3.1)
+- PostgreSQL: **로컬 dev/test 는 Homebrew 로 설치한 로컬 인스턴스**, 프로덕션은 Supabase. 두 DB 모두 동일 Prisma 스키마. 인증 없음 (관리자도 로그인 없음, PRD §3.1)
 - 검색 Rate Limit: `@upstash/ratelimit` + Upstash Redis (1분 30회)
 - 이미지 최적화: `sharp` (1600px 리사이즈 + JPG 80%)
 - CSV: Papaparse (UTF-8/EUC-KR 자동 감지)
@@ -80,16 +80,24 @@ E2E: ✓ 시나리오 ...
 `package.json` 은 S00 단계에서 생성된다. 그 이후 다음 명령이 표준이 된다 (`docs/07-implementation-plan.md` 부록 참조):
 
 ```bash
+# 사전 준비: 로컬 PostgreSQL (Homebrew)
+brew install postgresql@16 && brew services start postgresql@16
+psql -d postgres -c "ALTER USER postgres WITH PASSWORD 'postgres';"
+createdb -O postgres eoullim_dev && createdb -O postgres eoullim_test
+
+# 일상 개발
 pnpm install
 pnpm dev                       # http://localhost:3000
 pnpm typecheck
 pnpm lint
-pnpm test:e2e                  # 전체 Playwright
+pnpm test:e2e                  # 전체 Playwright (eoullim_test DB 사용)
 pnpm test:e2e -- s07           # 특정 단계만 (파일명 매칭)
 pnpm prisma migrate dev
 pnpm db:seed
 pnpm db:reset                  # migrate reset --force
 ```
+
+DB 분리: `eoullim_dev` 는 `pnpm dev` 용, `eoullim_test` 는 Playwright 가 사용. `playwright.config.ts` 의 `webServer.env.DATABASE_URL` 에서 후자를 주입한다.
 
 ## 디자인 토큰 (Tailwind theme 으로 이식)
 
@@ -102,6 +110,56 @@ pnpm db:reset                  # migrate reset --force
 - `inkSoft #1a1612`
 
 폰트: 한글 Noto Serif KR, 영문 Cormorant Garamond. `letterSpacing: { wider2: '0.18em' }` 등 추가 토큰은 `docs/06-tech-stack.md` §3 참조.
+
+## 디자인 시스템 — UI 컴포넌트 재사용 규칙
+
+**모든 UI 는 재사용 가능한 디자인 시스템 위에서 조립한다.** 신규 UI 가 필요할 때는 반드시 다음 순서를 따른다:
+
+1. **기존 컴포넌트 탐색 먼저** — 새 컴포넌트를 만들기 전에 항상 grep 으로 확인:
+   ```bash
+   # 1순위: 범용 프리미티브 (Button, Card, Input, Dialog, Tabs, Toast 등)
+   ls src/components/ui/ 2>/dev/null
+   grep -r "export" src/components/ui/ 2>/dev/null
+
+   # 2순위: 도메인 합성 컴포넌트 (HomeHeader, MenuCard, SeatResultCard 등)
+   ls src/components/public/ src/components/admin/ 2>/dev/null
+   ```
+
+2. **기존 컴포넌트로 해결되면 그것만 사용**. 비슷한 것을 새로 만들거나 복사·수정하지 말 것
+
+3. **기존 컴포넌트가 약간만 다르다면 prop 으로 확장** — 새 prop 추가, variant 추가, 또는 합성(composition) 으로 해결. fork 금지
+
+4. **정말로 없으면 생성** — 단, 다음 위치 규칙을 따른다:
+   - 도메인 무관·재사용 가능 → `src/components/ui/` (예: `Button`, `Modal`, `Dropzone`)
+   - 도메인·페이지 종속 → `src/components/public/` 또는 `src/components/admin/` (예: `HomeHeader`, `SeatResultCard`, `AdminCsvSection`)
+
+### 디자인 시스템 구성 원칙
+
+- **프리미티브 베이스**: shadcn/ui (Radix + Tailwind) 를 기반으로 하되, 디자인 토큰(`ink/paper/gold/burgundy`) 을 적용하여 어울림콘서트 톤으로 커스터마이즈
+- **스타일링**: Tailwind 클래스만 사용. 인라인 `style`, CSS 모듈, styled-components 금지
+- **prop 인터페이스**: 명시적 TypeScript 타입. 기본값을 합리적으로 제공하여 호출부가 간결해지도록
+- **단일 책임**: 컴포넌트는 한 가지 시각/상호작용 단위만 담당. 두 가지 일을 한다면 분리
+- **a11y 우선**: shadcn(radix) 기본 동작 유지, alt/aria-label 누락 금지
+- **이름**: PascalCase, 약어보다 명확한 풀네임 (`SeatResultCard` ✓, `SRC` ✗)
+
+### 행동 규칙 (해서는 안 되는 것)
+
+- ❌ 한 페이지에서만 쓴다는 이유로 인라인 JSX 로 박아두기 → 재사용 못 하더라도 컴포넌트화하여 `public/` 또는 `admin/` 에 둘 것 (한 페이지에서만 써도 의도가 분명해짐)
+- ❌ 비슷한 컴포넌트를 복사·붙여넣기로 변형 (예: `MenuCard` 와 `MenuCardSmall`) → variant prop 으로 통합
+- ❌ Tailwind 클래스를 매 호출부에서 길게 나열 (예: `className="px-4 py-2 rounded-lg ..."` 반복) → 컴포넌트 또는 `cva`(class-variance-authority) 로 캡슐화
+- ❌ 프리미티브가 있는데 native HTML 직접 사용 (예: shadcn `<Button>` 두고 `<button>`)
+
+### 신규 컴포넌트 생성 시 체크리스트
+
+- [ ] `src/components/ui/` 와 `src/components/public/` `admin/` 에 비슷한 게 없는지 grep 으로 확인
+- [ ] 비슷한 게 있다면 prop 확장으로 가능한지 검토
+- [ ] 새로 만든다면 위치 규칙 (ui vs public/admin) 확인
+- [ ] PascalCase 단일 파일, default export
+- [ ] TypeScript prop 인터페이스 명시
+- [ ] Tailwind 토큰만 사용 (임의 hex 색상 금지)
+- [ ] 같은 페이지에서 두 번 이상 쓰일 패턴이면 즉시 컴포넌트로 추출
+
+이 규칙은 S02 (홈 헤더) 단계부터 적용된다. 상세 토큰·컴포넌트 카탈로그는 [`docs/08-design-system.md`](./docs/08-design-system.md) 참조. 신규 컴포넌트 추가 시 본 문서의 §3 카탈로그 표에도 한 줄 추가하는 것이 의무.
 
 ## 작성 컨벤션
 

@@ -249,18 +249,21 @@ Next.js 15 + TypeScript + Tailwind 프로젝트와 Playwright 환경을 셋업�
 > 매핑 ENT: ENT-01 (attendees), ENT-02 (assets), ENT-03 (csv_backups)
 
 ### 목표
-Supabase Postgres + Prisma 로 스키마를 만들고 23명 더미 데이터를 시드한다.
+**로컬 PostgreSQL** + Prisma 로 스키마를 만들고 23명 더미 데이터를 시드한다. Supabase 는 프로덕션 전용.
 
 ### 구현 범위
-- Supabase 프로젝트 생성, `DATABASE_URL` `.env`
+- 로컬 PostgreSQL 설치 (Homebrew, `06-tech-stack.md` §7.3 절차)
+  - DB 2개: `eoullim_dev` (개발), `eoullim_test` (E2E)
+- `.env.local` 의 `DATABASE_URL=postgresql://postgres:postgres@localhost:5432/eoullim_dev`
 - `prisma/schema.prisma` (`docs/04-data-model.md` §3 그대로)
 - `prisma migrate dev --name init`
 - `prisma/seed.ts`:
   - 원본 HTML lines 1324-1347 의 23명 → `attendees` (`phone_last4` 더미 `0001`~`0023`)
   - `assets.video_youtube_id = "0aT4IdHXZW8"` upsert
-- `package.json` `prisma.seed` 등록
+- `package.json` `prisma.seed` 등록 + `db:reset`, `db:seed` 스크립트
 - `src/lib/db.ts` Prisma 싱글톤
 - (테스트 전용) `src/app/api/__test__/seed-check/route.ts` — `process.env.NODE_ENV !== 'production'` 가드, attendee count 와 video ID 반환
+- E2E 테스트는 `eoullim_test` DB 를 사용하도록 `playwright.config.ts` 의 `webServer.env` 에 별도 `DATABASE_URL` 주입
 
 ### Out of Scope
 - 검색 API (S06), 업로드 API (S11–13)

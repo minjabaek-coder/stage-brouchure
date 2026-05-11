@@ -12,7 +12,8 @@
 | UI 라이브러리 | **React 19** | Server Components + Server Actions |
 | 스타일 | **Tailwind CSS 4** + **shadcn/ui** | 디자인 토큰 이식 |
 | 폰트 | **Noto Serif KR**, **Cormorant Garamond** | `next/font/google` |
-| DB | **PostgreSQL** (Supabase) | |
+| DB (production) | **PostgreSQL** (Supabase) | |
+| DB (local dev/test) | **PostgreSQL** (로컬 설치, Homebrew) | Supabase 대신 로컬 인스턴스 사용 |
 | ORM | **Prisma** 6+ | |
 | 폼 | **react-hook-form** + **zod** | CSV 검증 포함 |
 | 이미지 | **next/image** + **sharp** | 업로드 시 1600px 리사이즈 + JPG 80% |
@@ -192,38 +193,100 @@ export async function optimize(input: Buffer): Promise<Buffer> {
 
 ## 7. 환경 변수 (.env)
 
-```
-DATABASE_URL="postgresql://..."
+### 7.1 로컬 개발 (`.env.local`)
 
+```
+# 로컬 PostgreSQL (Homebrew 설치)
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/eoullim_dev"
+
+# Supabase Storage 는 로컬에서도 그대로 사용 (이미지 업로드 테스트용 무료 티어)
 SUPABASE_URL="..."
 SUPABASE_SERVICE_ROLE="..."
 SUPABASE_ANON_KEY="..."
 SUPABASE_STORAGE_BUCKET="eoullim-assets"
 
+# Upstash 도 로컬에서 그대로 (무료 티어)
 UPSTASH_REDIS_REST_URL="..."
 UPSTASH_REDIS_REST_TOKEN="..."
 
-# 선택
+ADMIN_PATH_SUFFIX=""
+```
+
+### 7.2 프로덕션 (Vercel 환경변수)
+
+```
+DATABASE_URL="postgresql://...supabase.co..."   # Supabase PG 커넥션 문자열
+SUPABASE_URL="..."
+SUPABASE_SERVICE_ROLE="..."
+SUPABASE_ANON_KEY="..."
+SUPABASE_STORAGE_BUCKET="eoullim-assets"
+UPSTASH_REDIS_REST_URL="..."
+UPSTASH_REDIS_REST_TOKEN="..."
 SENTRY_DSN="..."
-ADMIN_PATH_SUFFIX=""    # 비워두면 /admin, 채우면 /admin-<suffix> 권장
+ADMIN_PATH_SUFFIX="<랜덤 문자열>"
 ```
 
 `AUTH_SECRET` 등 인증 관련 변수는 사용하지 않는다.
 
+### 7.3 로컬 PostgreSQL 설치 (macOS)
+
+Homebrew 가 표준. 다음 순서로 설치한다:
+
+```bash
+# Homebrew 미설치 시
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# PostgreSQL 16 설치 + 자동 시작 등록
+brew install postgresql@16
+brew services start postgresql@16
+
+# postgres superuser 비밀번호 설정 + 개발 DB 생성
+createuser -s postgres 2>/dev/null || true
+psql -d postgres -c "ALTER USER postgres WITH PASSWORD 'postgres';"
+createdb -O postgres eoullim_dev
+createdb -O postgres eoullim_test    # E2E 테스트용 별도 DB
+```
+
+확인:
+```bash
+psql postgresql://postgres:postgres@localhost:5432/eoullim_dev -c "select version();"
+```
+
+대안 (Docker 가 이미 있다면):
+```bash
+docker run -d --name eoullim-pg \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=eoullim_dev \
+  -p 5432:5432 \
+  postgres:16
+```
+
 ## 8. 개발 워크플로우
 
 ```bash
+# 0. 사전 준비 (로컬 PG 설치는 §7.3 참조)
+brew services start postgresql@16
+
+# 1. 의존성·스키마·시드
 pnpm install
 pnpm prisma migrate dev
 pnpm prisma db seed
 pnpm dev                 # http://localhost:3000
 
-# 코드 품질
+# 2. 코드 품질
 pnpm lint
 pnpm typecheck
 pnpm format
 
+# 3. 테스트
+pnpm test:e2e            # 전체 Playwright (로컬 PG 사용)
+pnpm test:e2e -- s07     # 특정 단계 파일
+
+# 4. DB 리셋 (스키마·시드 다시)
+pnpm db:reset
+
 # 배포: Vercel git 연동, main → production, PR → preview
+# Vercel 환경변수의 DATABASE_URL 은 Supabase PG 를 가리킴
 ```
 
 ## 9. 라이브러리 선정 근거
