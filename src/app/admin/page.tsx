@@ -4,6 +4,7 @@ import AdminSection from "@/components/admin/AdminSection";
 import AdminStatusBar from "@/components/admin/AdminStatusBar";
 import AdminCsvSection from "@/components/admin/AdminCsvSection";
 import AdminSeatMapSection from "@/components/admin/AdminSeatMapSection";
+import AdminBrochureSection from "@/components/admin/AdminBrochureSection";
 import { prisma } from "@/lib/db";
 
 export const metadata = {
@@ -29,10 +30,17 @@ async function loadStats() {
     ? brochures.reduce<Date>((acc, a) => (a.updatedAt > acc ? a.updatedAt : acc), brochures[0]!.updatedAt)
     : null;
 
+  const byKey = new Map(brochures.map((a) => [a.key, a.url]));
+  const brochureSlots = BROCHURE_KEYS.map((key, idx) => ({
+    index: idx + 1,
+    url: byKey.get(key) ?? null,
+  }));
+
   return {
     attendeeCount,
     seatMapUrl: seatMap?.url ?? null,
     lastSeatMapUpload: seatMap?.updatedAt ?? null,
+    brochureSlots,
     lastBrochureUpload,
     lastCsvUpload: lastBackup?.uploadedAt ?? null,
   };
@@ -87,9 +95,7 @@ export default async function AdminPage() {
         description="브로셔 8장(JPG/PNG)을 일괄 업로드하거나 슬롯별로 개별 교체할 수 있습니다."
         testId="admin-brochure-section"
       >
-        <p className="font-serif-en text-paper/40 text-[12px] tracking-[0.2em] italic">
-          — 준비 중 (S13) —
-        </p>
+        <AdminBrochureSection initialSlots={stats.brochureSlots} />
       </AdminSection>
     </Stage>
   );

@@ -21,7 +21,7 @@
 | S10 | 관리자 페이지 셸 | 🔍 검토 대기 | `dec736d` | — |
 | S11 | 관리자 CSV 업로드 | 🔍 검토 대기 | `5dfdf43` | — |
 | S12 | 관리자 좌석배치도 업로드 | 🔍 검토 대기 | `3f3df0f` | — |
-| S13 | 관리자 브로셔 8장 업로드 | ⏳ 대기 | — | — |
+| S13 | 관리자 브로셔 8장 업로드 | 🔍 검토 대기 | _pending_ | — |
 | S14 | 최종 QA (게이트) | ⏳ 대기 | — | — |
 
 상태 기호: ⏳ 대기 / 🚧 진행 중 / 🔍 검토 대기 / ✅ 완료 / ⚠️ 차단
@@ -126,9 +126,9 @@
 - [ ] 사용자 검토 OK
 
 ### S13 · 관리자 브로셔 업로드
-- [ ] 구현 (8 슬롯 그리드, 일괄/개별 업로드, 위/아래 정렬)
-- [ ] typecheck/lint
-- [ ] `pnpm test:e2e -- s13`
+- [x] 구현 (`AdminBrochureSection` + `BrochureSlotGrid` 4×2 그리드, 일괄 업로드 input multiple, 슬롯별 교체 input, `/api/admin/upload-brochure` POST + sharp 최적화 + per-slot upsert, S10 spec 회귀 fix)
+- [x] typecheck/lint
+- [x] `pnpm test:e2e` (114/114, S13 mobile 4 skip — admin 데스크톱 전용)
 - [ ] `git commit feat(s13): admin brochure bulk and per-slot upload (FR-A04)`
 - [ ] 사용자 검토 OK
 
@@ -162,3 +162,4 @@
 | 2026-05-11 | S10 | 게이트 통과 (`dec736d`) — /admin 셸 + AdminSection·AdminStatusBar + middleware ADMIN_PATH_SUFFIX. 100/100 마일스톤 |
 | 2026-05-11 | S11 | 게이트 통과 (`5dfdf43`) — AdminCsvSection (Dropzone + CsvPreviewTable + ConfirmDialog), `/api/admin/upload-csv`, 로컬 fs backup adapter (Supabase 전환은 추후). admin 테스트는 desktop-only + serial |
 | 2026-05-11 | S12 | 게이트 통과 (`3f3df0f`) — AdminSeatMapSection + sharp 최적화 + public/uploads/. lib/limits.ts 분리(클라 번들에서 sharp 분리), playwright workers=1 (admin DB race 방지) |
+| 2026-05-11 | S13 | 게이트 통과 — AdminBrochureSection + BrochureSlotGrid 4×2, 일괄(파일명 정렬→슬롯 1..N) + 슬롯별 교체, `/api/admin/upload-brochure` per-slot upsert. S10 spec 의 "준비 중 (S13)" placeholder 검증 → 실제 마운트(슬롯 그리드/일괄 트리거) 검증으로 회귀 fix |

@@ -20,7 +20,7 @@ test.describe("S10 · 관리자 페이지 셸 (FR-A01)", () => {
     await expect(cell).toContainText("현재 등록: 22명");
   });
 
-  test("3 섹션이 모두 노출된다 (S11/12 이후 CSV·좌석맵 섹션은 실제 마운트)", async ({
+  test("3 섹션이 모두 노출된다 (S11/12/13 이후 모두 실제 마운트)", async ({
     page,
   }) => {
     await page.goto("/admin");
@@ -35,10 +35,11 @@ test.describe("S10 · 관리자 페이지 셸 (FR-A01)", () => {
     await expect(seatmap).toContainText("좌석배치도");
     await expect(page.getByTestId("seatmap-dropzone")).toBeVisible();
 
-    // 브로셔 섹션 (S13 까지 placeholder 유지)
+    // 브로셔 섹션 (S13) — 8 슬롯 그리드 + 일괄 업로드 트리거
     const brochure = page.getByTestId("admin-brochure-section");
     await expect(brochure).toContainText("브로셔 (8장)");
-    await expect(brochure).toContainText("준비 중 (S13)");
+    await expect(page.getByTestId("brochure-slot-grid")).toBeVisible();
+    await expect(page.getByTestId("brochure-bulk-trigger")).toBeVisible();
   });
 
   test("status bar 가 seat map / brochure 마지막 업로드 시간을 표시한다", async ({
