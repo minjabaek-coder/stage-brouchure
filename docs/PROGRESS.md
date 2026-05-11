@@ -19,7 +19,7 @@
 | S08 | 정적 좌석배치도 | 🔍 검토 대기 | `8aad65c` | — |
 | S09 | 브로셔 페이지 (8장) | 🔍 검토 대기 | `a1d1c28` | — |
 | S10 | 관리자 페이지 셸 | 🔍 검토 대기 | `dec736d` | — |
-| S11 | 관리자 CSV 업로드 | 🔍 검토 대기 | (커밋 직전) | — |
+| S11 | 관리자 CSV 업로드 | 🔍 검토 대기 | `5dfdf43` | — |
 | S12 | 관리자 좌석배치도 업로드 | ⏳ 대기 | — | — |
 | S13 | 관리자 브로셔 8장 업로드 | ⏳ 대기 | — | — |
 | S14 | 최종 QA (게이트) | ⏳ 대기 | — | — |
@@ -115,7 +115,7 @@
 - [x] 구현 (Dropzone, ConfirmDialog, CsvPreviewTable, AdminCsvSection, `lib/csv.ts` UTF-8/EUC-KR + zod, `lib/storage.ts` 로컬 fs 어댑터, `/api/admin/upload-csv` 라우트, csv_backups 3개 보존, sonner 토스트)
 - [x] typecheck/lint
 - [x] `pnpm test:e2e` (106/106, S11 mobile 6 skip — admin 데스크톱 전용 + DB race 회피)
-- [ ] `git commit feat(s11): admin csv upload with auto backup (FR-A02)`
+- [x] `git commit 5dfdf43 feat(s11): admin csv upload with auto backup (FR-A02)` + push
 - [ ] 사용자 검토 OK
 
 ### S12 · 관리자 좌석배치도 업로드
@@ -160,3 +160,4 @@
 | 2026-05-11 | S09 | 게이트 통과 (`a1d1c28`) — BrochureScroller/Gallery + 시안 8장 SVG. 첫장 priority+eager / 2~8장 lazy, 라이트박스 prev/next 활성 |
 | 2026-05-11 | S09 | dev DB hotfix — 사용자 보고로 dev DB 에 brochure/seatmap asset 누락 확인 → `pnpm db:seed` 재실행. 향후 seed 변경 시 dev DB 도 같이 재시드 필요 (`pnpm db:seed`); test DB 는 global-setup 에서 자동 |
 | 2026-05-11 | S10 | 게이트 통과 (`dec736d`) — /admin 셸 + AdminSection·AdminStatusBar + middleware ADMIN_PATH_SUFFIX. 100/100 마일스톤 |
+| 2026-05-11 | S11 | 게이트 통과 (`5dfdf43`) — AdminCsvSection (Dropzone + CsvPreviewTable + ConfirmDialog), `/api/admin/upload-csv`, 로컬 fs backup adapter (Supabase 전환은 추후). admin 테스트는 desktop-only + serial |
