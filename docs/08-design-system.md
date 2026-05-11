@@ -108,7 +108,7 @@
 |---|---|---|---|---|
 | `Stage` | 52-58 | ✅ | S01 | `components/layout/Stage.tsx` |
 | `BackgroundLayer` | 33-49 | ✅ | S01 | `components/layout/BackgroundLayer.tsx` |
-| `PageTransition` | (신규) | 🆕 | S04 | `components/layout/PageTransition.tsx` |
+| `PageTransition` | (신규) | ⏸️ 보류 | — | (간단한 `animate-fade-up` 적용으로 대체. 본격 라우트 전환 효과는 S14 검토) |
 
 ### 3.2 데코·타이포 부속
 
@@ -116,9 +116,9 @@
 |---|---|---|---|---|
 | `Ornament` (`❦ ✦ ❦`) | 919, 1010 | ✅ | S02 | `components/ui/Ornament.tsx` |
 | `Flourish` (단일 `❦`) | 1009 | ✅ | S02 | `components/ui/Flourish.tsx` |
-| `CornerMarker` (4 코너) | 969-970 | 🔧 | S04 | `components/ui/CornerMarker.tsx` |
+| `CornerMarker` (4 코너) | 969-970 | ✅ | S04 | `components/ui/CornerMarker.tsx` |
 | `MetaDivider` | 929 | ✅ | S02 | `components/ui/MetaDivider.tsx` |
-| `ChapterLabel` (`Chapter I`) | 1020 | 🔧 | S04 | `components/ui/ChapterLabel.tsx` |
+| `ChapterLabel` (`Chapter I`) | 1020 | ✅ | S04 | (PageHeader 내 인라인 — 별도 컴포넌트 불요) |
 
 ### 3.3 헤더·타이틀
 
@@ -130,15 +130,15 @@
 | ↳ `TitleKo` | 922 | ✅ | S02 | (HomeHeader 내 인라인, gold-gradient highlight 포함) |
 | ↳ `Subtitle` | 923 | ✅ | S02 | (HomeHeader 내 인라인) |
 | ↳ `EventMeta` (DATE / VENUE / TIME) | 924-939 | ✅ | S02 | `components/public/EventMeta.tsx` |
-| `PageHeader` (← + chapter + title) | 1018-1022, 1087-1091 | 🔧 | S04 | `components/ui/PageHeader.tsx` |
+| `PageHeader` (← + chapter + title) | 1018-1022, 1087-1091 | ✅ | S04 | `components/ui/PageHeader.tsx` |
 
 ### 3.4 메뉴·네비게이션
 
 | 이름 | 참조 라인 | 상태 | 단계 | 위치 |
 |---|---|---|---|---|
-| `MenuCardList` | 966-1006 | 🔧 | S04 | `components/public/MenuCardList.tsx` |
-| `MenuCard` (icon + num + title + desc + →) | 968-1004 | 🔧 | S04 | `components/public/MenuCard.tsx` |
-| `BackButton` (←) | 1019, 1088 | 🔧 | S04 | `components/ui/BackButton.tsx` |
+| `MenuCardList` | 966-1006 | ✅ | S04 | `components/public/MenuCardList.tsx` |
+| `MenuCard` (icon + num + title + desc + →) | 968-1004 | ✅ | S04 | `components/public/MenuCard.tsx` |
+| `BackButton` (←) | 1019, 1088 | ✅ | S04 | `components/ui/BackButton.tsx` |
 
 ### 3.5 영상
 

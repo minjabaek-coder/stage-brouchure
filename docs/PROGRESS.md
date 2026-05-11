@@ -12,7 +12,7 @@
 | S01 | 디자인 토큰 + 글로벌 레이아웃 | 🔍 검토 대기 | `741527e` | — |
 | S02 | 홈 헤더 + 푸터 | 🔍 검토 대기 | `0a25fd5` | — |
 | S03 | 초대 영상 인라인 재생 | 🔍 검토 대기 | `8eb931b` | — |
-| S04 | 홈 메뉴 카드 + 라우트 스텁 | ⏳ 대기 | — | — |
+| S04 | 홈 메뉴 카드 + 라우트 스텁 | 🔍 검토 대기 | (커밋 직전) | — |
 | S05 | DB 스키마 + 시드 | ⏳ 대기 | — | — |
 | S06 | 검색 API + Rate Limit | ⏳ 대기 | — | — |
 | S07 | 자리 찾기 UI | ⏳ 대기 | — | — |
@@ -61,9 +61,9 @@
 - [ ] 사용자 검토 OK
 
 ### S04 · 홈 메뉴 카드 + 라우트 스텁
-- [ ] 구현 (`MenuCardList`, `MenuCard`, `/search`·`/brochure` 스텁, `PageHeader`)
-- [ ] typecheck/lint
-- [ ] `pnpm test:e2e -- s04`
+- [x] 구현 (`MenuCard` + `MenuCardList`, `CornerMarker`, `BackButton`, `PageHeader`, `(public)` 라우트 그룹 + `/search` `/brochure` 스텁)
+- [x] typecheck/lint
+- [x] `pnpm test:e2e` (46/46, 회귀 0)
 - [ ] `git commit feat(s04): add home menu cards and route stubs (FR-G07)`
 - [ ] 사용자 검토 OK
 
