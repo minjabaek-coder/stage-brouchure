@@ -5,7 +5,8 @@ import { toast } from "sonner";
 import Dropzone from "@/components/ui/Dropzone";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import CsvPreviewTable from "@/components/admin/CsvPreviewTable";
-import { decodeCsv, parseAttendeesCsv, MAX_CSV_BYTES, type ParsedCsv } from "@/lib/csv";
+import { MAX_CSV_BYTES } from "@/lib/limits";
+import { decodeCsv, parseAttendeesCsv, type ParsedCsv } from "@/lib/csv";
 
 interface UploadResponse {
   inserted: number;

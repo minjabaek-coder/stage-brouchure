@@ -2,7 +2,7 @@ import iconv from "iconv-lite";
 import Papa from "papaparse";
 import { z } from "zod";
 
-export const MAX_CSV_BYTES = 5 * 1024 * 1024; // PRD NFR-10 / FR-A02 — 5MB
+export { MAX_CSV_BYTES } from "@/lib/limits";
 
 const ROW_SCHEMA = z.object({
   name: z

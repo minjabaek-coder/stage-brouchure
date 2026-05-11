@@ -20,7 +20,7 @@
 | S09 | 브로셔 페이지 (8장) | 🔍 검토 대기 | `a1d1c28` | — |
 | S10 | 관리자 페이지 셸 | 🔍 검토 대기 | `dec736d` | — |
 | S11 | 관리자 CSV 업로드 | 🔍 검토 대기 | `5dfdf43` | — |
-| S12 | 관리자 좌석배치도 업로드 | ⏳ 대기 | — | — |
+| S12 | 관리자 좌석배치도 업로드 | 🔍 검토 대기 | (커밋 직전) | — |
 | S13 | 관리자 브로셔 8장 업로드 | ⏳ 대기 | — | — |
 | S14 | 최종 QA (게이트) | ⏳ 대기 | — | — |
 
@@ -119,9 +119,9 @@
 - [ ] 사용자 검토 OK
 
 ### S12 · 관리자 좌석배치도 업로드
-- [ ] 구현 (sharp 1600px 리사이즈 + Storage upsert)
-- [ ] typecheck/lint
-- [ ] `pnpm test:e2e -- s12`
+- [x] 구현 (`lib/image.ts` sharp 1600px+JPEG80, `lib/storage.ts` saveImageAsset (public/uploads/), AdminSeatMapSection, `/api/admin/upload-seatmap`, next.config localPatterns, lib/limits.ts 분리)
+- [x] typecheck/lint
+- [x] `pnpm test:e2e` (110/110, admin mobile 10 skip, workers=1 직렬화)
 - [ ] `git commit feat(s12): admin seat map upload with sharp optimization (FR-A03)`
 - [ ] 사용자 검토 OK
 

@@ -7,6 +7,10 @@ const TEST_DATABASE_URL =
 export default defineConfig({
   testDir: "./tests/e2e",
   fullyParallel: true,
+  // S11+ admin specs all mutate the same DB; running multiple files in
+  // parallel races on attendees / assets state. Single worker keeps total
+  // runtime acceptable (~30→45s) and removes the entire class of flakes.
+  workers: 1,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   reporter: process.env.CI ? "github" : [["list"], ["html", { open: "never" }]],

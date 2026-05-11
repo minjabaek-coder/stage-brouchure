@@ -3,6 +3,7 @@ import Stage from "@/components/layout/Stage";
 import AdminSection from "@/components/admin/AdminSection";
 import AdminStatusBar from "@/components/admin/AdminStatusBar";
 import AdminCsvSection from "@/components/admin/AdminCsvSection";
+import AdminSeatMapSection from "@/components/admin/AdminSeatMapSection";
 import { prisma } from "@/lib/db";
 
 export const metadata = {
@@ -30,6 +31,7 @@ async function loadStats() {
 
   return {
     attendeeCount,
+    seatMapUrl: seatMap?.url ?? null,
     lastSeatMapUpload: seatMap?.updatedAt ?? null,
     lastBrochureUpload,
     lastCsvUpload: lastBackup?.uploadedAt ?? null,
@@ -76,9 +78,7 @@ export default async function AdminPage() {
         description="좌석배치도 이미지(JPG/PNG, 5MB 이하) 한 장을 업로드하면 자리 찾기 페이지에 즉시 반영됩니다."
         testId="admin-seatmap-section"
       >
-        <p className="font-serif-en text-paper/40 text-[12px] tracking-[0.2em] italic">
-          — 준비 중 (S12) —
-        </p>
+        <AdminSeatMapSection initialUrl={stats.seatMapUrl} />
       </AdminSection>
 
       <AdminSection

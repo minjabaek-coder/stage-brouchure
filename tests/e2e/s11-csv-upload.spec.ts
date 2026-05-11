@@ -20,7 +20,10 @@ test.beforeEach(async ({}, info) => {
 async function uploadCsv(page: import("@playwright/test").Page, file: string) {
   await page.goto("/admin");
   // Trigger file picker via the hidden input directly (Dropzone uses sr-only).
-  await page.locator('input[type="file"]').setInputFiles(file);
+  await page
+    .getByTestId("csv-dropzone")
+    .locator('input[type="file"]')
+    .setInputFiles(file);
   await expect(page.getByTestId("csv-preview")).toBeVisible();
 
   // Wait for the POST to actually complete before returning, otherwise the
@@ -90,7 +93,10 @@ test.describe("S11 · 관리자 CSV 업로드 + 자동 백업 (FR-A02)", () => {
     page,
   }) => {
     await page.goto("/admin");
-    await page.locator('input[type="file"]').setInputFiles(INVALID);
+    await page
+      .getByTestId("csv-dropzone")
+      .locator('input[type="file"]')
+      .setInputFiles(INVALID);
     await expect(page.getByTestId("csv-preview")).toBeVisible();
 
     // 1행은 invalid (5자리 phone), 2행은 valid → invalid block 노출
@@ -110,6 +116,7 @@ test.describe("S11 · 관리자 CSV 업로드 + 자동 백업 (FR-A02)", () => {
     // 5MB+ 버퍼 생성 — 6,300,000 bytes
     const big = Buffer.alloc(6_300_000, "a".charCodeAt(0));
     await page
+      .getByTestId("csv-dropzone")
       .locator('input[type="file"]')
       .setInputFiles({ name: "big.csv", mimeType: "text/csv", buffer: big });
 

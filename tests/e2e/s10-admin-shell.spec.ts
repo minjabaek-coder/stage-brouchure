@@ -20,21 +20,22 @@ test.describe("S10 · 관리자 페이지 셸 (FR-A01)", () => {
     await expect(cell).toContainText("현재 등록: 22명");
   });
 
-  test("3 섹션이 모두 노출된다 (S11 이후 CSV 섹션은 dropzone 마운트)", async ({
+  test("3 섹션이 모두 노출된다 (S11/12 이후 CSV·좌석맵 섹션은 실제 마운트)", async ({
     page,
   }) => {
     await page.goto("/admin");
 
-    // CSV 섹션은 S11 부터 실제 dropzone 가 들어 있다
+    // CSV 섹션 (S11) — dropzone 노출
     const csv = page.getByTestId("admin-csv-section");
     await expect(csv).toContainText("명단 (CSV)");
     await expect(page.getByTestId("csv-dropzone")).toBeVisible();
 
-    // 좌석배치도 / 브로셔는 S12 / S13 까지 placeholder 유지
+    // 좌석배치도 섹션 (S12) — 현재 미리보기 + dropzone
     const seatmap = page.getByTestId("admin-seatmap-section");
     await expect(seatmap).toContainText("좌석배치도");
-    await expect(seatmap).toContainText("준비 중 (S12)");
+    await expect(page.getByTestId("seatmap-dropzone")).toBeVisible();
 
+    // 브로셔 섹션 (S13 까지 placeholder 유지)
     const brochure = page.getByTestId("admin-brochure-section");
     await expect(brochure).toContainText("브로셔 (8장)");
     await expect(brochure).toContainText("준비 중 (S13)");
