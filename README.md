@@ -15,7 +15,7 @@ cp .env.example .env.local      # 그리고 Supabase/Upstash 키 채우기
 pnpm install
 
 # 2. 개발 서버
-pnpm dev                        # http://localhost:3100
+pnpm dev                        # http://localhost:3000
 
 # 3. 검사 및 테스트
 pnpm typecheck
