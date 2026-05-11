@@ -66,24 +66,38 @@ test.describe("S13 · 관리자 브로셔 업로드 (FR-A04)", () => {
     await page.goto("/admin");
     const files = await eightFiles();
 
-    const responsePromise = page.waitForResponse((r) =>
-      r.url().endsWith("/api/admin/upload-brochure"),
-    );
-    await page.getByTestId("brochure-bulk-input").setInputFiles(files);
-    const res = await responsePromise;
-    expect(res.status()).toBe(200);
-    const body = (await res.json()) as {
-      updated: { slot: number; url: string }[];
-    };
-    expect(body.updated).toHaveLength(8);
-    expect(body.updated.map((u) => u.slot).sort((a, b) => a - b)).toEqual([
-      1, 2, 3, 4, 5, 6, 7, 8,
-    ]);
+    // 클라이언트가 Vercel body 한도(4.5MB) 회피를 위해 슬롯별 1건씩 8번
+    // 순차 요청한다. 모든 응답을 수집한다.
+    const responses: Array<Promise<unknown>> = [];
+    page.on("response", (r) => {
+      if (r.url().endsWith("/api/admin/upload-brochure")) {
+        responses.push(r.json().catch(() => null));
+      }
+    });
 
-    // 첫 슬롯의 src 가 새 /uploads/brochure-01.jpg 로 바뀌었는지 확인
+    await page.getByTestId("brochure-bulk-input").setInputFiles(files);
+
+    // 마지막 슬롯(08)의 미리보기가 새 URL 로 갱신되면 8건 모두 완료된 것
+    await expect(page.getByTestId("brochure-slot-img-08")).toHaveAttribute(
+      "src",
+      /brochure-08\.jpg/,
+      { timeout: 30_000 },
+    );
+
+    // 8건의 응답이 모두 200 + 각각 1슬롯 업데이트
+    const bodies = (await Promise.all(responses)) as Array<{
+      updated: { slot: number; url: string }[];
+    } | null>;
+    const slots = bodies
+      .flatMap((b) => b?.updated ?? [])
+      .map((u) => u.slot)
+      .sort((a, b) => a - b);
+    expect(slots).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
+
+    // 첫 슬롯의 src 가 새 brochure-01.jpg 로 바뀌었는지 확인
     await expect(page.getByTestId("brochure-slot-img-01")).toHaveAttribute(
       "src",
-      /\/uploads\/brochure-01\.jpg\?v=\d+/,
+      /brochure-01\.jpg\?v=\d+/,
     );
 
     // /brochure 페이지에서도 같은 8장 노출

@@ -71,9 +71,9 @@ test.describe("S12 · 관리자 좌석배치도 업로드 (FR-A03)", () => {
     expect(searchSrc).toMatch(/uploads%2Fseatmap\.jpg/);
   });
 
-  test("6MB 이미지 업로드 시도 → 5MB 초과로 거부", async ({ page }) => {
+  test("5MB 이미지 업로드 시도 → 4MB 초과로 거부 (Vercel body 한도 대응)", async ({ page }) => {
     await page.goto("/admin");
-    const big = Buffer.alloc(6_300_000, 0xff);
+    const big = Buffer.alloc(5_300_000, 0xff);
     await page
       .getByTestId("seatmap-dropzone")
       .locator('input[type="file"]')
@@ -82,7 +82,7 @@ test.describe("S12 · 관리자 좌석배치도 업로드 (FR-A03)", () => {
       mimeType: "image/jpeg",
       buffer: big,
     });
-    await expect(page.locator("body")).toContainText(/5MB 를 초과합니다/, {
+    await expect(page.locator("body")).toContainText(/4MB 를 초과합니다/, {
       timeout: 5000,
     });
   });

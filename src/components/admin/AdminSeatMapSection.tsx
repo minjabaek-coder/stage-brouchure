@@ -73,7 +73,7 @@ const AdminSeatMapSection: FC<AdminSeatMapSectionProps> = ({ initialUrl }) => {
             ? "업로드 중…"
             : "좌석배치도 이미지(JPG/PNG)를 끌어다 놓거나 클릭해 선택해 주세요."
         }
-        hint="최대 5MB · 1600px 로 자동 리사이즈 + JPEG 80% 압축"
+        hint="최대 4MB · 1600px 로 자동 리사이즈 + JPEG 80% 압축"
         testId="seatmap-dropzone"
       />
     </div>

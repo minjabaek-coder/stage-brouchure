@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         error: "FILE_TOO_LARGE",
-        message: `5MB 를 초과합니다 (${(file.size / 1024 / 1024).toFixed(1)}MB)`,
+        message: `4MB 를 초과합니다 (${(file.size / 1024 / 1024).toFixed(1)}MB)`,
       },
       { status: 413 },
     );

@@ -31,30 +31,45 @@ const AdminBrochureSection: FC<AdminBrochureSectionProps> = ({
     );
   }
 
+  async function uploadOne(slot: number, file: File): Promise<{ slot: number; url: string }> {
+    const formData = new FormData();
+    formData.append("files", file);
+    formData.append("slots", String(slot));
+    const res = await fetch("/api/admin/upload-brochure", {
+      method: "POST",
+      body: formData,
+    });
+    if (!res.ok) {
+      const body = (await res.json().catch(() => null)) as {
+        message?: string;
+      } | null;
+      // Vercel edge 가 4.5MB 초과 multipart 를 차단하면 우리 라우트까지 도달
+      // 못 해 body 가 비어있다 — 그 경우 명시적 안내.
+      const fallback =
+        res.status === 413
+          ? "파일이 너무 큽니다 (한 장당 4MB 이하)"
+          : `Upload failed (${res.status})`;
+      throw new Error(body?.message ?? fallback);
+    }
+    const body = (await res.json()) as UploadResponse;
+    return body.updated[0]!;
+  }
+
+  // 일괄 업로드는 슬롯별로 순차 N건 요청. multipart 한 번에 8장 보내면 합산
+  // 용량이 Vercel serverless 의 4.5MB request-body 한도에 쉽게 부딪힌다.
   async function uploadFiles(items: { slot: number; file: File }[]) {
     setUploading(true);
     try {
-      const formData = new FormData();
+      const updated: { slot: number; url: string }[] = [];
       for (const { slot, file } of items) {
-        formData.append("files", file);
-        formData.append("slots", String(slot));
+        const r = await uploadOne(slot, file);
+        updated.push(r);
+        applyResponse([r]);
       }
-      const res = await fetch("/api/admin/upload-brochure", {
-        method: "POST",
-        body: formData,
-      });
-      if (!res.ok) {
-        const body = (await res.json().catch(() => null)) as {
-          message?: string;
-        } | null;
-        throw new Error(body?.message ?? `Upload failed (${res.status})`);
-      }
-      const body = (await res.json()) as UploadResponse;
-      applyResponse(body.updated);
       toast.success(
         items.length === 1
           ? `슬롯 ${String(items[0]!.slot).padStart(2, "0")} 업데이트 완료`
-          : `${body.updated.length}장 업데이트 완료`,
+          : `${updated.length}장 업데이트 완료`,
       );
     } catch (e) {
       toast.error(
@@ -75,7 +90,7 @@ const AdminBrochureSection: FC<AdminBrochureSectionProps> = ({
     const oversized = arr.find((f) => f.size > MAX_IMAGE_BYTES);
     if (oversized) {
       toast.error(
-        `파일 용량이 5MB 를 초과합니다 (${oversized.name}: ${(oversized.size / 1024 / 1024).toFixed(1)}MB)`,
+        `파일 용량이 4MB 를 초과합니다 (${oversized.name}: ${(oversized.size / 1024 / 1024).toFixed(1)}MB)`,
       );
       return;
     }
@@ -88,7 +103,7 @@ const AdminBrochureSection: FC<AdminBrochureSectionProps> = ({
 
   function handleReplace(index: number, file: File) {
     if (file.size > MAX_IMAGE_BYTES) {
-      toast.error("파일 용량이 5MB 를 초과합니다.");
+      toast.error("파일 용량이 4MB 를 초과합니다.");
       return;
     }
     void uploadFiles([{ slot: index, file }]);

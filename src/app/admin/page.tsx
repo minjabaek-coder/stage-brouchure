@@ -86,7 +86,7 @@ export default async function AdminPage() {
       <AdminSection
         eyebrow="Section II"
         title="좌석배치도"
-        description="좌석배치도 이미지(JPG/PNG, 5MB 이하) 한 장을 업로드하면 자리 찾기 페이지에 즉시 반영됩니다."
+        description="좌석배치도 이미지(JPG/PNG, 4MB 이하) 한 장을 업로드하면 자리 찾기 페이지에 즉시 반영됩니다."
         testId="admin-seatmap-section"
       >
         <AdminSeatMapSection initialUrl={stats.seatMapUrl} />
