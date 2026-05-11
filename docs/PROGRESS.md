@@ -22,7 +22,7 @@
 | S11 | 관리자 CSV 업로드 | 🔍 검토 대기 | `5dfdf43` | — |
 | S12 | 관리자 좌석배치도 업로드 | 🔍 검토 대기 | `3f3df0f` | — |
 | S13 | 관리자 브로셔 8장 업로드 | ✅ | `63a539d` | ✅ |
-| S14 | 최종 QA (게이트) | 🔍 자동화 전부 통과 (카톡 수동 잔여) | `97d0d26` + 후속 | — |
+| S14 | 최종 QA (게이트) | 🔍 자동화 전부 통과 (카톡 수동 잔여) | `97d0d26`, `1771ed1` | — |
 
 상태 기호: ⏳ 대기 / 🚧 진행 중 / 🔍 검토 대기 / ✅ 완료 / ⚠️ 차단
 
@@ -141,7 +141,7 @@
 - [x] **Lighthouse CI** (`@lhci/cli`, `lighthouserc.json`, `pnpm lhci`) — 전 페이지 a11y 100 / perf 96–97 / best-practices 100 / **LCP 1.1–1.3s** (임계 2.5s). a11y fix 3건: ① EventMeta `<dl>` 의 `display:contents` 제거 (axe canonical `dl > div > dt+dd`), ② layout viewport `user-scalable=no` 제거 + maximumScale 5 (WCAG 1.4.4), ③ InvitationVideo button aria-label 가 visible text 포함하도록 수정 (S01 spec 도 viewport 검증 갱신)
 - [x] **부하 테스트 100 동접** (`scripts/load-search.ts`, `pnpm load:search`) — 100 동시 POST `/api/search`, distinct X-Forwarded-For 로 rate limit 우회. 결과: 894 req/s, ok 100%, p50 69ms / **p95 93ms** / max 94ms
 - [ ] 카카오톡 인앱 브라우저 점검 _(수동 — 실기기 필요. 체크리스트는 아래 참조)_
-- [ ] `git commit chore(s14): final QA, OG, lighthouse pass`
+- [x] `git commit 97d0d26` (자동화 1차) + `1771ed1` (lighthouse + load sim)
 - [ ] 사용자 최종 승인 → 행사 운영 모드 진입
 
 #### 카카오톡 인앱 브라우저 수동 체크리스트 (실기기 필요)
