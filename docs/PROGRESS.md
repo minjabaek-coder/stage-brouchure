@@ -16,7 +16,7 @@
 | S05 | DB 스키마 + 시드 | 🔍 검토 대기 | `1fa32f4` | — |
 | S06 | 검색 API + Rate Limit | 🔍 검토 대기 | `65157ed` | — |
 | S07 | 자리 찾기 UI | 🔍 검토 대기 | `e36f86e` | — |
-| S08 | 정적 좌석배치도 | 🔍 검토 대기 | (커밋 직전) | — |
+| S08 | 정적 좌석배치도 | 🔍 검토 대기 | `8aad65c` | — |
 | S09 | 브로셔 페이지 (8장) | ⏳ 대기 | — | — |
 | S10 | 관리자 페이지 셸 | ⏳ 대기 | — | — |
 | S11 | 관리자 CSV 업로드 | ⏳ 대기 | — | — |
@@ -94,7 +94,7 @@
 - [x] 구현 (`SeatMapImage` 서버, `SeatMapLightbox` 클라이언트, `public/seatmap-placeholder.svg`, seed `assets.seat_map`)
 - [x] typecheck/lint
 - [x] `pnpm test:e2e` (80/80, 회귀 0)
-- [ ] `git commit feat(s08): static seat map with lightbox (FR-G04)`
+- [x] `git commit 8aad65c feat(s08): static seat map with lightbox (FR-G04)` + push
 - [ ] 사용자 검토 OK
 
 ### S09 · 브로셔 페이지
@@ -156,3 +156,4 @@
 | 2026-05-11 | S05 | DB 진입 — Prisma 6 (Prisma 7 의 prisma.config.ts 패턴은 행사 스코프 대비 과함), 로컬 superuser 그대로 사용, 시드 22명 (HTML 진실 기준 — docs 의 23 표기 정정), API 경로 `dev/seed-check` (Next.js `_` private 폴더 회피) |
 | 2026-05-11 | S06 | 게이트 통과 (`65157ed`) — `/api/search` + zod, ratelimit (Upstash 연결 시 자동 사용 + in-memory fallback). 테스트는 project name 으로 IP 격리 |
 | 2026-05-11 | S07 | 게이트 통과 (`e36f86e`) — SearchForm/SeatResultCard/NoResultCard. RHF 미채택 (2-필드라 native), maxLength 대신 onChange 에서 digit-strip+slice |
+| 2026-05-11 | S08 | 게이트 통과 (`8aad65c`) — SeatMapImage(server) + SeatMapLightbox(client) + 시안 SVG. yet-another-react-lightbox 채택 |
