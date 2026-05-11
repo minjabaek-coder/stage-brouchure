@@ -190,11 +190,11 @@
 |---|---|---|---|
 | `BrochureScroller` (서버, assets 조회 + placeholder fallback) | ✅ | S09 | `components/public/BrochureScroller.tsx` |
 | `BrochureGallery` (클라이언트, 8장 + 페이지번호 + lightbox) | ✅ | S09 | `components/public/BrochureGallery.tsx` |
-| `Dropzone` (CSV/이미지 공통) | 🆕 | S11–13 | `components/ui/Dropzone.tsx` |
-| `ConfirmDialog` (덮어쓰기 확인) | 🆕 | S11 | `components/ui/ConfirmDialog.tsx` |
-| `CsvPreviewTable` | 🆕 | S11 | `components/admin/CsvPreviewTable.tsx` |
+| `Dropzone` (CSV/이미지 공통) | ✅ | S11 (S12-13 재사용) | `components/ui/Dropzone.tsx` |
+| `ConfirmDialog` (덮어쓰기 확인) | ✅ | S11 | `components/ui/ConfirmDialog.tsx` |
+| `CsvPreviewTable` | ✅ | S11 | `components/admin/CsvPreviewTable.tsx` |
 | `BrochureSlotGrid` (8 슬롯) | 🆕 | S13 | `components/admin/BrochureSlotGrid.tsx` |
-| `AdminCsvSection` | 🆕 | S11 | `components/admin/AdminCsvSection.tsx` |
+| `AdminCsvSection` | ✅ | S11 | `components/admin/AdminCsvSection.tsx` |
 | `AdminSeatMapSection` | 🆕 | S12 | `components/admin/AdminSeatMapSection.tsx` |
 | `AdminBrochureSection` | 🆕 | S13 | `components/admin/AdminBrochureSection.tsx` |
 | `AdminSection` (titled 섹션 래퍼) | ✅ | S10 | `components/admin/AdminSection.tsx` |

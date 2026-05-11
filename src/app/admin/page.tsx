@@ -1,6 +1,8 @@
+import { Toaster } from "sonner";
 import Stage from "@/components/layout/Stage";
 import AdminSection from "@/components/admin/AdminSection";
 import AdminStatusBar from "@/components/admin/AdminStatusBar";
+import AdminCsvSection from "@/components/admin/AdminCsvSection";
 import { prisma } from "@/lib/db";
 
 export const metadata = {
@@ -39,6 +41,7 @@ export default async function AdminPage() {
 
   return (
     <Stage>
+      <Toaster richColors position="top-center" theme="dark" />
       <header className="pt-2 pb-4 text-center" data-testid="admin-header">
         <p className="font-serif-en text-gold text-[12px] tracking-[0.4em] uppercase italic">
           Stage Manager
@@ -64,9 +67,7 @@ export default async function AdminPage() {
         description="이름·전화 뒷자리 4자리·좌석·메모를 담은 CSV 를 업로드하면 기존 명단을 전체 교체합니다. 업로드 직전 명단은 자동 백업됩니다."
         testId="admin-csv-section"
       >
-        <p className="font-serif-en text-paper/40 text-[12px] tracking-[0.2em] italic">
-          — 준비 중 (S11) —
-        </p>
+        <AdminCsvSection />
       </AdminSection>
 
       <AdminSection
