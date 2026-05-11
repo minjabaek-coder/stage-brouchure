@@ -15,11 +15,13 @@
    - Name: `eoullim-concert` (자유)
    - Region: `Northeast Asia (Seoul)` 권장
    - Database Password: 강력한 문자열 (저장해둘 것)
-2. 프로젝트가 준비되면 **Settings → Database**
-   - **Connection string → URI** 두 가지 모두 메모:
-     - **Connection pooling** (`...pooler.supabase.com:6543`) — 런타임용
-     - **Direct connection** (`db.<ref>.supabase.co:5432`) — 마이그레이션용
-   - 비밀번호 자리 `[YOUR-PASSWORD]` 를 위에서 정한 값으로 치환
+2. 프로젝트가 준비되면 **Settings → Database → Connection string**
+   - **Transaction pooler** (`...pooler.supabase.com:6543`) — 런타임용 (`DATABASE_URL`)
+   - **Session pooler** (`...pooler.supabase.com:5432`) — 마이그레이션용 (`DIRECT_URL`)
+   - **Direct connection** (`db.<ref>.supabase.co:5432`) 은 사용하지 말 것:
+     Supabase Free tier 는 IPv6 전용이라 Vercel build runner 가 접속 못 함
+     (`prisma migrate deploy` 가 timeout/connection-refused 로 실패)
+   - 두 URI 모두 비밀번호 자리 `[YOUR-PASSWORD]` 를 프로젝트 생성 시 정한 값으로 치환
 
 ## 2. Supabase Storage 버킷 + 정책
 
@@ -56,8 +58,8 @@ Supabase 대시보드 → **Storage → New bucket** 으로 두 개 생성:
 
 | 키 | 값 | 비고 |
 |---|---|---|
-| `DATABASE_URL` | Supabase **pooler** URI (포트 6543, `?pgbouncer=true&connection_limit=1` 권장) | 서버리스 런타임용 |
-| `DIRECT_URL` | Supabase **direct** URI (포트 5432) | `prisma migrate deploy` 가 사용 |
+| `DATABASE_URL` | Supabase **transaction pooler** URI (포트 6543, `?pgbouncer=true&connection_limit=1` 권장) | 서버리스 런타임용 |
+| `DIRECT_URL` | Supabase **session pooler** URI (포트 5432, 같은 pooler 호스트) | `prisma migrate deploy` 가 사용. direct connection (`db.*`) 은 IPv6 전용이라 Vercel build runner 에서 실패 |
 | `SUPABASE_URL` | Supabase 프로젝트 URL (예: `https://abc.supabase.co`) | Storage 클라이언트 |
 | `SUPABASE_SERVICE_ROLE_KEY` | **Settings → API → Project API keys → service_role** | **Secret** — 서버에서만 사용 |
 | `SUPABASE_IMAGES_BUCKET` | `images` | §2.1 의 버킷명 |
@@ -106,7 +108,7 @@ Vercel 이 GitHub push 를 감지해 자동 배포. 첫 빌드가 끝나면:
 
 | 증상 | 원인 | 해결 |
 |---|---|---|
-| `pnpm build` 가 `Can't reach database server` 로 실패 | Vercel 이 `DATABASE_URL` 로 마이그레이션 시도 (직접 연결 불가) | `DIRECT_URL` 을 별도로 설정했는지 확인 |
+| `pnpm prisma migrate deploy` 가 `exited with 1` / connection refused | `DIRECT_URL` 이 `db.<ref>.supabase.co` (IPv6 전용 direct connection) 를 가리킴 | `DIRECT_URL` 을 **session pooler** (`...pooler.supabase.com:5432`) 로 교체 후 재배포 |
 | `/search` 의 좌석맵이 깨짐 (`next/image` 가 호스트 거부) | Supabase 도메인이 remotePatterns 에 없음 | `SUPABASE_URL` 이 env 에 정확히 설정됐는지 확인 후 재배포 |
 | CSV 업로드 시 `Supabase backup upload failed` | `SUPABASE_SERVICE_ROLE_KEY` 누락 또는 `backups` 버킷 미생성 | §2.2 + §5 재확인 |
 | 검색 429 가 너무 자주 발생 | Upstash 미설정 → in-memory fallback 이 서버리스 cold start 때 초기화 | §3 의 Upstash 키 등록 |
