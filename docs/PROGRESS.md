@@ -12,7 +12,7 @@
 | S01 | 디자인 토큰 + 글로벌 레이아웃 | 🔍 검토 대기 | `741527e` | — |
 | S02 | 홈 헤더 + 푸터 | 🔍 검토 대기 | `0a25fd5` | — |
 | S03 | 초대 영상 인라인 재생 | 🔍 검토 대기 | `8eb931b` | — |
-| S04 | 홈 메뉴 카드 + 라우트 스텁 | 🔍 검토 대기 | (커밋 직전) | — |
+| S04 | 홈 메뉴 카드 + 라우트 스텁 | 🔍 검토 대기 | `fab68da` | — |
 | S05 | DB 스키마 + 시드 | ⏳ 대기 | — | — |
 | S06 | 검색 API + Rate Limit | ⏳ 대기 | — | — |
 | S07 | 자리 찾기 UI | ⏳ 대기 | — | — |
@@ -64,7 +64,7 @@
 - [x] 구현 (`MenuCard` + `MenuCardList`, `CornerMarker`, `BackButton`, `PageHeader`, `(public)` 라우트 그룹 + `/search` `/brochure` 스텁)
 - [x] typecheck/lint
 - [x] `pnpm test:e2e` (46/46, 회귀 0)
-- [ ] `git commit feat(s04): add home menu cards and route stubs (FR-G07)`
+- [x] `git commit fab68da feat(s04): add home menu cards and route stubs (FR-G07)`
 - [ ] 사용자 검토 OK
 
 ### S05 · DB 스키마 + 시드
@@ -151,3 +151,4 @@
 | 2026-05-11 | S01 | 게이트 통과 (`741527e`) — `tests/screenshots/` 는 .gitignore 에 추가, visual.spec 은 커밋 |
 | 2026-05-11 | S02 | 게이트 통과 (`0a25fd5`) — Ornament/Flourish/MetaDivider/EventMeta/HomeHeader/HomeFooter + EVENT 상수 |
 | 2026-05-11 | S03 | 게이트 통과 (`8eb931b`) — InvitationVideo (썸네일 ↔ iframe), EVENT.videoYoutubeId 추가 |
+| 2026-05-11 | S04 | 게이트 통과 (`fab68da`) — MenuCard/List + CornerMarker + BackButton + PageHeader, (public) 라우트 그룹, /search /brochure 스텁 |
