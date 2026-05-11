@@ -1,0 +1,45 @@
+// Prisma schema — docs/04-data-model.md §3 그대로.
+// 단일 행사(어울림콘서트 2026.5.26) 전제이므로 별도 Event 엔터티 없음.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ENT-01 — CSV 업로드 시 truncate + insert 로 전체 교체된다 (PRD §3.3.4)
+model Attendee {
+  id         Int      @id @default(autoincrement())
+  name       String
+  phoneLast4 String   @map("phone_last4") @db.Char(4)
+  seat       String
+  note       String?
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@index([name, phoneLast4])
+  @@index([name])
+  @@map("attendees")
+}
+
+// ENT-02 — seat_map / brochure_01..08 / video_youtube_id (key 는 enum 처럼 운용)
+model Asset {
+  key       String   @id
+  url       String
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("assets")
+}
+
+// ENT-03 (선택) — CSV 업로드 직전 데이터를 자동 백업, 최근 3개만 유지 (PRD §3.3.4)
+model CsvBackup {
+  id          Int      @id @default(autoincrement())
+  uploadedAt  DateTime @default(now()) @map("uploaded_at")
+  storagePath String   @map("storage_path")
+  rowCount    Int?     @map("row_count")
+
+  @@map("csv_backups")
+}

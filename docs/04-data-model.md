@@ -168,7 +168,7 @@ async function uploadCsv(file: File) {
 
 ## 6. 시드 데이터 (`prisma/seed.ts`)
 
-원본 HTML lines 1324-1347 의 23명 게스트를 시드. PRD 에 없는 `phone_last4` 는 더미 값 (`0001`, `0002`, ...) 으로 채운다 — 실제 명단은 운영자가 CSV 업로드 시 덮어쓴다.
+원본 HTML lines 1324-1347 의 **22명** 게스트를 시드 (이전 표기 "23명" 은 HTML 행 카운트 착오). PRD 에 없는 `phone_last4` 는 더미 값 (`0001` ~ `0022`) 으로 순서대로 채운다 — 실제 명단은 운영자가 CSV 업로드 (S11) 시 덮어쓴다.
 
 ```ts
 const seed = [

@@ -240,11 +240,16 @@ Homebrew 가 표준. 다음 순서로 설치한다:
 brew install postgresql@16
 brew services start postgresql@16
 
-# postgres superuser 비밀번호 설정 + 개발 DB 생성
+# 옵션 A — fresh install: postgres superuser + DB 생성
 createuser -s postgres 2>/dev/null || true
 psql -d postgres -c "ALTER USER postgres WITH PASSWORD 'postgres';"
 createdb -O postgres eoullim_dev
 createdb -O postgres eoullim_test    # E2E 테스트용 별도 DB
+
+# 옵션 B — 이미 brew 가 OS 계정 superuser 를 만들어 둔 경우 (현재 로컬 환경):
+createdb eoullim_dev    # owner = 현재 OS 사용자
+createdb eoullim_test
+# 이 경우 DATABASE_URL 은 postgresql://<your-os-user>@localhost:5432/eoullim_dev
 ```
 
 확인:

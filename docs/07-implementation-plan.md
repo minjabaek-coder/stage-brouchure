@@ -255,23 +255,24 @@ Next.js 15 + TypeScript + Tailwind 프로젝트와 Playwright 환경을 셋업�
 - 로컬 PostgreSQL 설치 (Homebrew, `06-tech-stack.md` §7.3 절차)
   - DB 2개: `eoullim_dev` (개발), `eoullim_test` (E2E)
 - `.env.local` 의 `DATABASE_URL=postgresql://postgres:postgres@localhost:5432/eoullim_dev`
-- `prisma/schema.prisma` (`docs/04-data-model.md` §3 그대로)
+- `prisma/schema.prisma` (`docs/04-data-model.md` §3 그대로) — Prisma 6.x 기준
 - `prisma migrate dev --name init`
 - `prisma/seed.ts`:
-  - 원본 HTML lines 1324-1347 의 23명 → `attendees` (`phone_last4` 더미 `0001`~`0023`)
+  - 원본 HTML lines 1324-1347 의 22명 → `attendees` (`phone_last4` 더미 `0001` ~ `0022`)
   - `assets.video_youtube_id = "0aT4IdHXZW8"` upsert
-- `package.json` `prisma.seed` 등록 + `db:reset`, `db:seed` 스크립트
+- `package.json` `prisma.seed` 등록 + `db:reset`, `db:seed` 스크립트 — 모두 Node 의 `--env-file=.env` 플래그로 환경변수 주입
 - `src/lib/db.ts` Prisma 싱글톤
-- (테스트 전용) `src/app/api/__test__/seed-check/route.ts` — `process.env.NODE_ENV !== 'production'` 가드, attendee count 와 video ID 반환
-- E2E 테스트는 `eoullim_test` DB 를 사용하도록 `playwright.config.ts` 의 `webServer.env` 에 별도 `DATABASE_URL` 주입
+- (테스트 전용) `src/app/api/dev/seed-check/route.ts` — `process.env.NODE_ENV !== 'production'` 가드, attendee count 와 video ID 반환. `_` 접두 폴더는 Next.js 가 routing 에서 제외하므로 `__test__` 대신 `dev` 사용
+- E2E 테스트는 `eoullim_test` DB 를 사용하도록 `playwright.config.ts` 의 `webServer.env` 에 `DATABASE_URL` 주입 + `tests/global-setup.ts` 가 매 실행 전 `migrate reset --skip-seed` + `seed.ts` 실행
+- `reuseExistingServer: false` 로 강제 (env injection 이 효력 발휘하려면 playwright 가 직접 서버를 띄워야 함)
 
 ### Out of Scope
 - 검색 API (S06), 업로드 API (S11–13)
 
 ### Playwright E2E
 - `tests/e2e/s05-db-seed.spec.ts`
-  1. `GET /api/__test__/seed-check` → `{ attendees: 23, videoId: "0aT4IdHXZW8" }`
-- 데이터 준비: `pnpm prisma migrate reset --force --skip-seed && pnpm prisma db seed`
+  1. `GET /api/dev/seed-check` → `{ attendees: 22, videoId: "0aT4IdHXZW8" }`
+- 데이터 준비: `tests/global-setup.ts` 가 자동 처리. 수동 실행 시 `pnpm db:reset` (Prisma 6 의 AI-action guard 회피용 `PRISMA_USER_CONSENT_FOR_DANGEROUS_AI_ACTION` 필요)
 
 ### 단계 완료 (DoD)
 - [ ] Supabase 마이그레이션 적용

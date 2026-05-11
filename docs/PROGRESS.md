@@ -13,7 +13,7 @@
 | S02 | 홈 헤더 + 푸터 | 🔍 검토 대기 | `0a25fd5` | — |
 | S03 | 초대 영상 인라인 재생 | 🔍 검토 대기 | `8eb931b` | — |
 | S04 | 홈 메뉴 카드 + 라우트 스텁 | 🔍 검토 대기 | `fab68da` | — |
-| S05 | DB 스키마 + 시드 | ⏳ 대기 | — | — |
+| S05 | DB 스키마 + 시드 | 🔍 검토 대기 | (커밋 직전) | — |
 | S06 | 검색 API + Rate Limit | ⏳ 대기 | — | — |
 | S07 | 자리 찾기 UI | ⏳ 대기 | — | — |
 | S08 | 정적 좌석배치도 | ⏳ 대기 | — | — |
@@ -68,10 +68,11 @@
 - [ ] 사용자 검토 OK
 
 ### S05 · DB 스키마 + 시드
-- [ ] 로컬 PostgreSQL 설치 + `eoullim_dev`/`eoullim_test` 생성
-- [ ] 구현 (Prisma schema, `prisma/seed.ts` 23명 + `assets.video_youtube_id`, `src/lib/db.ts`)
-- [ ] typecheck/lint
-- [ ] `pnpm test:e2e -- s05`
+- [x] 로컬 PostgreSQL 16 (이미 brew 로 설치·기동 중) + `eoullim_dev`/`eoullim_test` 생성 (owner = `kai`)
+- [x] 구현 (Prisma 6 schema, `prisma/seed.ts` 22명 + `assets.video_youtube_id`, `src/lib/db.ts`, `/api/dev/seed-check`)
+- [x] Playwright `tests/global-setup.ts` 가 매 실행 전 test DB reset+seed (사용자 명시 동의)
+- [x] typecheck/lint
+- [x] `pnpm test:e2e` (48/48, 회귀 0)
 - [ ] `git commit feat(s05): prisma schema and seed for attendees/assets`
 - [ ] 사용자 검토 OK
 
@@ -152,3 +153,4 @@
 | 2026-05-11 | S02 | 게이트 통과 (`0a25fd5`) — Ornament/Flourish/MetaDivider/EventMeta/HomeHeader/HomeFooter + EVENT 상수 |
 | 2026-05-11 | S03 | 게이트 통과 (`8eb931b`) — InvitationVideo (썸네일 ↔ iframe), EVENT.videoYoutubeId 추가 |
 | 2026-05-11 | S04 | 게이트 통과 (`fab68da`) — MenuCard/List + CornerMarker + BackButton + PageHeader, (public) 라우트 그룹, /search /brochure 스텁 |
+| 2026-05-11 | S05 | DB 진입 — Prisma 6 (Prisma 7 의 prisma.config.ts 패턴은 행사 스코프 대비 과함), 로컬 superuser 그대로 사용, 시드 22명 (HTML 진실 기준 — docs 의 23 표기 정정), API 경로 `dev/seed-check` (Next.js `_` private 폴더 회피) |
