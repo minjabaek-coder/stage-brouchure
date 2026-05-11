@@ -43,9 +43,18 @@ const SeatMapLightbox: FC<SeatMapLightboxProps> = ({ url, alt }) => {
       <Lightbox
         open={open}
         close={() => setOpen(false)}
-        slides={[{ src: url, alt }]}
+        // slide.width/height: yarl 이 maxWidth=max(slide.width, naturalWidth).
+        // imageProps: 기본은 max-* 만 잡아 자연 크기로만 렌더(작은 SVG/이미지가
+        // viewport 를 못 채움). width/height 100% + object-fit:contain 으로
+        // viewport 채우면서 aspect 는 유지.
+        slides={[{ src: url, alt, width: 2400, height: 1800 }]}
         controller={{ closeOnBackdropClick: true }}
-        carousel={{ finite: true }}
+        carousel={{
+          finite: true,
+          imageProps: {
+            style: { width: "100%", height: "100%", objectFit: "contain" },
+          },
+        }}
         render={{
           buttonPrev: () => null,
           buttonNext: () => null,

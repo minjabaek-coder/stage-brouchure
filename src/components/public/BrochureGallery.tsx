@@ -73,9 +73,19 @@ const BrochureGallery: FC<BrochureGalleryProps> = ({ urls }) => {
         slides={urls.map((src, i) => ({
           src,
           alt: `어울림콘서트 브로셔 ${String(i + 1).padStart(2, "0")}`,
+          // 큰 reference + imageProps width/height 100%: 자연 크기가 작은
+          // 이미지(예: SVG)도 viewport 를 채우도록 강제. 자세한 이유는
+          // SeatMapLightbox 의 같은 옵션 주석 참조.
+          width: 2400,
+          height: 3300,
         }))}
         controller={{ closeOnBackdropClick: true }}
-        carousel={{ finite: true }}
+        carousel={{
+          finite: true,
+          imageProps: {
+            style: { width: "100%", height: "100%", objectFit: "contain" },
+          },
+        }}
       />
     </>
   );

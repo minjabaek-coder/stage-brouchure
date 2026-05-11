@@ -62,3 +62,4 @@ tests/fixtures/large-*.csv
 
 # Lighthouse CI reports (S14)
 /.lighthouseci/
+.playwright-mcp/
