@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1100" role="img" aria-label="브로셔 04 · 출연진 I">
+  <defs>
+    <linearGradient id="bg04" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f4ede0"/>
+      <stop offset="1" stop-color="#ebe1cf"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1100" fill="url(#bg04)"/>
+  <rect x="40" y="40" width="720" height="1020" fill="none" stroke="#c5a572" stroke-width="1.5"/>
+  <rect x="56" y="56" width="688" height="988" fill="none" stroke="#c5a572" stroke-opacity="0.4" stroke-width="0.6"/>
+
+  <text x="400" y="180" text-anchor="middle" font-family="serif" font-style="italic" font-size="42" fill="#c5a572" letter-spacing="14">— 04 —</text>
+  <text x="400" y="290" text-anchor="middle" font-family="serif" font-size="56" fill="#3d0e0f" letter-spacing="12">출연진 I</text>
+  <text x="400" y="345" text-anchor="middle" font-family="serif" font-style="italic" font-size="22" fill="#5c1a1b" fill-opacity="0.7" letter-spacing="6">Performers I</text>
+  <line x1="350" y1="395" x2="450" y2="395" stroke="#c5a572" stroke-width="1.2"/>
+
+  <text x="400" y="560" text-anchor="middle" font-family="serif" font-size="14" fill="#3d0e0f" fill-opacity="0.55" letter-spacing="3">PLACEHOLDER · upload final via /admin</text>
+  <text x="400" y="600" text-anchor="middle" font-family="serif" font-style="italic" font-size="13" fill="#5c1a1b" fill-opacity="0.5" letter-spacing="2">어울림콘서트 브로셔 시안</text>
+
+  <text x="400" y="1020" text-anchor="middle" font-family="serif" font-style="italic" font-size="14" fill="#c5a572" letter-spacing="6">04 / 08</text>
+</svg>

@@ -17,7 +17,7 @@
 | S06 | 검색 API + Rate Limit | 🔍 검토 대기 | `65157ed` | — |
 | S07 | 자리 찾기 UI | 🔍 검토 대기 | `e36f86e` | — |
 | S08 | 정적 좌석배치도 | 🔍 검토 대기 | `8aad65c` | — |
-| S09 | 브로셔 페이지 (8장) | ⏳ 대기 | — | — |
+| S09 | 브로셔 페이지 (8장) | 🔍 검토 대기 | (커밋 직전) | — |
 | S10 | 관리자 페이지 셸 | ⏳ 대기 | — | — |
 | S11 | 관리자 CSV 업로드 | ⏳ 대기 | — | — |
 | S12 | 관리자 좌석배치도 업로드 | ⏳ 대기 | — | — |
@@ -98,9 +98,9 @@
 - [ ] 사용자 검토 OK
 
 ### S09 · 브로셔 페이지
-- [ ] 구현 (`BrochureScroller` 8장 + 페이지번호 + 라이트박스)
-- [ ] typecheck/lint
-- [ ] `pnpm test:e2e -- s09`
+- [x] 구현 (`BrochureScroller` 서버 + `BrochureGallery` 클라이언트, 8장 시안 SVG + seed)
+- [x] typecheck/lint
+- [x] `pnpm test:e2e` (90/90, 회귀 0)
 - [ ] `git commit feat(s09): brochure page with 8 images and lightbox (FR-G06)`
 - [ ] 사용자 검토 OK
 

@@ -59,6 +59,18 @@ async function main() {
     update: { url: "/seatmap-placeholder.svg" },
   });
 
+  // S09 — 8 brochure placeholder pages shipped from /public.
+  for (let i = 1; i <= 8; i++) {
+    const padded = String(i).padStart(2, "0");
+    const key = `brochure_${padded}`;
+    const url = `/brochure-${padded}.svg`;
+    await prisma.asset.upsert({
+      where: { key },
+      create: { key, url },
+      update: { url },
+    });
+  }
+
   const count = await prisma.attendee.count();
   console.log(`✓ Seeded ${count} attendees + video_youtube_id asset`);
 }
