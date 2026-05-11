@@ -18,7 +18,7 @@
 | S07 | 자리 찾기 UI | 🔍 검토 대기 | `e36f86e` | — |
 | S08 | 정적 좌석배치도 | 🔍 검토 대기 | `8aad65c` | — |
 | S09 | 브로셔 페이지 (8장) | 🔍 검토 대기 | `a1d1c28` | — |
-| S10 | 관리자 페이지 셸 | 🔍 검토 대기 | (커밋 직전) | — |
+| S10 | 관리자 페이지 셸 | 🔍 검토 대기 | `dec736d` | — |
 | S11 | 관리자 CSV 업로드 | ⏳ 대기 | — | — |
 | S12 | 관리자 좌석배치도 업로드 | ⏳ 대기 | — | — |
 | S13 | 관리자 브로셔 8장 업로드 | ⏳ 대기 | — | — |
@@ -108,7 +108,7 @@
 - [x] 구현 (`/admin` Stage + AdminStatusBar + 3 AdminSection placeholder, `middleware.ts` ADMIN_PATH_SUFFIX rewrite/404)
 - [x] typecheck/lint
 - [x] `pnpm test:e2e` (100/100 — 마일스톤! 회귀 0)
-- [ ] `git commit feat(s10): admin shell with stats (FR-A01)`
+- [x] `git commit dec736d feat(s10): admin shell with stats (FR-A01)` + push
 - [ ] 사용자 검토 OK
 
 ### S11 · 관리자 CSV 업로드
@@ -159,3 +159,4 @@
 | 2026-05-11 | S08 | 게이트 통과 (`8aad65c`) — SeatMapImage(server) + SeatMapLightbox(client) + 시안 SVG. yet-another-react-lightbox 채택 |
 | 2026-05-11 | S09 | 게이트 통과 (`a1d1c28`) — BrochureScroller/Gallery + 시안 8장 SVG. 첫장 priority+eager / 2~8장 lazy, 라이트박스 prev/next 활성 |
 | 2026-05-11 | S09 | dev DB hotfix — 사용자 보고로 dev DB 에 brochure/seatmap asset 누락 확인 → `pnpm db:seed` 재실행. 향후 seed 변경 시 dev DB 도 같이 재시드 필요 (`pnpm db:seed`); test DB 는 global-setup 에서 자동 |
+| 2026-05-11 | S10 | 게이트 통과 (`dec736d`) — /admin 셸 + AdminSection·AdminStatusBar + middleware ADMIN_PATH_SUFFIX. 100/100 마일스톤 |
