@@ -15,7 +15,7 @@
 | S04 | 홈 메뉴 카드 + 라우트 스텁 | 🔍 검토 대기 | `fab68da` | — |
 | S05 | DB 스키마 + 시드 | 🔍 검토 대기 | `1fa32f4` | — |
 | S06 | 검색 API + Rate Limit | 🔍 검토 대기 | `65157ed` | — |
-| S07 | 자리 찾기 UI | ⏳ 대기 | — | — |
+| S07 | 자리 찾기 UI | 🔍 검토 대기 | (커밋 직전) | — |
 | S08 | 정적 좌석배치도 | ⏳ 대기 | — | — |
 | S09 | 브로셔 페이지 (8장) | ⏳ 대기 | — | — |
 | S10 | 관리자 페이지 셸 | ⏳ 대기 | — | — |
@@ -84,9 +84,9 @@
 - [ ] 사용자 검토 OK
 
 ### S07 · 자리 찾기 UI
-- [ ] 구현 (`SearchForm`, `SeatResultCard`, `NoResult`)
-- [ ] typecheck/lint
-- [ ] `pnpm test:e2e -- s07`
+- [x] 구현 (`SearchForm` native useState, `SeatResultCard` 전화 마스킹, `NoResultCard` 고정 메시지)
+- [x] typecheck/lint
+- [x] `pnpm test:e2e` (72/72, 회귀 0)
 - [ ] `git commit feat(s07): search ui with masked phone result (FR-G03)`
 - [ ] 사용자 검토 OK
 

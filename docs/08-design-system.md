@@ -150,16 +150,16 @@
 
 | 이름 | 참조 라인 | 상태 | 단계 | 위치 |
 |---|---|---|---|---|
-| `SearchInputField` (input + icon submit) | 1028-1036 | 🔧 | S07 | `components/ui/SearchInputField.tsx` |
-| `IconButton` (search-btn 패턴) | 1030-1035 | 🔧 | S07 | `components/ui/IconButton.tsx` |
-| `SearchForm` (name + phone_last4) | (신규) | 🆕 | S07 | `components/public/SearchForm.tsx` |
+| `SearchInputField` (input + icon submit) | 1028-1036 | ⏸️ 보류 | — | (v1.1 은 2-필드 폼 → SearchForm 내 인라인 input 으로 충분. 단일 input + 검색 아이콘이 다시 필요해지면 추출) |
+| `IconButton` (search-btn 패턴) | 1030-1035 | ⏸️ 보류 | — | (위와 동일 사유. BackButton 만으로 round 버튼 수요 충족) |
+| `SearchForm` (name + phone_last4) | (신규) | ✅ | S07 | `components/public/SearchForm.tsx` |
 
 ### 3.7 결과·카드
 
 | 이름 | 참조 라인 | 상태 | 단계 | 위치 |
 |---|---|---|---|---|
-| `SeatResultCard` | 1488-1497 (JS) | 🔧 + 🆕 (전화 마스킹) | S07 | `components/public/SeatResultCard.tsx` |
-| `NoResultCard` | 1505-1509 (JS) | 🔧 | S07 | `components/public/NoResultCard.tsx` |
+| `SeatResultCard` | 1488-1497 (JS) | ✅ (전화 마스킹 포함) | S07 | `components/public/SeatResultCard.tsx` |
+| `NoResultCard` | 1505-1509 (JS) | ✅ | S07 | `components/public/NoResultCard.tsx` |
 | `BrochurePageCard` (paper texture) | 1100-1115 외 | 🔧 (단순화) | — | (v1.1 에서는 8장 이미지로 대체. 표지 카드 패턴만 보존) |
 
 ### 3.8 좌석맵
