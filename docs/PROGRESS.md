@@ -14,7 +14,7 @@
 | S03 | 초대 영상 인라인 재생 | 🔍 검토 대기 | `8eb931b` | — |
 | S04 | 홈 메뉴 카드 + 라우트 스텁 | 🔍 검토 대기 | `fab68da` | — |
 | S05 | DB 스키마 + 시드 | 🔍 검토 대기 | `1fa32f4` | — |
-| S06 | 검색 API + Rate Limit | ⏳ 대기 | — | — |
+| S06 | 검색 API + Rate Limit | 🔍 검토 대기 | (커밋 직전) | — |
 | S07 | 자리 찾기 UI | ⏳ 대기 | — | — |
 | S08 | 정적 좌석배치도 | ⏳ 대기 | — | — |
 | S09 | 브로셔 페이지 (8장) | ⏳ 대기 | — | — |
@@ -77,9 +77,9 @@
 - [ ] 사용자 검토 OK
 
 ### S06 · 검색 API + Rate Limit
-- [ ] 구현 (`/api/search` zod + Upstash ratelimit)
-- [ ] typecheck/lint
-- [ ] `pnpm test:e2e -- s06`
+- [x] 구현 (`/api/search` POST + zod, `lib/ratelimit.ts` Upstash + in-memory fallback)
+- [x] typecheck/lint
+- [x] `pnpm test:e2e` (60/60, 회귀 0)
 - [ ] `git commit feat(s06): search api with rate limit (FR-G03, FR-G05)`
 - [ ] 사용자 검토 OK
 
