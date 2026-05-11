@@ -36,7 +36,7 @@ test.describe("S01 · 디자인 토큰 + 글로벌 레이아웃", () => {
     expect(fontFamily).toMatch(/Noto Serif KR/i);
   });
 
-  test("viewport meta 가 user-scalable=no + maximum-scale=1 로 설정된다", async ({
+  test("viewport meta 가 device-width + maximum-scale=5 로 설정된다 (S14: a11y 완화)", async ({
     page,
   }) => {
     await page.goto("/");
@@ -45,8 +45,10 @@ test.describe("S01 · 디자인 토큰 + 글로벌 레이아웃", () => {
       .getAttribute("content");
     expect(content).toContain("width=device-width");
     expect(content).toContain("initial-scale=1");
-    expect(content).toContain("maximum-scale=1");
-    expect(content).toMatch(/user-scalable=(no|0)/);
+    // user-scalable=no 는 WCAG 1.4.4 위반이라 5x 까지 허용. iOS auto-zoom 은
+    // input font-size 16px+ 로 별도 방지.
+    expect(content).toContain("maximum-scale=5");
+    expect(content).not.toMatch(/user-scalable=no/);
   });
 
   test("Stage 컨테이너가 max-width 560px 로 제한된다", async ({ page }) => {

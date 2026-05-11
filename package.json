@@ -12,6 +12,8 @@
     "format:check": "prettier --check .",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
+    "lhci": "lhci autorun",
+    "load:search": "tsx scripts/load-search.ts",
     "db:seed": "node --env-file=.env --import tsx prisma/seed.ts",
     "db:reset": "node --env-file=.env node_modules/prisma/build/index.js migrate reset --force",
     "db:migrate": "node --env-file=.env node_modules/prisma/build/index.js migrate dev"
@@ -35,6 +37,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.50.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",

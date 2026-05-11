@@ -59,3 +59,6 @@ next-env.d.ts
 
 # Test fixtures generated at runtime
 tests/fixtures/large-*.csv
+
+# Lighthouse CI reports (S14)
+/.lighthouseci/

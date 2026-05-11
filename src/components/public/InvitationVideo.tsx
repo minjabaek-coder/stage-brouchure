@@ -51,7 +51,7 @@ const InvitationVideo: FC<InvitationVideoProps> = ({ videoId }) => {
           <button
             type="button"
             onClick={() => setPlaying(true)}
-            aria-label="초대 영상 재생"
+            aria-label="클릭하여 초대 영상 재생"
             data-testid="video-thumb"
             className="group relative block h-full w-full cursor-pointer overflow-hidden p-0"
           >

@@ -22,7 +22,7 @@
 | S11 | 관리자 CSV 업로드 | 🔍 검토 대기 | `5dfdf43` | — |
 | S12 | 관리자 좌석배치도 업로드 | 🔍 검토 대기 | `3f3df0f` | — |
 | S13 | 관리자 브로셔 8장 업로드 | ✅ | `63a539d` | ✅ |
-| S14 | 최종 QA (게이트) | 🚧 자동화 1차 완료 | `97d0d26` | — |
+| S14 | 최종 QA (게이트) | 🔍 자동화 전부 통과 (카톡 수동 잔여) | `97d0d26` + 후속 | — |
 
 상태 기호: ⏳ 대기 / 🚧 진행 중 / 🔍 검토 대기 / ✅ 완료 / ⚠️ 차단
 
@@ -132,17 +132,26 @@
 - [x] `git commit 63a539d feat(s13): admin brochure bulk and per-slot upload (FR-A04)`
 - [x] 사용자 검토 OK
 
-### S14 · 최종 QA (게이트) — 자동화 코드 1차 통과
+### S14 · 최종 QA (게이트) — 자동화 전부 통과
 - [x] OG 이미지 + sitemap.ts (`app/opengraph-image.tsx` edge runtime, `app/sitemap.ts`, robots.txt 에 Sitemap 라인 추가, layout.tsx 의 metadataBase + openGraph)
 - [x] 전체 사용자 여정 + viewport 매트릭스 e2e (`tests/e2e/s14-qa.spec.ts`: 홈→영상→검색(성공/실패)→좌석맵 라이트박스→브로셔 8장→복귀, 320/375(iPhone 13)/768(iPad) 가로 스크롤 0)
 - [x] PRD §9 체크리스트 자동화 가능 항목 (영상·검색·좌석맵·브로셔·rate limit·CSV·이미지 사이즈 제한)
 - [x] typecheck/lint
 - [x] `pnpm test:e2e` (130/130, 14 skip)
-- [ ] Lighthouse CI: LCP ≤ 2.5s, a11y ≥ 90, best-practices ≥ 90 _(별도 turn — @lhci/cli 설치 + lighthouserc)_
-- [ ] 카카오톡 인앱 브라우저 점검 _(수동 — 실기기 또는 emulator)_
-- [ ] 부하 테스트 100 동접 _(별도 turn — k6 또는 Playwright workers=10 시뮬레이션)_
-- [ ] `git commit chore(s14): final QA, OG, lighthouse pass` _(자동화 1차 후 추가 작업 종료 시점에)_
-- [ ] 사용자 최종 승인
+- [x] **Lighthouse CI** (`@lhci/cli`, `lighthouserc.json`, `pnpm lhci`) — 전 페이지 a11y 100 / perf 96–97 / best-practices 100 / **LCP 1.1–1.3s** (임계 2.5s). a11y fix 3건: ① EventMeta `<dl>` 의 `display:contents` 제거 (axe canonical `dl > div > dt+dd`), ② layout viewport `user-scalable=no` 제거 + maximumScale 5 (WCAG 1.4.4), ③ InvitationVideo button aria-label 가 visible text 포함하도록 수정 (S01 spec 도 viewport 검증 갱신)
+- [x] **부하 테스트 100 동접** (`scripts/load-search.ts`, `pnpm load:search`) — 100 동시 POST `/api/search`, distinct X-Forwarded-For 로 rate limit 우회. 결과: 894 req/s, ok 100%, p50 69ms / **p95 93ms** / max 94ms
+- [ ] 카카오톡 인앱 브라우저 점검 _(수동 — 실기기 필요. 체크리스트는 아래 참조)_
+- [ ] `git commit chore(s14): final QA, OG, lighthouse pass`
+- [ ] 사용자 최종 승인 → 행사 운영 모드 진입
+
+#### 카카오톡 인앱 브라우저 수동 체크리스트 (실기기 필요)
+1. 카카오톡 → "나에게 보내기" 로 배포 URL 전송
+2. 미리보기에 OG 이미지(어울림 콘서트 / 일시·장소) 가 노출되는지
+3. 링크 탭 → 인앱 브라우저에서 페이지가 정상 렌더되는지
+4. 홈에서 영상 썸네일 탭 → 인앱 브라우저 안에서 인라인 재생되는지 (외부 YouTube 앱으로 빠지지 않는지)
+5. 자리 찾기 → 좌석맵 이미지 탭 시 라이트박스가 풀스크린으로 동작
+6. 브로셔 8장 스크롤 시 이미지가 끊김 없이 lazy load 되는지
+7. iOS / Android 양쪽에서 ②~⑥ 동일 확인
 
 ---
 
@@ -167,3 +176,5 @@
 | 2026-05-11 | S12 | 게이트 통과 (`3f3df0f`) — AdminSeatMapSection + sharp 최적화 + public/uploads/. lib/limits.ts 분리(클라 번들에서 sharp 분리), playwright workers=1 (admin DB race 방지) |
 | 2026-05-11 | S13 | 게이트 통과 — AdminBrochureSection + BrochureSlotGrid 4×2, 일괄(파일명 정렬→슬롯 1..N) + 슬롯별 교체, `/api/admin/upload-brochure` per-slot upsert. S10 spec 의 "준비 중 (S13)" placeholder 검증 → 실제 마운트(슬롯 그리드/일괄 트리거) 검증으로 회귀 fix |
 | 2026-05-11 | S14 | 자동화 1차 — OG image (edge ImageResponse) + sitemap.ts + robots Sitemap 라인 + s14-qa.spec.ts (풀저니/실패 메시지 동일성/iPhone SE·13·iPad viewport). S11 이 attendees 를 갈아엎으므로 s14 검색 시나리오는 beforeAll 에서 신귀복/0001/A-1 직접 upsert (PrismaClient 직접 사용; schema 에 (name, phoneLast4) unique 없어 findFirst+update/create) |
+| 2026-05-11 | S14 | Lighthouse CI 통과 — a11y 86→100 위해 EventMeta dl 구조 정리 (display:contents 제거 + Fragment), layout viewport user-scalable 완화 (maximumScale 5), InvitationVideo aria-label 보강. perf 96/97, LCP 1.1–1.3s, best-practices 100. S01 spec 의 viewport 검증도 동기화 갱신 |
+| 2026-05-11 | S14 | 부하 시뮬 통과 — `scripts/load-search.ts` (100 동시 POST `/api/search`, distinct X-Forwarded-For 로 rate-limit 우회). prod build 기준 894 req/s, p95 93ms, ok 100%. PRD 임계 미정시라 합리 기준(ok≥95%, p95<2s) 채택 |

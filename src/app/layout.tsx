@@ -37,12 +37,12 @@ export const metadata: Metadata = {
   },
 };
 
-// PRD §2.1 — mobile-first, no zoom
+// PRD §2.1 — mobile-first. user-scalable=no 는 a11y 위반(WCAG 1.4.4)이므로
+// 5x 까지 확대 허용. iOS 입력 포커스 자동 줌은 input 폰트 16px+ 로 이미 방지됨.
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  maximumScale: 5,
 };
 
 export default function RootLayout({
