@@ -106,30 +106,30 @@
 
 | 이름 | 참조 라인 | 상태 | 단계 | 위치 |
 |---|---|---|---|---|
-| `Stage` | 52-58 | 🔧 | S01 | `components/layout/Stage.tsx` |
-| `BackgroundLayer` | 33-49 | 🔧 | S01 | `components/layout/BackgroundLayer.tsx` |
+| `Stage` | 52-58 | ✅ | S01 | `components/layout/Stage.tsx` |
+| `BackgroundLayer` | 33-49 | ✅ | S01 | `components/layout/BackgroundLayer.tsx` |
 | `PageTransition` | (신규) | 🆕 | S04 | `components/layout/PageTransition.tsx` |
 
 ### 3.2 데코·타이포 부속
 
 | 이름 | 참조 라인 | 상태 | 단계 | 위치 |
 |---|---|---|---|---|
-| `Ornament` (`❦ ✦ ❦`) | 919, 1010 | 🔧 | S02 | `components/ui/Ornament.tsx` |
-| `Flourish` (단일 `❦`) | 1009 | 🔧 | S02 | `components/ui/Flourish.tsx` |
+| `Ornament` (`❦ ✦ ❦`) | 919, 1010 | ✅ | S02 | `components/ui/Ornament.tsx` |
+| `Flourish` (단일 `❦`) | 1009 | ✅ | S02 | `components/ui/Flourish.tsx` |
 | `CornerMarker` (4 코너) | 969-970 | 🔧 | S04 | `components/ui/CornerMarker.tsx` |
-| `MetaDivider` | 929 | 🔧 | S02 | `components/ui/MetaDivider.tsx` |
+| `MetaDivider` | 929 | ✅ | S02 | `components/ui/MetaDivider.tsx` |
 | `ChapterLabel` (`Chapter I`) | 1020 | 🔧 | S04 | `components/ui/ChapterLabel.tsx` |
 
 ### 3.3 헤더·타이틀
 
 | 이름 | 참조 라인 | 상태 | 단계 | 위치 |
 |---|---|---|---|---|
-| `HomeHeader` (composition) | 918-940 | 🔧 | S02 | `components/public/HomeHeader.tsx` |
-| ↳ `PreTitle` | 920 | 🔧 | S02 | (HomeHeader 내) |
-| ↳ `TitleEn` | 921 | 🔧 | S02 | (HomeHeader 내) |
-| ↳ `TitleKo` | 922 | 🔧 | S02 | (HomeHeader 내) |
-| ↳ `Subtitle` | 923 | 🔧 | S02 | (HomeHeader 내) |
-| ↳ `EventMeta` (DATE / VENUE / TIME) | 924-939 | 🔧 | S02 | `components/public/EventMeta.tsx` |
+| `HomeHeader` (composition) | 918-940 | ✅ | S02 | `components/public/HomeHeader.tsx` |
+| ↳ `PreTitle` | 920 | ✅ | S02 | (HomeHeader 내 인라인) |
+| ↳ `TitleEn` | 921 | ✅ | S02 | (HomeHeader 내 인라인) |
+| ↳ `TitleKo` | 922 | ✅ | S02 | (HomeHeader 내 인라인, gold-gradient highlight 포함) |
+| ↳ `Subtitle` | 923 | ✅ | S02 | (HomeHeader 내 인라인) |
+| ↳ `EventMeta` (DATE / VENUE / TIME) | 924-939 | ✅ | S02 | `components/public/EventMeta.tsx` |
 | `PageHeader` (← + chapter + title) | 1018-1022, 1087-1091 | 🔧 | S04 | `components/ui/PageHeader.tsx` |
 
 ### 3.4 메뉴·네비게이션
@@ -174,7 +174,7 @@
 
 | 이름 | 참조 라인 | 상태 | 단계 | 위치 |
 |---|---|---|---|---|
-| `HomeFooter` (ornament + welcome + org) | 1008-1012 | 🔧 | S02 | `components/public/HomeFooter.tsx` |
+| `HomeFooter` (ornament + welcome + org) | 1008-1012 | ✅ | S02 | `components/public/HomeFooter.tsx` |
 
 ### 3.10 모달·트랜지션
 
