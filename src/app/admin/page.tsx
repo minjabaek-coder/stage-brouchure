@@ -13,6 +13,9 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
+// 통계(등록 게스트 수, 마지막 업로드 시간)는 매 진입마다 fresh 해야 함.
+export const dynamic = "force-dynamic";
+
 const BROCHURE_KEYS = Array.from(
   { length: 8 },
   (_, i) => `brochure_${String(i + 1).padStart(2, "0")}`,
