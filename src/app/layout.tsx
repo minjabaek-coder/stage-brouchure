@@ -18,10 +18,23 @@ const cormorant = Cormorant_Garamond({
   display: "swap",
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "어울림 콘서트 · Harmony Concert",
   description:
     "(사)한국예술가곡총연합회 · 어울림 콘서트 (2026.5.26 송파문화예술회관)",
+  openGraph: {
+    title: "어울림 콘서트 · Harmony Concert",
+    description: "협력단체와 함께하는 앙상블의 향연 · 2026.5.26 송파문화예술회관",
+    locale: "ko_KR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "어울림 콘서트 · Harmony Concert",
+  },
 };
 
 // PRD §2.1 — mobile-first, no zoom

@@ -132,13 +132,16 @@
 - [x] `git commit 63a539d feat(s13): admin brochure bulk and per-slot upload (FR-A04)`
 - [x] 사용자 검토 OK
 
-### S14 · 최종 QA (게이트)
-- [ ] PRD §9 체크리스트 전 항목
-- [ ] Lighthouse: LCP ≤ 2.5s, a11y ≥ 90, best-practices ≥ 90
-- [ ] OG 이미지 + sitemap.ts
-- [ ] 카카오톡 인앱 브라우저 점검
-- [ ] 부하 테스트 100 동접
-- [ ] `git commit chore(s14): final QA, OG, lighthouse pass`
+### S14 · 최종 QA (게이트) — 자동화 코드 1차 통과
+- [x] OG 이미지 + sitemap.ts (`app/opengraph-image.tsx` edge runtime, `app/sitemap.ts`, robots.txt 에 Sitemap 라인 추가, layout.tsx 의 metadataBase + openGraph)
+- [x] 전체 사용자 여정 + viewport 매트릭스 e2e (`tests/e2e/s14-qa.spec.ts`: 홈→영상→검색(성공/실패)→좌석맵 라이트박스→브로셔 8장→복귀, 320/375(iPhone 13)/768(iPad) 가로 스크롤 0)
+- [x] PRD §9 체크리스트 자동화 가능 항목 (영상·검색·좌석맵·브로셔·rate limit·CSV·이미지 사이즈 제한)
+- [x] typecheck/lint
+- [x] `pnpm test:e2e` (130/130, 14 skip)
+- [ ] Lighthouse CI: LCP ≤ 2.5s, a11y ≥ 90, best-practices ≥ 90 _(별도 turn — @lhci/cli 설치 + lighthouserc)_
+- [ ] 카카오톡 인앱 브라우저 점검 _(수동 — 실기기 또는 emulator)_
+- [ ] 부하 테스트 100 동접 _(별도 turn — k6 또는 Playwright workers=10 시뮬레이션)_
+- [ ] `git commit chore(s14): final QA, OG, lighthouse pass` _(자동화 1차 후 추가 작업 종료 시점에)_
 - [ ] 사용자 최종 승인
 
 ---
@@ -163,3 +166,4 @@
 | 2026-05-11 | S11 | 게이트 통과 (`5dfdf43`) — AdminCsvSection (Dropzone + CsvPreviewTable + ConfirmDialog), `/api/admin/upload-csv`, 로컬 fs backup adapter (Supabase 전환은 추후). admin 테스트는 desktop-only + serial |
 | 2026-05-11 | S12 | 게이트 통과 (`3f3df0f`) — AdminSeatMapSection + sharp 최적화 + public/uploads/. lib/limits.ts 분리(클라 번들에서 sharp 분리), playwright workers=1 (admin DB race 방지) |
 | 2026-05-11 | S13 | 게이트 통과 — AdminBrochureSection + BrochureSlotGrid 4×2, 일괄(파일명 정렬→슬롯 1..N) + 슬롯별 교체, `/api/admin/upload-brochure` per-slot upsert. S10 spec 의 "준비 중 (S13)" placeholder 검증 → 실제 마운트(슬롯 그리드/일괄 트리거) 검증으로 회귀 fix |
+| 2026-05-11 | S14 | 자동화 1차 — OG image (edge ImageResponse) + sitemap.ts + robots Sitemap 라인 + s14-qa.spec.ts (풀저니/실패 메시지 동일성/iPhone SE·13·iPad viewport). S11 이 attendees 를 갈아엎으므로 s14 검색 시나리오는 beforeAll 에서 신귀복/0001/A-1 직접 upsert (PrismaClient 직접 사용; schema 에 (name, phoneLast4) unique 없어 findFirst+update/create) |
