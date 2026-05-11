@@ -168,7 +168,8 @@
 |---|---|---|---|---|
 | `SeatMapSvg` (인터랙티브) | 1044-1074, 1383-1459 | ⚠️ v1.0 폐기 | — | (포팅하지 않음) |
 | `SeatMapLegend` | 1076-1079 | ⚠️ v1.0 폐기 | — | (정적 이미지에 포함) |
-| `SeatMapImage` (정적 + 라이트박스) | (신규) | 🆕 | S08 | `components/public/SeatMapImage.tsx` |
+| `SeatMapImage` (정적, 서버 컴포넌트) | (신규) | ✅ | S08 | `components/public/SeatMapImage.tsx` |
+| `SeatMapLightbox` (클라이언트, 클릭 → 풀스크린) | (신규) | ✅ | S08 | `components/public/SeatMapLightbox.tsx` |
 
 ### 3.9 푸터
 
@@ -181,7 +182,7 @@
 | 이름 | 참조 라인 | 상태 | 단계 | 위치 |
 |---|---|---|---|---|
 | `ModalPage` slide-up | 392-396 | ⚠️ v1.0 폐기 | — | (라우트로 대체) |
-| `Lightbox` 래퍼 | (신규, yet-another-react-lightbox) | 🆕 | S08, S09 | `components/ui/Lightbox.tsx` |
+| `Lightbox` 래퍼 | (신규, yet-another-react-lightbox) | 부분 ✅ | S08 (사용), S09 (재사용) | (S08 의 `SeatMapLightbox` 내 직접 사용. S09 까지 두 번 이상 쓰면 `components/ui/Lightbox.tsx` 로 추출 검토) |
 
 ### 3.11 v1.1 신규 (브로셔·관리자)
 

@@ -16,7 +16,7 @@
 | S05 | DB 스키마 + 시드 | 🔍 검토 대기 | `1fa32f4` | — |
 | S06 | 검색 API + Rate Limit | 🔍 검토 대기 | `65157ed` | — |
 | S07 | 자리 찾기 UI | 🔍 검토 대기 | `e36f86e` | — |
-| S08 | 정적 좌석배치도 | ⏳ 대기 | — | — |
+| S08 | 정적 좌석배치도 | 🔍 검토 대기 | (커밋 직전) | — |
 | S09 | 브로셔 페이지 (8장) | ⏳ 대기 | — | — |
 | S10 | 관리자 페이지 셸 | ⏳ 대기 | — | — |
 | S11 | 관리자 CSV 업로드 | ⏳ 대기 | — | — |
@@ -91,9 +91,9 @@
 - [ ] 사용자 검토 OK
 
 ### S08 · 정적 좌석배치도
-- [ ] 구현 (`SeatMapImage` + 라이트박스, 더미 시드)
-- [ ] typecheck/lint
-- [ ] `pnpm test:e2e -- s08`
+- [x] 구현 (`SeatMapImage` 서버, `SeatMapLightbox` 클라이언트, `public/seatmap-placeholder.svg`, seed `assets.seat_map`)
+- [x] typecheck/lint
+- [x] `pnpm test:e2e` (80/80, 회귀 0)
 - [ ] `git commit feat(s08): static seat map with lightbox (FR-G04)`
 - [ ] 사용자 검토 OK
 

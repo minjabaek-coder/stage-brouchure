@@ -50,6 +50,15 @@ async function main() {
     update: { url: EVENT.videoYoutubeId },
   });
 
+  // S08 — placeholder seat map shipped from /public until the operator uploads
+  // the real one via /admin (S12). Storing a relative path is fine; next/image
+  // accepts both relative and remote URLs.
+  await prisma.asset.upsert({
+    where: { key: "seat_map" },
+    create: { key: "seat_map", url: "/seatmap-placeholder.svg" },
+    update: { url: "/seatmap-placeholder.svg" },
+  });
+
   const count = await prisma.attendee.count();
   console.log(`✓ Seeded ${count} attendees + video_youtube_id asset`);
 }
