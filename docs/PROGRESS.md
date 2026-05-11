@@ -18,7 +18,7 @@
 | S07 | 자리 찾기 UI | 🔍 검토 대기 | `e36f86e` | — |
 | S08 | 정적 좌석배치도 | 🔍 검토 대기 | `8aad65c` | — |
 | S09 | 브로셔 페이지 (8장) | 🔍 검토 대기 | `a1d1c28` | — |
-| S10 | 관리자 페이지 셸 | ⏳ 대기 | — | — |
+| S10 | 관리자 페이지 셸 | 🔍 검토 대기 | (커밋 직전) | — |
 | S11 | 관리자 CSV 업로드 | ⏳ 대기 | — | — |
 | S12 | 관리자 좌석배치도 업로드 | ⏳ 대기 | — | — |
 | S13 | 관리자 브로셔 8장 업로드 | ⏳ 대기 | — | — |
@@ -105,9 +105,9 @@
 - [ ] 사용자 검토 OK
 
 ### S10 · 관리자 페이지 셸
-- [ ] 구현 (`/admin` + `AdminStatusBar`, `ADMIN_PATH_SUFFIX` 미들웨어)
-- [ ] typecheck/lint
-- [ ] `pnpm test:e2e -- s10`
+- [x] 구현 (`/admin` Stage + AdminStatusBar + 3 AdminSection placeholder, `middleware.ts` ADMIN_PATH_SUFFIX rewrite/404)
+- [x] typecheck/lint
+- [x] `pnpm test:e2e` (100/100 — 마일스톤! 회귀 0)
 - [ ] `git commit feat(s10): admin shell with stats (FR-A01)`
 - [ ] 사용자 검토 OK
 

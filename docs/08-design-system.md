@@ -197,7 +197,8 @@
 | `AdminCsvSection` | 🆕 | S11 | `components/admin/AdminCsvSection.tsx` |
 | `AdminSeatMapSection` | 🆕 | S12 | `components/admin/AdminSeatMapSection.tsx` |
 | `AdminBrochureSection` | 🆕 | S13 | `components/admin/AdminBrochureSection.tsx` |
-| `AdminStatusBar` (등록 N명, 마지막 업로드 시간) | 🆕 | S10 | `components/admin/AdminStatusBar.tsx` |
+| `AdminSection` (titled 섹션 래퍼) | ✅ | S10 | `components/admin/AdminSection.tsx` |
+| `AdminStatusBar` (등록 N명, 마지막 업로드 시간) | ✅ | S10 | `components/admin/AdminStatusBar.tsx` |
 
 ---
 
