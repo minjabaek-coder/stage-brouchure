@@ -158,3 +158,4 @@
 | 2026-05-11 | S07 | 게이트 통과 (`e36f86e`) — SearchForm/SeatResultCard/NoResultCard. RHF 미채택 (2-필드라 native), maxLength 대신 onChange 에서 digit-strip+slice |
 | 2026-05-11 | S08 | 게이트 통과 (`8aad65c`) — SeatMapImage(server) + SeatMapLightbox(client) + 시안 SVG. yet-another-react-lightbox 채택 |
 | 2026-05-11 | S09 | 게이트 통과 (`a1d1c28`) — BrochureScroller/Gallery + 시안 8장 SVG. 첫장 priority+eager / 2~8장 lazy, 라이트박스 prev/next 활성 |
+| 2026-05-11 | S09 | dev DB hotfix — 사용자 보고로 dev DB 에 brochure/seatmap asset 누락 확인 → `pnpm db:seed` 재실행. 향후 seed 변경 시 dev DB 도 같이 재시드 필요 (`pnpm db:seed`); test DB 는 global-setup 에서 자동 |

@@ -71,8 +71,14 @@ async function main() {
     });
   }
 
-  const count = await prisma.attendee.count();
-  console.log(`✓ Seeded ${count} attendees + video_youtube_id asset`);
+  const [count, assetCount] = await Promise.all([
+    prisma.attendee.count(),
+    prisma.asset.count(),
+  ]);
+  console.log(
+    `✓ Seeded ${count} attendees + ${assetCount} assets ` +
+      `(seat_map, brochure_01..08, video_youtube_id)`,
+  );
 }
 
 main()
