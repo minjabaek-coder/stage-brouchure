@@ -21,7 +21,7 @@
 | S10 | 관리자 페이지 셸 | 🔍 검토 대기 | `dec736d` | — |
 | S11 | 관리자 CSV 업로드 | 🔍 검토 대기 | `5dfdf43` | — |
 | S12 | 관리자 좌석배치도 업로드 | 🔍 검토 대기 | `3f3df0f` | — |
-| S13 | 관리자 브로셔 8장 업로드 | 🔍 검토 대기 | _pending_ | — |
+| S13 | 관리자 브로셔 8장 업로드 | 🔍 검토 대기 | `63a539d` | — |
 | S14 | 최종 QA (게이트) | ⏳ 대기 | — | — |
 
 상태 기호: ⏳ 대기 / 🚧 진행 중 / 🔍 검토 대기 / ✅ 완료 / ⚠️ 차단
@@ -129,7 +129,7 @@
 - [x] 구현 (`AdminBrochureSection` + `BrochureSlotGrid` 4×2 그리드, 일괄 업로드 input multiple, 슬롯별 교체 input, `/api/admin/upload-brochure` POST + sharp 최적화 + per-slot upsert, S10 spec 회귀 fix)
 - [x] typecheck/lint
 - [x] `pnpm test:e2e` (114/114, S13 mobile 4 skip — admin 데스크톱 전용)
-- [ ] `git commit feat(s13): admin brochure bulk and per-slot upload (FR-A04)`
+- [x] `git commit 63a539d feat(s13): admin brochure bulk and per-slot upload (FR-A04)`
 - [ ] 사용자 검토 OK
 
 ### S14 · 최종 QA (게이트)
