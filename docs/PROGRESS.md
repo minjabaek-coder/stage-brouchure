@@ -20,7 +20,7 @@
 | S09 | 브로셔 페이지 (8장) | 🔍 검토 대기 | `a1d1c28` | — |
 | S10 | 관리자 페이지 셸 | 🔍 검토 대기 | `dec736d` | — |
 | S11 | 관리자 CSV 업로드 | 🔍 검토 대기 | `5dfdf43` | — |
-| S12 | 관리자 좌석배치도 업로드 | 🔍 검토 대기 | (커밋 직전) | — |
+| S12 | 관리자 좌석배치도 업로드 | 🔍 검토 대기 | `3f3df0f` | — |
 | S13 | 관리자 브로셔 8장 업로드 | ⏳ 대기 | — | — |
 | S14 | 최종 QA (게이트) | ⏳ 대기 | — | — |
 
@@ -122,7 +122,7 @@
 - [x] 구현 (`lib/image.ts` sharp 1600px+JPEG80, `lib/storage.ts` saveImageAsset (public/uploads/), AdminSeatMapSection, `/api/admin/upload-seatmap`, next.config localPatterns, lib/limits.ts 분리)
 - [x] typecheck/lint
 - [x] `pnpm test:e2e` (110/110, admin mobile 10 skip, workers=1 직렬화)
-- [ ] `git commit feat(s12): admin seat map upload with sharp optimization (FR-A03)`
+- [x] `git commit 3f3df0f feat(s12): admin seat map upload with sharp optimization (FR-A03)` + push
 - [ ] 사용자 검토 OK
 
 ### S13 · 관리자 브로셔 업로드
@@ -161,3 +161,4 @@
 | 2026-05-11 | S09 | dev DB hotfix — 사용자 보고로 dev DB 에 brochure/seatmap asset 누락 확인 → `pnpm db:seed` 재실행. 향후 seed 변경 시 dev DB 도 같이 재시드 필요 (`pnpm db:seed`); test DB 는 global-setup 에서 자동 |
 | 2026-05-11 | S10 | 게이트 통과 (`dec736d`) — /admin 셸 + AdminSection·AdminStatusBar + middleware ADMIN_PATH_SUFFIX. 100/100 마일스톤 |
 | 2026-05-11 | S11 | 게이트 통과 (`5dfdf43`) — AdminCsvSection (Dropzone + CsvPreviewTable + ConfirmDialog), `/api/admin/upload-csv`, 로컬 fs backup adapter (Supabase 전환은 추후). admin 테스트는 desktop-only + serial |
+| 2026-05-11 | S12 | 게이트 통과 (`3f3df0f`) — AdminSeatMapSection + sharp 최적화 + public/uploads/. lib/limits.ts 분리(클라 번들에서 sharp 분리), playwright workers=1 (admin DB race 방지) |
