@@ -11,7 +11,7 @@
 | S00 | 프로젝트 부트스트랩 | ✅ | `0df9b92`, `fdf9452` | ✅ |
 | S01 | 디자인 토큰 + 글로벌 레이아웃 | 🔍 검토 대기 | `741527e` | — |
 | S02 | 홈 헤더 + 푸터 | 🔍 검토 대기 | `0a25fd5` | — |
-| S03 | 초대 영상 인라인 재생 | 🔍 검토 대기 | (커밋 직전) | — |
+| S03 | 초대 영상 인라인 재생 | 🔍 검토 대기 | `8eb931b` | — |
 | S04 | 홈 메뉴 카드 + 라우트 스텁 | ⏳ 대기 | — | — |
 | S05 | DB 스키마 + 시드 | ⏳ 대기 | — | — |
 | S06 | 검색 API + Rate Limit | ⏳ 대기 | — | — |
@@ -57,7 +57,7 @@
 - [x] 구현 (`InvitationVideo` 썸네일↔iframe, maxres→hq 폴백, `EVENT.videoYoutubeId` 추가)
 - [x] typecheck/lint
 - [x] `pnpm test:e2e` (36/36, 회귀 0)
-- [ ] `git commit feat(s03): inline youtube video player (FR-G02)`
+- [x] `git commit 8eb931b feat(s03): inline youtube video player (FR-G02)`
 - [ ] 사용자 검토 OK
 
 ### S04 · 홈 메뉴 카드 + 라우트 스텁
@@ -150,3 +150,4 @@
 | 2026-05-11 | S01 | 진입 — Tailwind v4 `@theme` 채택 (07/06 문서의 v3 `tailwind.config.ts` 와 다름) |
 | 2026-05-11 | S01 | 게이트 통과 (`741527e`) — `tests/screenshots/` 는 .gitignore 에 추가, visual.spec 은 커밋 |
 | 2026-05-11 | S02 | 게이트 통과 (`0a25fd5`) — Ornament/Flourish/MetaDivider/EventMeta/HomeHeader/HomeFooter + EVENT 상수 |
+| 2026-05-11 | S03 | 게이트 통과 (`8eb931b`) — InvitationVideo (썸네일 ↔ iframe), EVENT.videoYoutubeId 추가 |
