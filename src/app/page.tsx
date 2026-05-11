@@ -1,11 +1,20 @@
+import Stage from "@/components/layout/Stage";
+
 export default function Home() {
   return (
-    <main className="mx-auto flex min-h-screen max-w-[560px] flex-col items-center justify-center px-6 py-16 text-center">
-      <p className="text-sm tracking-[0.18em] text-neutral-500">— 준비 중 —</p>
-      <h1 className="mt-4 text-3xl font-semibold">어울림 콘서트</h1>
-      <p className="mt-2 text-sm text-neutral-500">
-        S00 부트스트랩 완료. 이후 단계에서 페이지가 채워집니다.
+    <Stage className="flex min-h-screen flex-col items-center justify-center text-center">
+      <p
+        className="font-serif-en text-gold text-xs tracking-wider2 uppercase"
+        data-testid="placeholder-eyebrow"
+      >
+        — Harmony Concert · placeholder —
       </p>
-    </main>
+      <h1 className="font-serif-ko text-paper mt-4 text-4xl font-medium tracking-wider2">
+        어울림 콘서트
+      </h1>
+      <p className="font-serif-ko text-paper/60 mt-3 text-sm">
+        S01 디자인 토큰 적용. 이후 단계에서 헤더·영상·메뉴가 채워집니다.
+      </p>
+    </Stage>
   );
 }

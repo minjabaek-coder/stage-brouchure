@@ -1,26 +1,93 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ============================================================
+ * Design tokens (PRD §4.1, docs/08-design-system.md §2)
+ * Tailwind v4 generates utilities from these custom properties:
+ *   --color-ink         → bg-ink / text-ink / border-ink
+ *   --font-serif-ko     → font-serif-ko
+ *   --tracking-wider2   → tracking-wider2
+ * ========================================================== */
+@theme {
+  --color-ink: #0a0a0c;
+  --color-ink-soft: #1a1a1f;
+  --color-paper: #f4ede0;
+  --color-paper-warm: #ebe1cf;
+  --color-gold: #c5a572;
+  --color-gold-deep: #a08247;
+  --color-gold-hi: #e8d4a8;
+  --color-burgundy: #5c1a1b;
+  --color-burgundy-deep: #3d0e0f;
+
+  --font-serif-ko: var(--font-noto-serif-kr), "Noto Serif KR", serif;
+  --font-serif-en: var(--font-cormorant), "Cormorant Garamond", serif;
+
+  --tracking-wider2: 0.18em;
+  --tracking-wider3: 0.3em;
+
+  --shadow-luxe: 0 20px 60px -20px rgba(0, 0, 0, 0.5);
+
+  --animate-fade-up: fadeUp 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-pulse-gold: pulseGold 3s ease-in-out infinite;
+  --animate-shimmer: shimmer 3s ease-in-out infinite;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Reference HTML lines 23-49 — global resets + ink/burgundy gradient + noise overlay */
+* {
+  -webkit-tap-highlight-color: transparent;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-family: var(--font-serif-ko);
+  font-weight: 300;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-ink);
+  background-image:
+    radial-gradient(ellipse at top, rgba(92, 26, 27, 0.35) 0%, transparent 50%),
+    radial-gradient(
+      ellipse at bottom,
+      rgba(197, 165, 114, 0.12) 0%,
+      transparent 60%
+    ),
+    linear-gradient(180deg, #0a0a0c 0%, #14100c 50%, #0a0a0c 100%);
+  min-height: 100vh;
+  position: relative;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseGold {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(197, 165, 114, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 24px 4px rgba(197, 165, 114, 0.25);
+  }
+}
+
+@keyframes shimmer {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
 }
