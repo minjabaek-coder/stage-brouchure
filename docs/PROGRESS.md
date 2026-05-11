@@ -13,7 +13,7 @@
 | S02 | 홈 헤더 + 푸터 | 🔍 검토 대기 | `0a25fd5` | — |
 | S03 | 초대 영상 인라인 재생 | 🔍 검토 대기 | `8eb931b` | — |
 | S04 | 홈 메뉴 카드 + 라우트 스텁 | 🔍 검토 대기 | `fab68da` | — |
-| S05 | DB 스키마 + 시드 | 🔍 검토 대기 | (커밋 직전) | — |
+| S05 | DB 스키마 + 시드 | 🔍 검토 대기 | `1fa32f4` | — |
 | S06 | 검색 API + Rate Limit | ⏳ 대기 | — | — |
 | S07 | 자리 찾기 UI | ⏳ 대기 | — | — |
 | S08 | 정적 좌석배치도 | ⏳ 대기 | — | — |
@@ -73,7 +73,7 @@
 - [x] Playwright `tests/global-setup.ts` 가 매 실행 전 test DB reset+seed (사용자 명시 동의)
 - [x] typecheck/lint
 - [x] `pnpm test:e2e` (48/48, 회귀 0)
-- [ ] `git commit feat(s05): prisma schema and seed for attendees/assets`
+- [x] `git commit 1fa32f4 feat(s05): prisma schema and seed for attendees/assets` + push
 - [ ] 사용자 검토 OK
 
 ### S06 · 검색 API + Rate Limit
