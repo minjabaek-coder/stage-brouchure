@@ -7,7 +7,11 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  // Vercel 런타임은 Supabase Connection Pooler (6543) 를 통한다.
+  // Migration / introspection 은 direct connection (5432) 이 필요해서 별도.
+  // 로컬 dev/test 에서는 둘 다 같은 URL 이어도 무방 (DIRECT_URL 미설정 시 url 사용).
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // ENT-01 — CSV 업로드 시 truncate + insert 로 전체 교체된다 (PRD §3.3.4)

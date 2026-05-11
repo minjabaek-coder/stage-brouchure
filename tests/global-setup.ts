@@ -18,6 +18,8 @@ function run(cmd: string) {
     env: {
       ...process.env,
       DATABASE_URL: TEST_DATABASE_URL,
+      // schema.prisma 가 directUrl 도 요구 — 로컬은 동일 URL.
+      DIRECT_URL: TEST_DATABASE_URL,
       // User consented (2026-05-11) to resetting eoullim_test on each run; this
       // env satisfies Prisma 6's AI-action guard for migrate reset.
       PRISMA_USER_CONSENT_FOR_DANGEROUS_AI_ACTION:
