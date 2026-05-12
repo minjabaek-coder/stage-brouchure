@@ -36,7 +36,20 @@ const AdminVenueSection: FC<AdminVenueSectionProps> = ({ initial }) => {
         } | null;
         throw new Error(body?.error?.message ?? `Save failed (${res.status})`);
       }
+      const body = (await res.json().catch(() => ({}))) as {
+        mapImage?: { url: string; source: string } | null;
+        mapImageError?: string | null;
+      };
       toast.success("공연장 정보가 저장되었습니다.");
+      if (body.mapImage) {
+        toast.success(
+          "지도 URL 의 미리보기 이미지를 자동으로 가져왔습니다.",
+        );
+      } else if (mapUrl && body.mapImageError) {
+        toast.message("자동 미리보기 미생성", {
+          description: body.mapImageError,
+        });
+      }
     } catch (e) {
       toast.error(
         e instanceof Error ? e.message : "저장 중 오류가 발생했습니다.",
@@ -92,7 +105,7 @@ const AdminVenueSection: FC<AdminVenueSectionProps> = ({ initial }) => {
 
       <div>
         <label htmlFor="venue-map-url" className={labelClass}>
-          지도 URL (네이버/카카오 지도 deeplink, 비우면 기본값)
+          지도 URL (네이버/카카오 지도 deeplink, 비우면 기본값) — 저장 시 og:image 자동 추출 시도
         </label>
         <input
           id="venue-map-url"

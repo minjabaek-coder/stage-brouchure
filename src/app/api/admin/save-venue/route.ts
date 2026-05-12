@@ -2,15 +2,16 @@ import { NextResponse, type NextRequest } from "next/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
+import { scrapeOgImage } from "@/lib/og";
+import { optimizeImage } from "@/lib/image";
+import { saveImageAsset } from "@/lib/storage";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const Body = z.object({
   name: z.string().trim().min(1).max(200),
-  // 줄바꿈 허용. UI 에서 whitespace-pre-line 으로 렌더한다.
   address: z.string().trim().min(1).max(500),
-  // 빈 문자열이 들어오면 venue_map_url 키를 제거 (기본값 fallback).
   mapUrl: z
     .string()
     .trim()
@@ -20,10 +21,15 @@ const Body = z.object({
 });
 
 /**
- * Admin: save venue info as 3 keys in assets table.
- * - venue_name
- * - venue_address
- * - venue_map_url
+ * Admin: save venue info into the assets table.
+ *   - venue_name
+ *   - venue_address
+ *   - venue_map_url
+ *   - venue_map_image  (NEW — auto-fetched OG image of map URL when available)
+ *
+ * The OG fetch is best-effort: if it fails (timeout, no og:image, wrong CT)
+ * the rest of the save still succeeds and the existing preview is left as is
+ * so the operator can manually upload a screenshot in a follow-up workflow.
  */
 export async function POST(req: NextRequest) {
   let body: unknown;
@@ -51,6 +57,8 @@ export async function POST(req: NextRequest) {
 
   const { name, address, mapUrl } = parsed.data;
 
+  // 1) Save text fields first so the rest of the response is fast even if
+  //    the OG fetch takes a few seconds.
   await prisma.$transaction(async (tx) => {
     await tx.asset.upsert({
       where: { key: "venue_name" },
@@ -73,9 +81,40 @@ export async function POST(req: NextRequest) {
     }
   });
 
-  // 홈 페이지 (force-dynamic) 가 다음 렌더에서 새 값 사용
+  // 2) Best-effort OG scrape. Cached image always reflects the *current* URL
+  //    so changing URL or removing it invalidates the previous preview.
+  let mapImage: { url: string; source: string } | null = null;
+  let mapImageError: string | null = null;
+  if (mapUrl) {
+    try {
+      const og = await scrapeOgImage(mapUrl);
+      if (og) {
+        const optimized = await optimizeImage(og.imageBuffer);
+        const stored = await saveImageAsset("venue-map-preview.jpg", optimized);
+        await prisma.asset.upsert({
+          where: { key: "venue_map_image" },
+          create: { key: "venue_map_image", url: stored },
+          update: { url: stored },
+        });
+        mapImage = { url: stored, source: og.imageUrl };
+      } else {
+        // 새 URL 에서 OG 를 못 찾으면 이전 캐시도 무효화 — 그래야 미리보기가
+        // 항상 현재 URL 과 일치한다. fallback 은 SVG mockup.
+        await prisma.asset.deleteMany({ where: { key: "venue_map_image" } });
+        mapImageError = "이 URL 에서 og:image / twitter:image 메타 태그를 찾지 못했습니다. SVG 미리보기로 표시됩니다.";
+      }
+    } catch (e) {
+      await prisma.asset.deleteMany({ where: { key: "venue_map_image" } });
+      mapImageError =
+        e instanceof Error ? `OG 이미지 자동 추출 실패: ${e.message}` : "OG 이미지 자동 추출 실패";
+    }
+  } else {
+    // URL 자체를 비우면 캐시도 같이 비움
+    await prisma.asset.deleteMany({ where: { key: "venue_map_image" } });
+  }
+
   revalidatePath("/");
   revalidatePath("/admin");
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, mapImage, mapImageError });
 }
