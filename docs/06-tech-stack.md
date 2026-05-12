@@ -317,7 +317,7 @@ PRD v1.1 은 v1.0 대비 스코프가 줄어 다음 라이브러리는 **모두 
 | @dnd-kit | 좌석배치도 편집기·프로그램 DnD 없음. 브로셔 8장 순서 변경은 단순 위/아래 화살표로 충분 |
 | TanStack Table | 인라인 편집 테이블 없음. CSV 미리보기는 단순 read-only 테이블 |
 | react-pdf | QR PDF 일괄 출력 없음 |
-| qrcode / qrcode.react | 게스트별 QR 토큰 없음 |
+| qrcode / qrcode.react (런타임) | 게스트별 QR 토큰 없음. 단, **공유하기용 사이트 URL QR** 한 장은 `qrcode` 를 **devDependency 로만** 사용해 빌드 타임에 `public/share-qr.svg` 로 정적 생성한다 (`scripts/generate-qr.ts`, `prebuild` 훅). 런타임 번들에는 포함되지 않는다. |
 | react-zoom-pan-pinch | SVG 인터랙션 대신 정적 이미지 + 라이트박스 |
 | next-intl | 다국어 지원 미포함 (PRD §7) |
 
