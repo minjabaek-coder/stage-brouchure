@@ -23,7 +23,8 @@ const SeatMapLightbox: FC<SeatMapLightboxProps> = ({ url, alt }) => {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="border-gold/30 hover:border-gold focus-visible:ring-gold/40 group block w-full overflow-hidden rounded-[2px] border bg-[rgba(26,22,18,0.55)] p-2 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+        className="border-line hover:border-gold focus-visible:ring-gold/40 group block w-full overflow-hidden rounded-2xl border bg-white p-2 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+        style={{ borderWidth: "0.5px" }}
         aria-label="좌석 배치도 확대 보기"
         data-testid="seatmap-trigger"
       >

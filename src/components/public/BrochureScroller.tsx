@@ -24,11 +24,11 @@ const BrochureScroller: FC = async () => {
   if (!allPresent) {
     return (
       <div
-        className="font-serif-ko text-paper/55 mt-8 rounded-[2px] border border-dashed border-[rgba(197,165,114,0.3)] px-5 py-10 text-center text-sm leading-[1.7]"
+        className="text-muted mt-8 rounded-2xl border border-dashed border-[#d4d0c4] bg-white px-5 py-10 text-center text-sm leading-[1.7]"
         data-testid="brochure-placeholder"
       >
-        <p className="font-serif-en text-gold mb-2 text-[13px] tracking-[0.2em] italic">
-          — Coming soon —
+        <p className="text-gold mb-2 text-[12px] font-medium tracking-[0.2em] uppercase">
+          Coming soon
         </p>
         브로셔가 곧 업로드됩니다.
       </div>

@@ -32,7 +32,6 @@ const SearchForm: FC = () => {
   const [validation, setValidation] = useState<string | null>(null);
   const [result, setResult] = useState<ResultState>({ kind: "idle" });
 
-  // 입력을 비우면 결과/오류를 자연스럽게 닫는다 (E2E #5)
   function handleNameChange(value: string) {
     setName(value);
     if (value.trim() === "" && phone === "") {
@@ -84,7 +83,6 @@ const SearchForm: FC = () => {
     if (res.status === 200) {
       const body = (await res.json()) as ApiSuccess;
       setResult({ kind: "found", data: body.data });
-      // S08 — 좌석맵 영역으로 부드러운 스크롤
       setTimeout(() => {
         document
           .getElementById("seatmap-anchor")
@@ -103,7 +101,6 @@ const SearchForm: FC = () => {
       return;
     }
 
-    // 400 INVALID_INPUT 등 — 클라이언트 검증을 통과한 입력이 서버에서 막힌 경우
     const body = (await res.json().catch(() => null)) as ApiError | null;
     setResult({
       kind: "error",
@@ -114,12 +111,15 @@ const SearchForm: FC = () => {
     });
   }
 
+  const inputClass =
+    "font-sans-ko text-ink border-line focus:border-gold focus:ring-gold/20 placeholder:text-muted-light w-full rounded-lg border bg-white px-4 py-3.5 text-base leading-tight tracking-[-0.01em] outline-none transition-colors focus:ring-2";
+
   return (
     <section
-      className="animate-fade-up flex flex-col gap-6"
+      className="flex flex-col gap-5"
       data-testid="search-form-section"
     >
-      <p className="font-serif-ko text-paper/65 text-center text-sm leading-[1.7] tracking-[0.05em]">
+      <p className="text-muted text-center text-[14px] leading-[1.7]">
         이름과 전화번호 뒷자리 4자리를 입력하시면
         <br />
         지정된 좌석을 안내해 드립니다.
@@ -141,8 +141,9 @@ const SearchForm: FC = () => {
           autoComplete="off"
           value={name}
           onChange={(e) => handleNameChange(e.target.value)}
-          placeholder="이름 (Name)"
-          className="font-serif-ko text-paper border-gold/30 focus:border-gold focus:ring-gold/20 placeholder:font-serif-en w-full rounded-[2px] border border-b-[var(--color-gold)] bg-[rgba(26,26,31,0.6)] px-5 py-4 text-base tracking-[0.05em] outline-none transition-all placeholder:text-[rgba(244,237,224,0.3)] placeholder:italic focus:bg-[rgba(26,26,31,0.9)] focus:ring-[3px]"
+          placeholder="이름"
+          className={inputClass}
+          style={{ borderWidth: "0.5px" }}
         />
 
         <label className="sr-only" htmlFor="search-phone">
@@ -154,20 +155,18 @@ const SearchForm: FC = () => {
           type="text"
           inputMode="numeric"
           autoComplete="off"
-          // maxLength is enforced in handlePhoneChange below — applying it on
-          // the element clips chars before the onChange runs, which would let
-          // a paste like "abc1234" become "abc1" and then JS-strip down to "1".
           pattern="\d{4}"
           value={phone}
           onChange={(e) => handlePhoneChange(e.target.value)}
-          placeholder="전화번호 뒷자리 4자리 (1234)"
-          className="font-serif-ko text-paper border-gold/30 focus:border-gold focus:ring-gold/20 placeholder:font-serif-en w-full rounded-[2px] border border-b-[var(--color-gold)] bg-[rgba(26,26,31,0.6)] px-5 py-4 text-base tracking-[0.15em] outline-none transition-all placeholder:text-[rgba(244,237,224,0.3)] placeholder:italic focus:bg-[rgba(26,26,31,0.9)] focus:ring-[3px]"
+          placeholder="전화번호 뒷자리 4자리"
+          className={`${inputClass} tracking-[0.1em]`}
+          style={{ borderWidth: "0.5px" }}
         />
 
         <button
           type="submit"
           disabled={result.kind === "loading"}
-          className="font-serif-ko bg-gold text-ink hover:bg-gold-hi focus-visible:ring-gold/40 mt-2 w-full rounded-[2px] py-3.5 text-[15px] font-medium tracking-[0.2em] transition-colors disabled:cursor-wait disabled:opacity-60 focus-visible:ring-2 focus-visible:outline-none"
+          className="font-sans-ko bg-ink text-paper mt-2 w-full rounded-lg py-3.5 text-[15px] font-medium tracking-[0.05em] transition-opacity hover:opacity-90 disabled:cursor-wait disabled:opacity-50"
           data-testid="search-submit"
         >
           {result.kind === "loading" ? "조회 중…" : "자리 확인"}
@@ -175,7 +174,7 @@ const SearchForm: FC = () => {
 
         {validation && (
           <p
-            className="font-serif-ko text-[#e8b4b4] mt-1 text-center text-[13px] tracking-[0.05em]"
+            className="font-sans-ko mt-1 text-center text-[13px] text-[#b95e5e]"
             role="alert"
             data-testid="search-validation"
           >
@@ -195,7 +194,7 @@ const SearchForm: FC = () => {
       {result.kind === "not_found" && <NoResultCard />}
       {result.kind === "error" && (
         <div
-          className="font-serif-ko text-paper/70 rounded-[2px] border border-[rgba(232,180,180,0.4)] px-5 py-5 text-center text-sm leading-[1.7]"
+          className="text-muted rounded-lg border border-[#e8c5c5] bg-[#fcefef] px-5 py-4 text-center text-sm leading-[1.7]"
           role="alert"
           data-testid="search-error"
         >
@@ -203,7 +202,6 @@ const SearchForm: FC = () => {
         </div>
       )}
 
-      {/* S08 좌석맵이 마운트될 위치 — 검색 성공 시 스크롤 타깃 */}
       <div id="seatmap-anchor" aria-hidden />
     </section>
   );

@@ -4,7 +4,6 @@ import Image from "next/image";
 import { type FC, useState } from "react";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
-import Ornament from "@/components/ui/Ornament";
 
 interface BrochureGalleryProps {
   /** 8 brochure asset URLs in display order. */
@@ -12,12 +11,12 @@ interface BrochureGalleryProps {
 }
 
 /**
- * Vertical scroller with 8 next/image renders + page numbers + ornaments.
- * Tapping any page opens yet-another-react-lightbox at that index, with
- * prev/next navigation enabled (S08 disabled them for the single seat map).
+ * Vertical brochure scroller — 8 next/image renders + page number caption.
+ * Spacing: gap-3 (12px) between figures. Per user feedback the previous
+ * decorative Ornament separator between pages has been removed; the
+ * caption (e.g. "3 / 8") remains.
  *
- * First image gets `priority` (LCP), the rest are lazy-loaded — verified by
- * the S09 e2e (`loading=lazy` attribute on slides 2–8).
+ * First image gets `priority` (LCP), the rest are lazy-loaded.
  */
 const BrochureGallery: FC<BrochureGalleryProps> = ({ urls }) => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -25,17 +24,17 @@ const BrochureGallery: FC<BrochureGalleryProps> = ({ urls }) => {
 
   return (
     <>
-      <div className="flex flex-col gap-10" data-testid="brochure-gallery">
+      <div className="flex flex-col gap-3" data-testid="brochure-gallery">
         {urls.map((url, idx) => {
           const isFirst = idx === 0;
-          const isLast = idx === total - 1;
           const pageNum = String(idx + 1).padStart(2, "0");
           return (
-            <figure key={url} className="flex flex-col items-center gap-3">
+            <figure key={url} className="flex flex-col items-center gap-1.5">
               <button
                 type="button"
                 onClick={() => setOpenIndex(idx)}
-                className="border-gold/30 hover:border-gold focus-visible:ring-gold/40 group block w-full overflow-hidden rounded-[2px] border bg-[rgba(244,237,224,0.05)] p-1.5 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                className="border-line hover:border-gold focus-visible:ring-gold/40 group block w-full overflow-hidden rounded-2xl border bg-white p-1.5 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                style={{ borderWidth: "0.5px" }}
                 aria-label={`브로셔 ${pageNum} 확대 보기`}
                 data-testid={`brochure-trigger-${pageNum}`}
               >
@@ -47,20 +46,18 @@ const BrochureGallery: FC<BrochureGalleryProps> = ({ urls }) => {
                   unoptimized={url.endsWith(".svg")}
                   priority={isFirst}
                   loading={isFirst ? "eager" : "lazy"}
-                  sizes="(max-width: 560px) 100vw, 560px"
-                  className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.01]"
+                  sizes="(max-width: 480px) 100vw, 480px"
+                  className="block h-auto w-full"
                   data-testid={`brochure-img-${pageNum}`}
                 />
               </button>
 
               <figcaption
-                className="font-serif-en text-gold text-[12px] tracking-[0.3em] italic"
+                className="text-gold text-[11px] font-medium tracking-[0.25em]"
                 data-testid={`brochure-pagenum-${pageNum}`}
               >
                 {String(idx + 1)} / {total}
               </figcaption>
-
-              {!isLast && <Ornament className="mt-2 mb-0" />}
             </figure>
           );
         })}
@@ -73,9 +70,6 @@ const BrochureGallery: FC<BrochureGalleryProps> = ({ urls }) => {
         slides={urls.map((src, i) => ({
           src,
           alt: `어울림콘서트 브로셔 ${String(i + 1).padStart(2, "0")}`,
-          // 큰 reference + imageProps width/height 100%: 자연 크기가 작은
-          // 이미지(예: SVG)도 viewport 를 채우도록 강제. 자세한 이유는
-          // SeatMapLightbox 의 같은 옵션 주석 참조.
           width: 2400,
           height: 3300,
         }))}

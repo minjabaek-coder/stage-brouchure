@@ -3,19 +3,21 @@
 import { type FC, useState } from "react";
 
 interface InvitationVideoProps {
-  /** YouTube video ID (defaults to EVENT.videoYoutubeId via the parent). */
   videoId: string;
+  caption?: string;
+  footText?: string;
 }
 
 /**
- * Reference HTML lines 150-266, 943-963 — clickable thumbnail that swaps to a
- * live YouTube iframe on first interaction. Iframe is intentionally NOT in the
- * initial DOM so it does not regress LCP (PRD NFR-03 / FR-G02 spec).
- *
- * Maxres thumbnail is preferred; falls back to hqdefault if YouTube has not
- * generated maxres for the video.
+ * Light-theme video card. Thumbnail with caption + circular play button +
+ * footer text. Swaps to YouTube iframe on click. Iframe is intentionally NOT
+ * in the initial DOM (LCP).
  */
-const InvitationVideo: FC<InvitationVideoProps> = ({ videoId }) => {
+const InvitationVideo: FC<InvitationVideoProps> = ({
+  videoId,
+  caption = "미리보기",
+  footText = "공연의 첫 인사를 만나보세요",
+}) => {
   const [playing, setPlaying] = useState(false);
 
   const thumbMax = `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
@@ -23,22 +25,8 @@ const InvitationVideo: FC<InvitationVideoProps> = ({ videoId }) => {
   const embedSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&playsinline=1&rel=0&modestbranding=1`;
 
   return (
-    <section
-      className="animate-fade-up mt-8"
-      style={{ animationDelay: "0.15s" }}
-      data-testid="invitation-video"
-    >
-      <div className="border-gold relative aspect-video overflow-hidden rounded-[2px] border bg-black shadow-[0_20px_50px_-15px_rgba(197,165,114,0.25),0_0_0_1px_rgba(197,165,114,0.1)]">
-        {/* Top-left + bottom-right gold corner accents (HTML lines 165-172) */}
-        <span
-          aria-hidden
-          className="border-gold pointer-events-none absolute top-[-1px] left-[-1px] z-[3] h-[18px] w-[18px] border-t border-l"
-        />
-        <span
-          aria-hidden
-          className="border-gold pointer-events-none absolute right-[-1px] bottom-[-1px] z-[3] h-[18px] w-[18px] border-r border-b"
-        />
-
+    <section className="pt-8 pb-7" data-testid="invitation-video">
+      <div className="bg-ink relative aspect-video overflow-hidden rounded-[12px]">
         {playing ? (
           <iframe
             src={embedSrc}
@@ -51,7 +39,7 @@ const InvitationVideo: FC<InvitationVideoProps> = ({ videoId }) => {
           <button
             type="button"
             onClick={() => setPlaying(true)}
-            aria-label="클릭하여 초대 영상 재생"
+            aria-label={`클릭하여 초대 영상 재생 — ${footText}`}
             data-testid="video-thumb"
             className="group relative block h-full w-full cursor-pointer overflow-hidden p-0"
           >
@@ -63,39 +51,41 @@ const InvitationVideo: FC<InvitationVideoProps> = ({ videoId }) => {
                 if (!img.src.endsWith("hqdefault.jpg")) img.src = thumbHq;
               }}
               alt="어울림콘서트 초대 영상 썸네일"
-              className="block h-full w-full object-cover transition-[transform,filter] duration-500 group-hover:scale-[1.04] group-hover:brightness-[0.85]"
+              className="block h-full w-full object-cover transition-[transform,filter] duration-500 group-hover:scale-[1.02] group-hover:brightness-90"
               data-testid="video-thumb-img"
             />
+            {/* gentle bottom shade */}
             <span
               aria-hidden
-              className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(10,10,12,0.2)_0%,rgba(10,10,12,0.55)_100%),linear-gradient(180deg,transparent_60%,rgba(10,10,12,0.7)_100%)]"
+              className="absolute inset-0 bg-[linear-gradient(180deg,transparent_55%,rgba(10,10,12,0.55)_100%)]"
             />
+
+            {/* top caption */}
+            <span className="absolute top-4 left-[18px] text-[13px] text-white/75">
+              {caption}
+            </span>
+
+            {/* central play button */}
             <span
               aria-hidden
-              className="animate-pulse-gold absolute top-1/2 left-1/2 flex h-[78px] w-[78px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[rgba(197,165,114,0.95)] text-[#1a1612] shadow-[0_0_0_2px_rgba(197,165,114,0.3),0_0_0_12px_rgba(197,165,114,0.15),0_10px_40px_rgba(0,0,0,0.5)] transition-transform group-hover:scale-[1.08]"
+              className="bg-paper text-ink animate-pulse-gold absolute top-1/2 left-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.4)]"
             >
-              <svg
-                width="32"
-                height="32"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="ml-[5px]"
-              >
-                <polygon points="7 4 21 12 7 20 7 4" />
-              </svg>
+              <i className="ti ti-player-play ml-[3px] text-[26px]" />
             </span>
-            <span className="font-serif-en absolute bottom-[18px] left-1/2 -translate-x-1/2 text-[13px] tracking-[0.2em] text-[rgba(244,237,224,0.85)] [text-shadow:0_2px_8px_rgba(0,0,0,0.8)] italic">
-              ▸ 클릭하여 재생
+
+            {/* bottom footer */}
+            <span className="absolute right-[18px] bottom-4 left-[18px] flex items-end justify-between">
+              <span className="font-serif-ko text-[14px] text-white/90">
+                {footText}
+              </span>
+              <i
+                aria-hidden
+                className="ti ti-arrow-right text-[16px] text-white/75"
+              />
             </span>
           </button>
         )}
       </div>
-
-      <p className="font-serif-en mt-3.5 text-center text-[12px] tracking-[0.25em] text-[rgba(244,237,224,0.55)] uppercase italic">
-        <span className="text-gold mx-2">✦</span>
-        Invitation to the Evening
-        <span className="text-gold mx-2">✦</span>
-      </p>
     </section>
   );
 };

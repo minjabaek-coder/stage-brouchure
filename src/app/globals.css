@@ -1,62 +1,79 @@
 @import "tailwindcss";
 
 /* ============================================================
- * Design tokens (PRD §4.1, docs/08-design-system.md §2)
- * Tailwind v4 generates utilities from these custom properties:
- *   --color-ink         → bg-ink / text-ink / border-ink
- *   --font-serif-ko     → font-serif-ko
- *   --tracking-wider2   → tracking-wider2
+ * Light theme — based on docs/assets/어울림콘서트_260512.html (2026-05-12).
+ * Tailwind v4 generates utilities from the @theme custom properties.
+ *
+ * Naming retained from the original dark theme for token continuity:
+ *  - `ink`     = primary text color (was dark on dark → now near-black on light)
+ *  - `paper`   = primary surface     (was warm cream → now pure white)
+ *  - `gold`    = primary accent      (was #c5a572 → now #b89968 — softer warm gold)
+ *  - `burgundy` = wine accent (unchanged hue, used sparingly for arrows/links)
+ *
+ * If you find tokens being used in dark-theme intuition (e.g. text-paper
+ * meaning "light text on dark"), update the call site — these tokens now
+ * point to the light palette.
  * ========================================================== */
 @theme {
-  --color-ink: #0a0a0c;
-  --color-ink-soft: #1a1a1f;
-  --color-paper: #f4ede0;
-  --color-paper-warm: #ebe1cf;
-  --color-gold: #c5a572;
-  --color-gold-deep: #a08247;
-  --color-gold-hi: #e8d4a8;
+  /* Surfaces & ink */
+  --color-ink: #0a0a0a;           /* near-black, primary text */
+  --color-ink-soft: #1f1f1f;
+  --color-paper: #ffffff;          /* stage / card surface */
+  --color-paper-warm: #fafaf8;
+  --color-canvas: #f0eee7;         /* page background outside stage */
+  --color-surface: #f5f5f2;        /* inquiry card / muted surfaces */
+  --color-cream-100: #fbf6eb;      /* chapter card gradient top */
+  --color-cream-200: #f5efe2;      /* chapter card gradient bottom + hero start */
+  --color-cream-300: #f8f3e9;      /* hero top */
+
+  /* Accent palette */
+  --color-gold: #b89968;
+  --color-gold-soft: #c8a877;
+  --color-gold-deep: #8c7958;
+  --color-gold-warm: #6b5a3f;     /* hero-sub / chapter-desc */
   --color-burgundy: #5c1a1b;
   --color-burgundy-deep: #3d0e0f;
 
-  --font-serif-ko: var(--font-noto-serif-kr), "Noto Serif KR", serif;
-  --font-serif-en: var(--font-cormorant), "Cormorant Garamond", serif;
+  /* Line / muted */
+  --color-line: rgba(0, 0, 0, 0.10);
+  --color-line-strong: rgba(0, 0, 0, 0.18);
+  --color-muted: #666666;
+  --color-muted-light: #999999;
 
+  /* Typography */
+  --font-sans-ko: var(--font-noto-sans-kr), "Noto Sans KR", system-ui, -apple-system, sans-serif;
+  --font-serif-ko: var(--font-noto-serif-kr), "Noto Serif KR", serif;
+
+  /* Spacing helpers (legacy — some components still consume) */
   --tracking-wider2: 0.18em;
   --tracking-wider3: 0.3em;
 
-  --shadow-luxe: 0 20px 60px -20px rgba(0, 0, 0, 0.5);
+  /* Shadows */
+  --shadow-card: 0 2px 16px rgba(92, 26, 27, 0.06);
 
+  /* Animations */
   --animate-fade-up: fadeUp 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) both;
   --animate-pulse-gold: pulseGold 3s ease-in-out infinite;
-  --animate-shimmer: shimmer 3s ease-in-out infinite;
 }
 
-/* Reference HTML lines 23-49 — global resets + ink/burgundy gradient + noise overlay */
 * {
   -webkit-tap-highlight-color: transparent;
 }
 
 html,
 body {
-  background: var(--color-ink);
-  color: var(--color-paper);
-  font-family: var(--font-serif-ko);
-  font-weight: 300;
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans-ko);
+  font-weight: 400;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size: 17px;
+  line-height: 1.6;
 }
 
 body {
-  background-color: var(--color-ink);
-  background-image:
-    radial-gradient(ellipse at top, rgba(92, 26, 27, 0.35) 0%, transparent 50%),
-    radial-gradient(
-      ellipse at bottom,
-      rgba(197, 165, 114, 0.12) 0%,
-      transparent 60%
-    ),
-    linear-gradient(180deg, #0a0a0c 0%, #14100c 50%, #0a0a0c 100%);
   min-height: 100vh;
   position: relative;
 }
@@ -75,19 +92,9 @@ body {
 @keyframes pulseGold {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(197, 165, 114, 0.4);
+    box-shadow: 0 0 0 0 rgba(184, 153, 104, 0.4);
   }
   50% {
-    box-shadow: 0 0 24px 4px rgba(197, 165, 114, 0.25);
-  }
-}
-
-@keyframes shimmer {
-  0%,
-  100% {
-    opacity: 0.7;
-  }
-  50% {
-    opacity: 1;
+    box-shadow: 0 0 24px 4px rgba(184, 153, 104, 0.25);
   }
 }

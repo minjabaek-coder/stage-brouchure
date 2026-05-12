@@ -1,61 +1,43 @@
 import Link from "next/link";
 import { type FC, type ReactNode } from "react";
-import CornerMarker from "@/components/ui/CornerMarker";
 
 interface MenuCardProps {
   href: string;
-  /** Roman numeral eyebrow ("I", "II", …) — wrapped as `— I —` automatically. */
-  num: string;
-  title: string;
-  /** English description shown below the title in italic. */
+  title: ReactNode;
   desc: string;
-  /** Inline SVG (already sized for the 48-px circular badge). */
-  icon: ReactNode;
+  testId?: string;
 }
 
 /**
- * Reference HTML lines 274-358, 968-985 — primary menu card used on the home
- * page. Decorated with four CornerMarker, a circular gold-bordered icon, a
- * Cormorant numeral eyebrow, the Korean title, an English description, and a
- * trailing arrow that nudges right on hover.
+ * Light-theme chapter card. Cream gradient + hairline gold rule + circular
+ * arrow button. Source: docs/assets/어울림콘서트_260512.html .chapter.
  */
-const MenuCard: FC<MenuCardProps> = ({ href, num, title, desc, icon }) => (
+const MenuCard: FC<MenuCardProps> = ({ href, title, desc, testId }) => (
   <Link
     href={href}
-    data-testid="menu-card"
-    data-menu-href={href}
-    className="group border-gold/30 hover:border-gold relative block overflow-hidden rounded-[2px] border bg-gradient-to-br from-[rgba(26,26,31,0.9)] to-[rgba(20,16,12,0.95)] px-[22px] py-6 text-left backdrop-blur-md transition-all duration-500 hover:-translate-y-0.5 hover:shadow-[0_8px_30px_-8px_rgba(197,165,114,0.3)]"
+    data-testid={testId ?? "menu-card"}
+    className="border-gold/25 hover:shadow-card group relative mb-3 flex items-center justify-between overflow-hidden rounded-2xl border bg-[linear-gradient(180deg,#FBF6EB_0%,#F5EFE2_100%)] px-[26px] py-7 transition-[transform,box-shadow] duration-200 hover:translate-x-0.5"
+    style={{ borderWidth: "0.5px" }}
   >
-    <CornerMarker />
-
-    {/* Sweep highlight (HTML lines 289-295) */}
     <span
       aria-hidden
-      className="pointer-events-none absolute top-0 -left-full h-full w-full bg-gradient-to-r from-transparent via-[rgba(197,165,114,0.08)] to-transparent transition-[left] duration-700 ease-in-out group-hover:left-full"
+      className="bg-gold absolute top-[22px] left-[26px] h-px w-7"
     />
-
-    <div className="relative z-[2] flex items-center gap-[18px]">
-      <span className="border-gold text-gold group-hover:bg-gold group-hover:text-ink flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition-all duration-500 group-hover:rotate-[360deg] sm:h-12 sm:w-12">
-        {icon}
-      </span>
-      <div className="flex-1">
-        <p className="font-serif-en text-gold mb-0.5 text-[11px] tracking-[0.3em] italic">
-          — {num} —
-        </p>
-        <p className="font-serif-ko text-paper mb-0.5 text-base tracking-[0.08em] sm:text-[18px]">
-          {title}
-        </p>
-        <p className="font-serif-en text-paper/50 text-[13px] tracking-[0.03em] italic">
-          {desc}
-        </p>
-      </div>
-      <span
-        aria-hidden
-        className="font-serif-en text-gold text-2xl transition-transform duration-400 group-hover:translate-x-1.5"
-      >
-        →
-      </span>
+    <div>
+      <h3 className="font-serif-ko mt-3.5 mb-2 text-[28px] leading-[1.2] font-semibold tracking-[-0.015em] text-[#1A1410]">
+        {title}
+      </h3>
+      <p className="font-serif-ko text-[15px] leading-[1.5] font-normal text-[#6B5A3F]">
+        {desc}
+      </p>
     </div>
+    <span
+      aria-hidden
+      className="border-gold/40 ml-3.5 flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-full border bg-white/60"
+      style={{ borderWidth: "0.5px" }}
+    >
+      <i className="ti ti-arrow-right text-burgundy text-[20px]" />
+    </span>
   </Link>
 );
 

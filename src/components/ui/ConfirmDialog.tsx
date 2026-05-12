@@ -8,17 +8,13 @@ interface ConfirmDialogProps {
   description?: string | ReactNode;
   confirmLabel?: string;
   cancelLabel?: string;
-  /** Visual emphasis for destructive operations (red-ish CTA). */
   destructive?: boolean;
   onConfirm: () => void;
   onCancel: () => void;
   testId?: string;
 }
 
-/**
- * Minimal confirm dialog using the native `<dialog>` element so we get
- * focus-trap + ESC-to-close + accessibility for free, no Radix dependency.
- */
+/** Light-theme confirm dialog using native <dialog>. */
 const ConfirmDialog: FC<ConfirmDialogProps> = ({
   open,
   title,
@@ -47,15 +43,16 @@ const ConfirmDialog: FC<ConfirmDialogProps> = ({
         onCancel();
       }}
       onClose={onCancel}
-      className="border-gold/40 bg-ink m-auto w-[min(420px,calc(100%-2rem))] rounded-[2px] border p-0 backdrop:bg-black/70"
+      className="bg-paper m-auto w-[min(420px,calc(100%-2rem))] rounded-2xl border border-line p-0 backdrop:bg-black/40"
+      style={{ borderWidth: "0.5px" }}
       data-testid={testId}
     >
       <div className="px-6 py-6 text-center">
-        <h2 className="font-serif-ko text-paper text-[18px] font-light tracking-[0.15em]">
+        <h2 className="font-serif-ko text-ink text-[18px] font-medium tracking-[-0.01em]">
           {title}
         </h2>
         {description && (
-          <div className="font-serif-ko text-paper/65 mt-3 text-[13px] leading-[1.7] tracking-[0.05em]">
+          <div className="text-muted mt-3 text-[13px] leading-[1.6]">
             {description}
           </div>
         )}
@@ -63,7 +60,8 @@ const ConfirmDialog: FC<ConfirmDialogProps> = ({
           <button
             type="button"
             onClick={onCancel}
-            className="font-serif-ko border-gold/40 text-paper hover:bg-paper/5 flex-1 rounded-[2px] border bg-transparent px-4 py-2.5 text-[13px] tracking-[0.15em] transition-colors"
+            className="border-line text-ink hover:bg-cream-100 flex-1 rounded-lg border bg-white px-4 py-2.5 text-[13px] font-medium tracking-[-0.01em] transition-colors"
+            style={{ borderWidth: "0.5px" }}
             data-testid={testId ? `${testId}-cancel` : undefined}
           >
             {cancelLabel}
@@ -72,10 +70,10 @@ const ConfirmDialog: FC<ConfirmDialogProps> = ({
             type="button"
             onClick={onConfirm}
             className={[
-              "font-serif-ko flex-1 rounded-[2px] px-4 py-2.5 text-[13px] tracking-[0.15em] transition-colors",
+              "flex-1 rounded-lg px-4 py-2.5 text-[13px] font-medium tracking-[-0.01em] transition-opacity hover:opacity-90",
               destructive
-                ? "bg-burgundy hover:bg-burgundy-deep text-paper"
-                : "bg-gold text-ink hover:bg-gold-hi",
+                ? "bg-burgundy text-paper"
+                : "bg-ink text-paper",
             ].join(" ")}
             data-testid={testId ? `${testId}-confirm` : undefined}
           >

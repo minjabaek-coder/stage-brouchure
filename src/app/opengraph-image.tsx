@@ -2,10 +2,14 @@ import { ImageResponse } from "next/og";
 import { EVENT } from "@/lib/event";
 
 export const runtime = "edge";
-export const alt = `${EVENT.titleKo} · ${EVENT.titleEn}`;
+export const alt = EVENT.titleKo;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
+/**
+ * Open Graph 카드 — 라이트 톤. Satori 는 radial-gradient 가 빈약하게 그려져
+ * 카카오톡에서 흰 박스로 보이는 사례가 있었으므로 단색 + linear-gradient 만.
+ */
 export default function OpengraphImage() {
   return new ImageResponse(
     (
@@ -18,8 +22,8 @@ export default function OpengraphImage() {
           alignItems: "center",
           justifyContent: "center",
           background:
-            "radial-gradient(ellipse at center, #1a1612 0%, #0a0a0c 70%)",
-          color: "#f4ede0",
+            "linear-gradient(180deg, #F8F3E9 0%, #F5EFE2 60%, #FFFFFF 100%)",
+          color: "#0a0a0a",
           fontFamily: "serif",
           padding: 80,
         }}
@@ -27,49 +31,49 @@ export default function OpengraphImage() {
         <div
           style={{
             fontSize: 28,
-            letterSpacing: 14,
-            color: "#c5a572",
-            textTransform: "uppercase",
+            letterSpacing: 4,
+            color: "#6B5A3F",
             marginBottom: 24,
           }}
         >
-          {EVENT.welcomeEn}
+          {EVENT.preTitle}
         </div>
         <div
           style={{
-            fontSize: 96,
-            letterSpacing: 12,
-            fontWeight: 300,
+            fontSize: 120,
+            letterSpacing: -2,
+            fontWeight: 600,
             marginBottom: 16,
+            color: "#1A1410",
           }}
         >
           {EVENT.titleKo}
         </div>
         <div
           style={{
-            fontSize: 40,
+            fontSize: 36,
             letterSpacing: 8,
-            color: "#c5a572",
+            color: "#B89968",
             fontStyle: "italic",
             marginBottom: 56,
           }}
         >
-          {EVENT.titleEn}
+          {EVENT.ornament}
         </div>
         <div
           style={{
             display: "flex",
             gap: 32,
             fontSize: 28,
-            letterSpacing: 4,
-            color: "rgba(244,237,224,0.75)",
+            letterSpacing: 2,
+            color: "#444",
           }}
         >
-          <span>{EVENT.date}</span>
-          <span style={{ color: "#c5a572" }}>·</span>
-          <span>{EVENT.venue}</span>
-          <span style={{ color: "#c5a572" }}>·</span>
-          <span>{EVENT.time}</span>
+          <span>{EVENT.dateValue}</span>
+          <span style={{ color: "#B89968" }}>·</span>
+          <span>{EVENT.venueShort}</span>
+          <span style={{ color: "#B89968" }}>·</span>
+          <span>{EVENT.timeValue}</span>
         </div>
       </div>
     ),

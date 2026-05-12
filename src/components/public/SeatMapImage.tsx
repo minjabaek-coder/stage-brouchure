@@ -4,12 +4,7 @@ import SeatMapLightbox from "@/components/public/SeatMapLightbox";
 
 const ALT = "어울림콘서트 좌석 배치도";
 
-/**
- * Server component that resolves the current seat map asset from Postgres and
- * either mounts the click-to-zoom lightbox (S12 admin upload feeds this) or
- * renders a dashed placeholder card while no asset has been uploaded yet
- * (PRD §3.5.2).
- */
+/** Resolves seat_map asset → SeatMapLightbox or a placeholder. */
 const SeatMapImage: FC = async () => {
   const asset = await prisma.asset.findUnique({ where: { key: "seat_map" } });
 
@@ -22,20 +17,20 @@ const SeatMapImage: FC = async () => {
     >
       <h2
         id="seatmap-heading"
-        className="font-serif-en text-gold mb-3 text-center text-[12px] tracking-[0.3em] uppercase italic"
+        className="text-gold mb-3 text-center text-[12px] font-medium tracking-[0.3em] uppercase"
       >
-        — Seat Map —
+        Seat Map
       </h2>
 
       {asset ? (
         <SeatMapLightbox url={asset.url} alt={ALT} />
       ) : (
         <div
-          className="font-serif-ko text-paper/55 rounded-[2px] border border-dashed border-[rgba(197,165,114,0.3)] px-5 py-10 text-center text-sm leading-[1.7]"
+          className="text-muted rounded-2xl border border-dashed border-[#d4d0c4] bg-white px-5 py-10 text-center text-sm leading-[1.7]"
           data-testid="seatmap-placeholder"
         >
-          <p className="font-serif-en text-gold mb-2 text-[13px] tracking-[0.2em] italic">
-            — Coming soon —
+          <p className="text-gold mb-2 text-[12px] font-medium tracking-[0.2em] uppercase">
+            Coming soon
           </p>
           좌석배치도가 곧 업로드됩니다.
         </div>

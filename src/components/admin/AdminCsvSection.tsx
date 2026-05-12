@@ -93,7 +93,7 @@ const AdminCsvSection: FC = () => {
               type="button"
               onClick={() => setConfirmOpen(true)}
               disabled={uploading || parsed.valid.length === 0}
-              className="font-serif-ko bg-gold text-ink hover:bg-gold-hi rounded-[2px] px-5 py-2.5 text-[13px] tracking-[0.15em] transition-colors disabled:cursor-wait disabled:opacity-60"
+              className="bg-burgundy text-paper rounded-lg px-4 py-2 text-[13px] font-medium tracking-[-0.01em] transition-opacity hover:opacity-90 disabled:cursor-wait disabled:opacity-50"
               data-testid="csv-upload-confirm-trigger"
             >
               {uploading ? "업로드 중…" : "기존 명단 덮어쓰고 업로드"}

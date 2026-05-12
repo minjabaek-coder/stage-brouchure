@@ -1,44 +1,64 @@
+import Image from "next/image";
 import { type FC } from "react";
-import Ornament from "@/components/ui/Ornament";
-import EventMeta from "@/components/public/EventMeta";
 import { EVENT } from "@/lib/event";
 
 /**
- * Reference HTML lines 60-148 (.header), 918-940 — full home header composition:
- * Ornament → PreTitle → TitleEn → TitleKo (with gold-gradient highlight) →
- * Subtitle → EventMeta. fadeUp entrance + bottom gold underline (after pseudo).
+ * Light-theme hero — gradient cream wash + faded ghost wordmark + logo PNG.
+ * Source: docs/assets/어울림콘서트_260512.html .hero / .hero-content.
  */
 const HomeHeader: FC = () => (
-  <header
-    className="animate-fade-up relative border-b border-[rgba(197,165,114,0.25)] pt-8 pb-6 text-center after:absolute after:bottom-[-1px] after:left-1/2 after:h-px after:w-20 after:-translate-x-1/2 after:bg-[var(--color-gold)] after:shadow-[0_0_12px_var(--color-gold)] after:content-['']"
+  <section
+    className="relative overflow-hidden pt-14 pb-6"
+    style={{
+      background:
+        "linear-gradient(180deg, #F8F3E9 0%, #F5EFE2 60%, #FFFFFF 100%)",
+    }}
     data-testid="home-header"
   >
-    <Ornament />
+    <span
+      aria-hidden
+      className="bg-gold absolute top-6 left-[26px] h-px w-9"
+    />
+    <span
+      aria-hidden
+      className="pointer-events-none absolute top-1/2 -right-7 -translate-y-1/2 font-serif-ko font-semibold whitespace-nowrap select-none"
+      style={{
+        fontSize: "180px",
+        lineHeight: 1,
+        letterSpacing: "-0.05em",
+        color: "rgba(92, 26, 27, 0.04)",
+      }}
+    >
+      어울림
+    </span>
 
-    <p className="font-serif-ko text-paper/55 mb-3.5 text-[13px] font-light tracking-[0.2em]">
-      {EVENT.preTitle}
-    </p>
+    <div className="relative z-10 px-[26px]">
+      <p className="font-serif-ko mt-4 mb-5 text-[15px] font-normal tracking-[0.02em] text-[#6B5A3F]">
+        {EVENT.preTitle}
+      </p>
 
-    <p className="font-serif-en text-gold-hi mb-2 text-[18px] font-light tracking-[0.3em] uppercase italic">
-      {EVENT.titleEn}
-    </p>
+      <h1 className="mt-1 mb-6 leading-none">
+        <Image
+          src="/hero-title.png"
+          alt={EVENT.titleKo}
+          width={755}
+          height={315}
+          priority
+          className="block h-auto w-full max-w-[360px]"
+          data-testid="hero-title"
+        />
+      </h1>
 
-    <h1 className="font-serif-ko text-paper mb-5 text-[30px] leading-[1.2] font-light tracking-[0.15em] [text-shadow:0_2px_20px_rgba(0,0,0,0.5)] sm:text-[38px]">
-      {EVENT.titleKo.replace(EVENT.titleKoHighlight, "").trim()}{" "}
-      <strong
-        className="from-gold-hi to-gold bg-gradient-to-b bg-clip-text font-medium text-transparent"
-        data-testid="title-ko-highlight"
+      <div
+        className="font-serif-ko mt-3.5 flex items-center gap-2.5 text-[14px] italic"
+        style={{ color: "#B89968" }}
       >
-        {EVENT.titleKoHighlight}
-      </strong>
-    </h1>
-
-    <p className="font-serif-en text-paper/60 mb-6 text-[15px] tracking-[0.05em] italic">
-      {EVENT.subtitleEn}
-    </p>
-
-    <EventMeta />
-  </header>
+        <span aria-hidden className="bg-gold h-px w-6 shrink-0" />
+        {EVENT.ornament}
+        <span aria-hidden className="bg-gold h-px flex-1" />
+      </div>
+    </div>
+  </section>
 );
 
 export default HomeHeader;

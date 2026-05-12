@@ -5,15 +5,15 @@ import AdminStatusBar from "@/components/admin/AdminStatusBar";
 import AdminCsvSection from "@/components/admin/AdminCsvSection";
 import AdminSeatMapSection from "@/components/admin/AdminSeatMapSection";
 import AdminBrochureSection from "@/components/admin/AdminBrochureSection";
+import AdminVenueSection from "@/components/admin/AdminVenueSection";
 import { prisma } from "@/lib/db";
+import { getVenue } from "@/lib/venue";
 
 export const metadata = {
   title: "관리자 · 어울림 콘서트",
-  // robots.txt already disallows /admin, but belt-and-braces:
   robots: { index: false, follow: false },
 };
 
-// 통계(등록 게스트 수, 마지막 업로드 시간)는 매 진입마다 fresh 해야 함.
 export const dynamic = "force-dynamic";
 
 const BROCHURE_KEYS = Array.from(
@@ -22,15 +22,19 @@ const BROCHURE_KEYS = Array.from(
 );
 
 async function loadStats() {
-  const [attendeeCount, seatMap, brochures, lastBackup] = await Promise.all([
+  const [attendeeCount, seatMap, brochures, lastBackup, venue] = await Promise.all([
     prisma.attendee.count(),
     prisma.asset.findUnique({ where: { key: "seat_map" } }),
     prisma.asset.findMany({ where: { key: { in: BROCHURE_KEYS } } }),
     prisma.csvBackup.findFirst({ orderBy: { uploadedAt: "desc" } }),
+    getVenue(),
   ]);
 
   const lastBrochureUpload = brochures.length
-    ? brochures.reduce<Date>((acc, a) => (a.updatedAt > acc ? a.updatedAt : acc), brochures[0]!.updatedAt)
+    ? brochures.reduce<Date>(
+        (acc, a) => (a.updatedAt > acc ? a.updatedAt : acc),
+        brochures[0]!.updatedAt,
+      )
     : null;
 
   const byKey = new Map(brochures.map((a) => [a.key, a.url]));
@@ -46,6 +50,7 @@ async function loadStats() {
     brochureSlots,
     lastBrochureUpload,
     lastCsvUpload: lastBackup?.uploadedAt ?? null,
+    venue,
   };
 }
 
@@ -54,16 +59,16 @@ export default async function AdminPage() {
 
   return (
     <Stage>
-      <Toaster richColors position="top-center" theme="dark" />
+      <Toaster richColors position="top-center" theme="light" />
       <header className="pt-2 pb-4 text-center" data-testid="admin-header">
-        <p className="font-serif-en text-gold text-[12px] tracking-[0.4em] uppercase italic">
+        <p className="text-gold text-[11px] font-medium tracking-[0.3em] uppercase">
           Stage Manager
         </p>
-        <h1 className="font-serif-ko text-paper mt-2 text-[26px] font-light tracking-[0.2em]">
+        <h1 className="font-serif-ko text-ink mt-2 text-[24px] font-semibold tracking-[-0.01em]">
           관리자 페이지
         </h1>
-        <p className="font-serif-ko text-paper/55 mt-2 text-[13px] tracking-[0.05em]">
-          명단 · 좌석배치도 · 브로셔를 업로드하고 즉시 반영합니다.
+        <p className="text-muted mt-2 text-[13px] leading-[1.6]">
+          명단 · 좌석배치도 · 브로셔 · 공연장 정보를 업로드/편집하고 즉시 반영합니다.
         </p>
       </header>
 
@@ -99,6 +104,15 @@ export default async function AdminPage() {
         testId="admin-brochure-section"
       >
         <AdminBrochureSection initialSlots={stats.brochureSlots} />
+      </AdminSection>
+
+      <AdminSection
+        eyebrow="Section IV"
+        title="공연장 정보"
+        description="홈 페이지의 공연장 카드(이름·주소·지도 deeplink)를 편집합니다."
+        testId="admin-venue-section"
+      >
+        <AdminVenueSection initial={stats.venue} />
       </AdminSection>
     </Stage>
   );

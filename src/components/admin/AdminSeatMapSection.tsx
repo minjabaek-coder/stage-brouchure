@@ -45,7 +45,8 @@ const AdminSeatMapSection: FC<AdminSeatMapSectionProps> = ({ initialUrl }) => {
   return (
     <div className="space-y-4">
       <div
-        className="border-gold/15 rounded-[2px] border bg-[rgba(244,237,224,0.04)] p-2"
+        className="border-line rounded-xl border bg-white p-2"
+        style={{ borderWidth: "0.5px" }}
         data-testid="seatmap-current-preview"
       >
         {currentUrl ? (
@@ -53,11 +54,11 @@ const AdminSeatMapSection: FC<AdminSeatMapSectionProps> = ({ initialUrl }) => {
           <img
             src={currentUrl}
             alt="현재 좌석배치도"
-            className="block h-auto w-full"
+            className="block h-auto w-full rounded"
             data-testid="seatmap-current-img"
           />
         ) : (
-          <p className="font-serif-ko text-paper/40 px-3 py-6 text-center text-[13px]">
+          <p className="text-muted-light px-3 py-6 text-center text-[13px]">
             업로드된 좌석배치도가 없습니다.
           </p>
         )}

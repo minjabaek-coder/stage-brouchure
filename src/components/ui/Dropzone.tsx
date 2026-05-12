@@ -67,23 +67,19 @@ const Dropzone: FC<DropzoneProps> = ({
       onDragLeave={() => setDragOver(false)}
       onDrop={onDrop}
       className={[
-        "rounded-[2px] border border-dashed px-5 py-8 text-center transition-colors",
+        "rounded-xl border border-dashed px-5 py-8 text-center transition-colors",
         dragOver
-          ? "border-gold bg-[rgba(197,165,114,0.08)]"
-          : "border-gold/30 hover:border-gold/60",
+          ? "border-gold bg-cream-100"
+          : "border-line-strong hover:border-gold/60 bg-white",
       ].join(" ")}
       data-testid={testId}
     >
-      <p className="font-serif-en text-gold mb-2 text-[12px] tracking-[0.3em] italic">
-        — Drop or Browse —
+      <p className="text-gold mb-2 text-[11px] font-medium tracking-[0.3em] uppercase">
+        Drop or Browse
       </p>
-      <p className="font-serif-ko text-paper text-sm tracking-[0.05em]">
-        {label}
-      </p>
+      <p className="text-ink text-[14px] leading-snug">{label}</p>
       {hint && (
-        <p className="font-serif-ko text-paper/50 mt-1 text-[12px] tracking-[0.05em]">
-          {hint}
-        </p>
+        <p className="text-muted mt-1 text-[12px]">{hint}</p>
       )}
       <input
         ref={fileInputRef}
@@ -97,7 +93,7 @@ const Dropzone: FC<DropzoneProps> = ({
       <button
         type="button"
         onClick={() => fileInputRef.current?.click()}
-        className="font-serif-ko bg-gold text-ink hover:bg-gold-hi mt-4 inline-block rounded-[2px] px-5 py-2 text-[13px] tracking-[0.15em] transition-colors"
+        className="bg-ink text-paper mt-4 inline-block rounded-lg px-4 py-2 text-[13px] font-medium tracking-[-0.01em] transition-opacity hover:opacity-90"
       >
         파일 선택
       </button>

@@ -7,18 +7,16 @@ interface BackButtonProps {
   label?: string;
 }
 
-/**
- * Reference HTML lines 411-421, 1019, 1088 — circular ← back button used in
- * page headers. Renders as a `next/link` so the in-app navigation is instant.
- */
+/** Light-theme circular back button (← arrow icon). */
 const BackButton: FC<BackButtonProps> = ({ href = "/", label = "뒤로 가기" }) => (
   <Link
     href={href}
     aria-label={label}
     data-testid="back-button"
-    className="border-gold/40 text-gold hover:bg-gold hover:text-ink flex h-10 w-10 items-center justify-center rounded-full border bg-transparent text-[18px] transition-colors duration-300"
+    className="border-line text-ink hover:bg-cream-100 flex h-10 w-10 items-center justify-center rounded-full border bg-white transition-colors"
+    style={{ borderWidth: "0.5px" }}
   >
-    ←
+    <i className="ti ti-arrow-left text-[18px]" />
   </Link>
 );
 

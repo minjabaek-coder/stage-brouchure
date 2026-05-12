@@ -1,17 +1,9 @@
 /**
- * Reference HTML lines 41-49 — fixed noise overlay (mix-blend-mode: overlay).
- * The base ink + burgundy + gold radial gradient lives on <body> in globals.css;
- * this layer adds the SVG fractal-noise texture on top.
+ * Light-theme: the canvas color is set on <body> in globals.css. This layer
+ * exists as a no-op for backward compatibility with pages that render it —
+ * a future revision could add subtle paper-grain texture here, but the new
+ * design is intentionally flat.
  */
-const NOISE_DATA_URI =
-  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .15 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
-
 export default function BackgroundLayer() {
-  return (
-    <div
-      aria-hidden
-      className="pointer-events-none fixed inset-0 z-0 opacity-40 mix-blend-overlay"
-      style={{ backgroundImage: NOISE_DATA_URI }}
-    />
-  );
+  return null;
 }

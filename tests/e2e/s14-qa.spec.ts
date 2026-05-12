@@ -86,7 +86,7 @@ test.describe("S14 · 전체 사용자 여정 (PRD §9)", () => {
     // ---- 1) 홈 ----
     await page.goto("/");
     await expect(page.locator("body")).toContainText("어울림");
-    await expect(page.locator("body")).toContainText("Harmony Concert");
+    await expect(page.locator("body")).toContainText("2026 정기연주회");
 
     // ---- 2) 영상 인라인 재생 ----
     const thumb = page.getByTestId("video-thumb");
@@ -99,7 +99,7 @@ test.describe("S14 · 전체 사용자 여정 (PRD §9)", () => {
 
     // ---- 3) 자리 찾기 (성공) ----
     await page.goto("/");
-    await page.getByRole("link", { name: /자리\s*찾기/ }).click();
+    await page.getByTestId("menu-card-search").click();
     await expect(page).toHaveURL(/\/search$/);
     await page.locator("#search-name").fill("신귀복");
     await page.locator("#search-phone").fill("0001");

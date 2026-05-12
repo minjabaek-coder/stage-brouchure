@@ -112,7 +112,7 @@ const AdminBrochureSection: FC<AdminBrochureSectionProps> = ({
   return (
     <div className="space-y-4" data-testid="admin-brochure-controls">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <p className="font-serif-ko text-paper/55 text-[12px] leading-[1.6] tracking-[0.05em]">
+        <p className="text-muted text-[12px] leading-[1.6]">
           파일명 오름차순으로 슬롯 1~8 에 자동 매핑됩니다 (`brochure-01.jpg`,
           `brochure-02.jpg` …).
         </p>
@@ -132,7 +132,7 @@ const AdminBrochureSection: FC<AdminBrochureSectionProps> = ({
           type="button"
           disabled={uploading}
           onClick={() => bulkInputRef.current?.click()}
-          className="font-serif-ko bg-gold text-ink hover:bg-gold-hi rounded-[2px] px-4 py-2 text-[12px] tracking-[0.15em] transition-colors disabled:cursor-wait disabled:opacity-60"
+          className="bg-ink text-paper rounded-lg px-4 py-2 text-[13px] font-medium tracking-[-0.01em] transition-opacity hover:opacity-90 disabled:cursor-wait disabled:opacity-50"
           data-testid="brochure-bulk-trigger"
         >
           {uploading ? "업로드 중…" : "8장 일괄 업로드"}

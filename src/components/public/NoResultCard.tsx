@@ -1,17 +1,15 @@
 import { type FC } from "react";
 
 /**
- * Reference HTML lines 580-599, 1505-1509 — dashed-border card shown when the
- * search misses. Per PRD §2.2.5 the message is always identical regardless of
- * which field mismatched, so the user can't probe whether a name exists.
+ * 검색 실패 카드. PRD §2.2.5 — 메시지는 이름·전화 어느 쪽이 틀려도 동일.
  */
 const NoResultCard: FC = () => (
   <div
-    className="font-serif-ko text-paper/55 animate-fade-up rounded-[2px] border border-dashed border-[rgba(197,165,114,0.3)] px-5 py-8 text-center text-sm leading-[1.7]"
+    className="text-muted rounded-2xl border border-dashed border-[#d4d0c4] bg-white px-5 py-7 text-center text-sm leading-[1.7]"
     data-testid="no-result-card"
   >
-    <p className="font-serif-en text-gold mb-1.5 block text-[13px] tracking-[0.2em] italic">
-      — Not Found —
+    <p className="text-gold mb-1.5 block text-[12px] font-medium tracking-[0.2em] uppercase">
+      Not Found
     </p>
     일치하는 정보를 찾을 수 없습니다.
     <br />

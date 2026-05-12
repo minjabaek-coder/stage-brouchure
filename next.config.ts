@@ -16,7 +16,14 @@ const supabaseHost = (() => {
 const nextConfig: NextConfig = {
   images: {
     // Dev/test: /public/uploads/<file>?v=<ts> served directly by Next.
-    localPatterns: [{ pathname: "/uploads/**" }],
+    // 2026-05-12 light theme adds hero logo + sponsor logos served from
+    // /public root, also whitelist them.
+    localPatterns: [
+      { pathname: "/uploads/**" },
+      { pathname: "/hero-title.png" },
+      { pathname: "/sponsor-*.png" },
+      { pathname: "/sponsor-*.jpg" },
+    ],
     // Prod: Supabase Storage public URLs for the `images` bucket.
     // Path pattern is `/storage/v1/object/public/<bucket>/<file>`.
     remotePatterns: supabaseHost

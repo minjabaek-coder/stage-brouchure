@@ -1,31 +1,49 @@
-import { Fragment, type FC } from "react";
-import MetaDivider from "@/components/ui/MetaDivider";
+import { type FC } from "react";
 import { EVENT } from "@/lib/event";
 
-const META_ITEMS = [
-  { label: "DATE", value: EVENT.date },
-  { label: "VENUE", value: EVENT.venue },
-  { label: "TIME", value: EVENT.time },
-] as const;
-
-// axe-core canonical pattern: <dl> 의 직계 자식은 <dt>/<dd> 그룹 또는
-// <div>(이 안에 dt/dd 1쌍). display:contents 로 wrapper 를 a11y 트리에서
-// 지우면 dlitem 룰이 깨지므로 사용하지 않는다.
+/**
+ * 3-column meta strip — date / time / venue.
+ * Source: docs/assets/어울림콘서트_260512.html .meta-strip.
+ */
 const EventMeta: FC = () => (
-  <dl className="flex items-stretch justify-center gap-3 py-4 sm:gap-5">
-    {META_ITEMS.map((item, idx) => (
-      <Fragment key={item.label}>
-        {idx > 0 && <MetaDivider />}
-        <div className="flex flex-col items-center gap-1 px-1">
-          <dt className="text-gold text-[9px] tracking-[0.4em]">
-            {item.label}
-          </dt>
-          <dd className="font-serif-en text-paper text-[13px] tracking-[0.08em] sm:text-[15px]">
-            {item.value}
-          </dd>
-        </div>
-      </Fragment>
-    ))}
+  <dl
+    className="border-line mt-8 grid grid-cols-[auto_auto_1fr] items-start gap-0 border-t border-b py-[22px]"
+    style={{ borderTopWidth: "0.5px", borderBottomWidth: "0.5px" }}
+    data-testid="event-meta"
+  >
+    <div className="px-1.5">
+      <dt className="text-muted mb-1.5 text-[12px] font-normal">
+        {EVENT.dateLabel}
+      </dt>
+      <dd className="text-ink text-[15px] leading-[1.35] font-medium tracking-[-0.03em] whitespace-nowrap">
+        {EVENT.dateValue}
+        <small className="text-muted ml-0.5 text-[11px] font-normal">
+          {EVENT.dateDay}
+        </small>
+      </dd>
+    </div>
+    <div
+      className="border-line ml-1.5 px-1.5 pl-3"
+      style={{ borderLeftWidth: "0.5px" }}
+    >
+      <dt className="text-muted mb-1.5 text-[12px] font-normal">
+        {EVENT.timeLabel}
+      </dt>
+      <dd className="text-ink text-[15px] leading-[1.35] font-medium tracking-[-0.03em] whitespace-nowrap">
+        {EVENT.timeValue}
+      </dd>
+    </div>
+    <div
+      className="border-line ml-1.5 px-1.5 pl-3"
+      style={{ borderLeftWidth: "0.5px" }}
+    >
+      <dt className="text-muted mb-1.5 text-[12px] font-normal">
+        {EVENT.venueLabel}
+      </dt>
+      <dd className="text-ink text-[15px] leading-[1.35] font-medium tracking-[-0.03em] whitespace-nowrap">
+        {EVENT.venueShort}
+      </dd>
+    </div>
   </dl>
 );
 

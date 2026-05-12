@@ -37,10 +37,11 @@ const BrochureSlotGrid: FC<BrochureSlotGridProps> = ({
         return (
           <div
             key={slot.index}
-            className="border-gold/15 group relative flex flex-col rounded-[2px] border bg-[rgba(244,237,224,0.04)] p-1.5"
+            className="border-line group relative flex flex-col rounded-lg border bg-white p-1.5"
+            style={{ borderWidth: "0.5px" }}
             data-testid={`brochure-slot-${padded}`}
           >
-            <div className="aspect-[4/5.5] w-full overflow-hidden bg-[rgba(26,22,18,0.55)]">
+            <div className="bg-cream-200 aspect-[4/5.5] w-full overflow-hidden rounded">
               {slot.url ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
                 <img
@@ -50,20 +51,20 @@ const BrochureSlotGrid: FC<BrochureSlotGridProps> = ({
                   data-testid={`brochure-slot-img-${padded}`}
                 />
               ) : (
-                <p className="font-serif-en text-paper/35 flex h-full items-center justify-center text-[11px] tracking-[0.2em] italic">
+                <p className="text-muted-light flex h-full items-center justify-center text-[11px] font-medium tracking-[0.2em] uppercase">
                   empty
                 </p>
               )}
             </div>
             <div className="mt-1.5 flex items-center justify-between px-1">
-              <span className="font-serif-en text-gold text-[10px] tracking-[0.3em] italic">
+              <span className="text-gold text-[10px] font-medium tracking-[0.3em]">
                 {padded}
               </span>
               <button
                 type="button"
                 disabled={disabled}
                 onClick={() => inputs.current[i]?.click()}
-                className="font-serif-ko text-paper/70 hover:text-gold text-[10px] tracking-[0.2em] uppercase disabled:opacity-40"
+                className="text-muted hover:text-ink text-[11px] font-medium tracking-[-0.01em] disabled:opacity-40"
                 data-testid={`brochure-slot-replace-${padded}`}
               >
                 교체
