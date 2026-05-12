@@ -1,6 +1,6 @@
 /**
  * 단일 행사 상수. 어울림콘서트 2026.5.26 (단발성 행사 1회).
- * 디자인·문구 출처: docs/assets/어울림콘서트_260512.html (2026-05-12).
+ * 디자인·문구 출처: docs/assets/어울림콘서트_260512_map.html (2026-05-12).
  */
 export const EVENT = {
   // 헤더
@@ -22,16 +22,21 @@ export const EVENT = {
   videoCaption: "미리보기",
   videoFootText: "공연의 첫 인사를 만나보세요",
 
-  // 챕터
-  chapterSearchTitle: "자리 찾기",
-  chapterSearchDesc: "예매하신 좌석을 확인하세요",
+  // 챕터 — 자리 찾기 검색 기능은 비활성화. 메뉴는 좌석배치도 보기로 단순화.
+  chapterSearchTitle: "좌석배치도",
+  chapterSearchDesc: "티켓은 현장에서 배포합니다.",
   chapterBrochureTitle: "공연 안내서",
   chapterBrochureSub: "(브로셔)",
   chapterBrochureDesc: "프로그램과 출연진을 만나보세요",
 
-  // 공연장 (기본값 — 관리자가 admin 페이지에서 덮어쓸 수 있음, assets 테이블의
-  // venue_name / venue_address / venue_map_url 키)
+  // 공연장 — assets 테이블에서 admin 이 덮어쓸 수 있는 값들의 기본치.
+  // 구조화된 필드를 받아 VenueIllustration 컴포넌트가 SVG 약도를 그려준다.
   venueName: "송파문화예술회관",
+  venueLine: "9호선",
+  venuePrevStation: "삼전역",
+  venueDestStation: "석촌고분역",
+  venueExit: "4번 출구",
+  venueWalkDistance: "도보 300m",
   venueAddress: "지하철 9호선 석촌고분역\n4번 출구에서 300m",
   venueMapUrl: "https://map.naver.com/v5/search/송파문화예술회관",
 

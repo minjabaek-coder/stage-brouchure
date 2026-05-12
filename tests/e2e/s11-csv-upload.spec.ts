@@ -61,17 +61,21 @@ test.describe("S11 · 관리자 CSV 업로드 + 자동 백업 (FR-A02)", () => {
     );
   });
 
-  test("/search 에서 새 CSV 의 첫 행으로 검색 → 새 좌석 노출", async ({ page }) => {
+  test("새 CSV 의 첫 행으로 /api/search 가 새 좌석을 반환한다 (UI 비활성화 후 API 단위 검증)", async ({
+    page,
+    request,
+  }) => {
     await uploadCsv(page, VALID);
-    await page.goto("/search");
-    await page.locator("#search-name").fill("김민수");
-    await page.locator("#search-phone").fill("1111");
-    await page.getByTestId("search-submit").click();
-
-    const card = page.getByTestId("seat-result-card");
-    await expect(card).toBeVisible();
-    await expect(page.getByTestId("result-name")).toHaveText("김민수 님");
-    await expect(page.getByTestId("result-seat")).toHaveText("A-1");
+    const res = await request.post("/api/search", {
+      data: { name: "김민수", phone_last4: "1111" },
+      headers: { "content-type": "application/json" },
+    });
+    expect(res.status()).toBe(200);
+    const body = (await res.json()) as {
+      data: { name: string; seat: string; phoneLast4: string };
+    };
+    expect(body.data.name).toBe("김민수");
+    expect(body.data.seat).toBe("A-1");
   });
 
   test("두 번째 CSV 업로드 → csv_backups 가 2건이 된다 (status CSV 갱신)", async ({

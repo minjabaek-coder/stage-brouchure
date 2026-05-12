@@ -80,7 +80,7 @@ test.describe("S14 · OG 이미지 + sitemap (NFR-08)", () => {
 });
 
 test.describe("S14 · 전체 사용자 여정 (PRD §9)", () => {
-  test("홈 → 영상 재생 → 자리 찾기 (성공) → 좌석맵 라이트박스 → 브로셔 8장 → 메인 복귀", async ({
+  test("홈 → 영상 재생 → 좌석배치도 라이트박스 → 브로셔 8장 → 메인 복귀", async ({
     page,
   }) => {
     // ---- 1) 홈 ----
@@ -97,21 +97,18 @@ test.describe("S14 · 전체 사용자 여정 (PRD §9)", () => {
       page.locator('iframe[src*="youtube.com/embed/0aT4IdHXZW8"]'),
     ).toBeVisible();
 
-    // ---- 3) 자리 찾기 (성공) ----
+    // ---- 3) 좌석배치도 카드 → /search (좌석배치도만 노출) ----
     await page.goto("/");
     await page.getByTestId("menu-card-search").click();
     await expect(page).toHaveURL(/\/search$/);
-    await page.locator("#search-name").fill("신귀복");
-    await page.locator("#search-phone").fill("0001");
-    await page.getByTestId("search-submit").click();
-    await expect(page.getByTestId("seat-result-card")).toBeVisible();
-    await expect(page.getByTestId("result-seat")).toHaveText("A-1");
+    await expect(page.getByTestId("page-title")).toContainText("좌석배치도");
+    // 검색 폼은 비활성화 — 노출되어선 안 된다
+    await expect(page.getByTestId("search-form")).toHaveCount(0);
 
     // ---- 4) 좌석맵 라이트박스 ----
     const trigger = page.getByTestId("seatmap-trigger");
     await expect(trigger).toBeVisible();
     await trigger.click();
-    // yet-another-react-lightbox 는 role="presentation" overlay 를 렌더한다
     await expect(page.locator(".yarl__container")).toBeVisible();
     await page.keyboard.press("Escape");
 
@@ -130,26 +127,18 @@ test.describe("S14 · 전체 사용자 여정 (PRD §9)", () => {
     await expect(page).toHaveURL(/\/$/);
   });
 
-  test("자리 찾기 실패 시 안내 메시지가 동일하게 노출된다 (PRD §2.2.5)", async ({
+  test("공연장 SVG 약도가 admin 입력값(역명/출구/도보거리)을 반영해 렌더된다", async ({
     page,
   }) => {
-    await page.goto("/search");
-
-    // 잘못된 이름
-    await page.locator("#search-name").fill("없는사람");
-    await page.locator("#search-phone").fill("0001");
-    await page.getByTestId("search-submit").click();
-    await expect(page.getByTestId("no-result-card")).toContainText(
-      "일치하는 정보를 찾을 수 없습니다",
-    );
-
-    // 잘못된 전화 — 메시지 동일
-    await page.locator("#search-name").fill("신귀복");
-    await page.locator("#search-phone").fill("9999");
-    await page.getByTestId("search-submit").click();
-    await expect(page.getByTestId("no-result-card")).toContainText(
-      "일치하는 정보를 찾을 수 없습니다",
-    );
+    await page.goto("/");
+    const svg = page.getByTestId("venue-illustration");
+    await expect(svg).toBeVisible();
+    // 기본값 (EVENT.venue*) 확인
+    await expect(svg).toContainText("석촌고분역");
+    await expect(svg).toContainText("4번 출구");
+    await expect(svg).toContainText("도보 300m");
+    await expect(svg).toContainText("송파문화예술회관");
+    await expect(svg).toContainText("지하철 9호선");
   });
 });
 

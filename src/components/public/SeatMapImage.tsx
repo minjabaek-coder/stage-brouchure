@@ -12,14 +12,11 @@ const SeatMapImage: FC = async () => {
     <section
       id="seatmap-section"
       aria-labelledby="seatmap-heading"
-      className="mt-10"
+      className="mt-2"
       data-testid="seatmap-section"
     >
-      <h2
-        id="seatmap-heading"
-        className="text-gold mb-3 text-center text-[12px] font-medium tracking-[0.3em] uppercase"
-      >
-        Seat Map
+      <h2 id="seatmap-heading" className="sr-only">
+        좌석배치도
       </h2>
 
       {asset ? (

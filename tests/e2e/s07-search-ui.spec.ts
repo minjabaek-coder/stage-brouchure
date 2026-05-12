@@ -1,6 +1,9 @@
 import { expect, test } from "@playwright/test";
 
-test.describe("S07 · 자리 찾기 UI (FR-G03)", () => {
+// 2026-05-12: 이름+전화 검색 UI 는 비활성화 (PRD 변경: "티켓은 현장 배포",
+// /search 는 좌석배치도만 표시). 검색 컴포넌트/`/api/search` 라우트는 추후
+// 재활성화를 위해 코드는 유지 — 본 spec 도 그 신호를 위해 보존하되 skip.
+test.describe.skip("S07 · 자리 찾기 UI (비활성화 — 좌석배치도 페이지로 단순화)", () => {
   test("/search 진입 시 폼이 노출된다 (이름 + 전화 + CTA)", async ({ page }) => {
     await page.goto("/search");
     await expect(page.getByTestId("search-form")).toBeVisible();

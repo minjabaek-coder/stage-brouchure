@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("S04 · 홈 메뉴 카드 + 라우트 스텁 (FR-G07) — 라이트 테마", () => {
-  test("홈에 두 메뉴 카드가 노출된다 (자리 찾기 / 공연 안내서)", async ({
+  test("홈에 두 메뉴 카드가 노출된다 (좌석배치도 / 공연 안내서)", async ({
     page,
   }) => {
     await page.goto("/");
@@ -9,13 +9,13 @@ test.describe("S04 · 홈 메뉴 카드 + 라우트 스텁 (FR-G07) — 라이�
     const brochure = page.getByTestId("menu-card-brochure");
     await expect(search).toBeVisible();
     await expect(brochure).toBeVisible();
-    await expect(search).toContainText("자리 찾기");
-    await expect(search).toContainText("예매하신 좌석을 확인하세요");
+    await expect(search).toContainText("좌석배치도");
+    await expect(search).toContainText("티켓은 현장에서 배포합니다");
     await expect(brochure).toContainText("공연 안내서");
     await expect(brochure).toContainText("프로그램과 출연진을 만나보세요");
   });
 
-  test("자리 찾기 카드 → /search 이동, Chapter I + 자리 찾기 헤더 노출", async ({
+  test("좌석배치도 카드 → /search 이동, Chapter I + 좌석배치도 헤더 노출", async ({
     page,
   }) => {
     await page.goto("/");
@@ -23,7 +23,7 @@ test.describe("S04 · 홈 메뉴 카드 + 라우트 스텁 (FR-G07) — 라이�
     await expect(page).toHaveURL(/\/search$/);
     const header = page.getByTestId("page-header");
     await expect(header).toContainText("Chapter I");
-    await expect(header).toContainText("자리 찾기");
+    await expect(header).toContainText("좌석배치도");
   });
 
   test("뒤로 가기 버튼 클릭 → 홈 (/) 로 복귀", async ({ page }) => {
