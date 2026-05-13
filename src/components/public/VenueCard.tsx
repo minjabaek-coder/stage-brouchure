@@ -11,7 +11,15 @@ const VenueCard: FC = async () => {
   const venue = await getVenue();
   return (
     <section className="pt-1.5 pb-9" data-testid="venue-card">
-      <p className="text-muted mb-4 text-[15px] font-medium">공연장</p>
+      <p className="text-muted mb-3 text-[15px] font-medium">
+        공연장에 찾아오시는 길
+      </p>
+      <p
+        className="text-muted-light mb-4 text-[13px] leading-[1.6]"
+        data-testid="venue-parking-notice"
+      >
+        주차공간이 협소한 관계로 가급적 대중교통 이용바랍니다.
+      </p>
       <a
         href={venue.mapUrl}
         target="_blank"

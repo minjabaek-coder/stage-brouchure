@@ -1,10 +1,13 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("Share · FAB + 다이얼로그", () => {
-  test("홈에 FAB 가 노출되고 클릭 시 다이얼로그가 열린다", async ({ page }) => {
+  test("홈에 FAB 가 '공유하기' 라벨로 노출되고 클릭 시 다이얼로그가 열린다", async ({
+    page,
+  }) => {
     await page.goto("/");
     const fab = page.getByTestId("share-fab");
     await expect(fab).toBeVisible();
+    await expect(fab).toContainText("공유하기");
 
     await expect(page.getByTestId("share-dialog")).toBeHidden();
     await fab.click();

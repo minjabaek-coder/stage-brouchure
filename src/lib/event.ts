@@ -24,7 +24,8 @@ export const EVENT = {
 
   // 챕터 — 자리 찾기 검색 기능은 비활성화. 메뉴는 좌석배치도 보기로 단순화.
   chapterSearchTitle: "좌석배치도",
-  chapterSearchDesc: "티켓은 현장에서 배포합니다.",
+  chapterSearchDesc:
+    "공연장에 오시는 순서대로 3층부터 4층까지 좌석을 배정해드립니다.",
   chapterBrochureTitle: "공연 안내서",
   chapterBrochureSub: "(브로셔)",
   chapterBrochureDesc: "프로그램과 출연진을 만나보세요",
