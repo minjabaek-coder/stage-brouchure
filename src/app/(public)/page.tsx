@@ -3,6 +3,7 @@ import HomeHeader from "@/components/public/HomeHeader";
 import EventMeta from "@/components/public/EventMeta";
 import InvitationVideo from "@/components/public/InvitationVideo";
 import MenuCardList from "@/components/public/MenuCardList";
+import NoticeLine from "@/components/public/NoticeLine";
 import VenueCard from "@/components/public/VenueCard";
 import HomeFooter from "@/components/public/HomeFooter";
 import { EVENT } from "@/lib/event";
@@ -26,6 +27,11 @@ export default function Home() {
       </div>
       <div className="px-[26px] pt-3">
         <MenuCardList />
+      </div>
+      <div className="px-[26px]">
+        <NoticeLine testId="entry-notice">
+          공연시작 10분 전까지 공연장에 입장하시기 바랍니다.
+        </NoticeLine>
       </div>
       <div className="px-[26px]">
         <VenueCard />

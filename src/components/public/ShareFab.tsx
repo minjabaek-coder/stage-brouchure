@@ -23,11 +23,11 @@ const ShareFab: FC<ShareFabProps> = ({ shareUrl }) => {
         type="button"
         onClick={() => setOpen(true)}
         aria-label="공유하기 열기"
-        className="border-line-strong bg-paper text-ink hover:bg-cream-100 fixed right-5 bottom-6 z-40 flex h-14 w-14 items-center justify-center rounded-full border shadow-card backdrop-blur transition-[transform,background-color] hover:-translate-y-0.5 active:translate-y-0"
-        style={{ borderWidth: "0.5px" }}
+        className="text-ink fixed right-5 bottom-6 z-40 flex h-12 items-center gap-1.5 rounded-full bg-[var(--color-gold-soft)] pr-5 pl-4 text-[14px] font-medium tracking-[-0.01em] shadow-card transition-[transform,filter] hover:-translate-y-0.5 hover:brightness-[1.03] active:translate-y-0"
         data-testid="share-fab"
       >
-        <i className="ti ti-share-3 text-[22px]" aria-hidden />
+        <i className="ti ti-share-3 text-[18px]" aria-hidden />
+        공유하기
       </button>
 
       <Toaster richColors position="top-center" theme="light" />

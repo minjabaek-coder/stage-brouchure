@@ -10,7 +10,9 @@ test.describe("S04 · 홈 메뉴 카드 + 라우트 스텁 (FR-G07) — 라이�
     await expect(search).toBeVisible();
     await expect(brochure).toBeVisible();
     await expect(search).toContainText("좌석배치도");
-    await expect(search).toContainText("티켓은 현장에서 배포합니다");
+    await expect(search).toContainText(
+      "공연장에 오시는 순서대로 3층부터 4층까지 좌석을 배정해드립니다.",
+    );
     await expect(brochure).toContainText("공연 안내서");
     await expect(brochure).toContainText("프로그램과 출연진을 만나보세요");
   });

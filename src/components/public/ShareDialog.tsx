@@ -106,7 +106,7 @@ const ShareDialog: FC<ShareDialogProps> = ({ open, onClose, shareUrl }) => {
           />
         </div>
         <p className="text-muted-light mt-2 text-[12px]">
-          QR 을 카메라로 인식해 바로 입장
+          QR 을 카메라로 인식해 보세요
         </p>
 
         <div
@@ -138,7 +138,7 @@ const ShareDialog: FC<ShareDialogProps> = ({ open, onClose, shareUrl }) => {
             data-testid="share-native"
           >
             <i className="ti ti-share-3 text-[16px]" aria-hidden />
-            기기 공유 시트 열기
+            다른 앱으로 공유
           </button>
         )}
       </div>
