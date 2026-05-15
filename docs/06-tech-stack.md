@@ -25,7 +25,7 @@
 | 린트/포맷 | ESLint, Prettier | |
 | 배포 | **Vercel** | Preview Deploy 활용 |
 | 스토리지 | **Supabase Storage** | CSV 백업 + 이미지 자산 |
-| 모니터링 | **Vercel Analytics** + **Sentry** (선택) | |
+| 모니터링 | **Vercel Analytics** (채택) + **Sentry** (선택) | Analytics: `@vercel/analytics/next` 의 `<Analytics />` 를 root `layout.tsx` 에 마운트. 쿠키 미사용·IP 익명화로 NFR-09 와 부합 |
 
 > PRD §4.1 의 **Option A (정적 + Google Sheets)** 는 운영비 최소화 대안으로 참고만 한다. 본 프로젝트는 확장성·관리자 UI 품질을 위해 Option B 를 채택했다.
 

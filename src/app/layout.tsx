@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Noto_Sans_KR, Noto_Serif_KR } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "@tabler/icons-webfont/dist/tabler-icons.min.css";
 import "./globals.css";
 
@@ -50,7 +51,10 @@ export default function RootLayout({
       lang="ko"
       className={`${notoSansKr.variable} ${notoSerifKr.variable} h-full antialiased`}
     >
-      <body className="bg-canvas min-h-full">{children}</body>
+      <body className="bg-canvas min-h-full">
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
