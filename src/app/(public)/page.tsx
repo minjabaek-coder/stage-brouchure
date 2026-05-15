@@ -1,6 +1,8 @@
 import Stage from "@/components/layout/Stage";
 import HomeHeader from "@/components/public/HomeHeader";
 import EventMeta from "@/components/public/EventMeta";
+import DDayCard from "@/components/public/DDayCard";
+import CalendarCard from "@/components/public/CalendarCard";
 import InvitationVideo from "@/components/public/InvitationVideo";
 import MenuCardList from "@/components/public/MenuCardList";
 import NoticeLine from "@/components/public/NoticeLine";
@@ -17,6 +19,12 @@ export default function Home() {
       <HomeHeader />
       <div className="px-[26px]">
         <EventMeta />
+      </div>
+      <div className="px-[26px] pt-5">
+        <div className="flex gap-3" data-testid="save-the-date">
+          <DDayCard />
+          <CalendarCard />
+        </div>
       </div>
       <div className="px-[26px]">
         <InvitationVideo

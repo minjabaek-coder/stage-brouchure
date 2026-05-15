@@ -17,6 +17,12 @@ export const EVENT = {
   venueLabel: "장소",
   venueShort: "송파문화예술회관",
 
+  // 행사 일시 (D-day · ICS · Google Calendar 공용 단일 출처)
+  // KST 기준. ICS/GCal 은 UTC 로 변환해 송출 (lib/calendar.ts 참조)
+  eventDateIso: "2026-05-26", // KST 기준 행사 날짜
+  eventStartIso: "2026-05-26T19:30:00+09:00",
+  eventEndIso: "2026-05-26T22:00:00+09:00", // 2시간 30분 (19:30~22:00)
+
   // 영상
   videoYoutubeId: "0aT4IdHXZW8",
   videoCaption: "미리보기",
