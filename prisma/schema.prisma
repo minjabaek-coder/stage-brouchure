@@ -47,3 +47,15 @@ model CsvBackup {
 
   @@map("csv_backups")
 }
+
+// ENT-04 — 방명록 한마디. 닉네임 + 본문만 저장 (NFR-09). IP·이메일 미저장.
+// 즉시 공개, 관리자가 /admin/messages 에서만 삭제 가능. Rate Limit 1/분/IP.
+model Message {
+  id        String   @id @default(cuid())
+  nickname  String   @db.VarChar(10)
+  body      String   @db.VarChar(200)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([createdAt(sort: Desc)])
+  @@map("messages")
+}

@@ -7,6 +7,7 @@ import InvitationVideo from "@/components/public/InvitationVideo";
 import MenuCardList from "@/components/public/MenuCardList";
 import NoticeLine from "@/components/public/NoticeLine";
 import VenueCard from "@/components/public/VenueCard";
+import MessagesPreview from "@/components/public/MessagesPreview";
 import HomeFooter from "@/components/public/HomeFooter";
 import { EVENT } from "@/lib/event";
 
@@ -43,6 +44,9 @@ export default function Home() {
       </div>
       <div className="px-[26px]">
         <VenueCard />
+      </div>
+      <div className="px-[26px]">
+        <MessagesPreview />
       </div>
       <HomeFooter />
     </Stage>

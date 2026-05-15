@@ -6,6 +6,7 @@ import AdminCsvSection from "@/components/admin/AdminCsvSection";
 import AdminSeatMapSection from "@/components/admin/AdminSeatMapSection";
 import AdminBrochureSection from "@/components/admin/AdminBrochureSection";
 import AdminVenueSection from "@/components/admin/AdminVenueSection";
+import AdminNav from "@/components/admin/AdminNav";
 import { prisma } from "@/lib/db";
 import { getVenue } from "@/lib/venue";
 
@@ -71,6 +72,8 @@ export default async function AdminPage() {
           명단 · 좌석배치도 · 브로셔 · 공연장 정보를 업로드/편집하고 즉시 반영합니다.
         </p>
       </header>
+
+      <AdminNav active="content" />
 
       <AdminStatusBar
         attendeeCount={stats.attendeeCount}
