@@ -8,9 +8,16 @@ interface AdminNavProps {
 
 /**
  * Two-link top nav for the admin area. Renders unauth (PRD §3.1).
- * /admin/messages is a sibling route under the same ADMIN_PATH_SUFFIX
- * obfuscation handled by middleware.
+ *
+ * Path obfuscation: when ADMIN_PATH_SUFFIX is set (production), the only
+ * reachable admin URL is `/admin-<suffix>`. The middleware internally
+ * rewrites that to `/admin*` before Next.js routes it, but the browser URL
+ * must keep the suffix — so links here include it. Without the suffix
+ * (local dev/test), the bare `/admin*` paths are used.
  */
+const SUFFIX = (process.env.ADMIN_PATH_SUFFIX ?? "").trim();
+const ADMIN_BASE = SUFFIX ? `/admin-${SUFFIX}` : "/admin";
+
 const AdminNav: FC<AdminNavProps> = ({ active }) => {
   const linkClass = (key: "content" | "messages") =>
     [
@@ -27,14 +34,14 @@ const AdminNav: FC<AdminNavProps> = ({ active }) => {
       data-testid="admin-nav"
     >
       <Link
-        href="/admin"
+        href={ADMIN_BASE}
         className={linkClass("content")}
         data-testid="admin-nav-content"
       >
         콘텐츠 관리
       </Link>
       <Link
-        href="/admin/messages"
+        href={`${ADMIN_BASE}/messages`}
         className={linkClass("messages")}
         data-testid="admin-nav-messages"
       >
