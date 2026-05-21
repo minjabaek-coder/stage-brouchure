@@ -16,16 +16,38 @@ const MessagesPreview: FC = async () => {
   return (
     <section
       className="pt-1.5 pb-6"
-      aria-label="방명록 미리보기"
+      aria-label="응원 메시지 미리보기"
       data-testid="messages-preview"
     >
-      <div className="mb-4 flex items-center gap-2.5">
-        <span aria-hidden className="bg-gold/40 h-px flex-1" />
-        <p className="text-gold-warm font-serif-ko text-[13px] italic tracking-[0.02em]">
-          ✦ 출연자에게 한마디 ✦
-        </p>
-        <span aria-hidden className="bg-gold/40 h-px flex-1" />
-      </div>
+      <nav
+        className="mb-4 flex items-center justify-center gap-1.5"
+        aria-label="응원 메시지 / 관람 후기 / 사진"
+        data-testid="messages-preview-nav"
+      >
+        <Link
+          href="/messages"
+          aria-current="page"
+          className="border-line bg-cream-100 text-ink inline-flex items-center rounded-full border px-3 py-1.5 text-[12px] font-medium tracking-[-0.01em] transition-colors"
+          style={{ borderWidth: "0.5px" }}
+          data-testid="messages-preview-tab-cheer"
+        >
+          응원 메시지
+        </Link>
+        <Link
+          href="/messages?tab=review"
+          className="text-muted hover:text-ink hover:bg-cream-100 inline-flex items-center rounded-full px-3 py-1.5 text-[12px] font-medium tracking-[-0.01em] transition-colors"
+          data-testid="messages-preview-tab-review"
+        >
+          관람 후기
+        </Link>
+        <Link
+          href="/messages?tab=photos"
+          className="text-muted hover:text-ink hover:bg-cream-100 inline-flex items-center rounded-full px-3 py-1.5 text-[12px] font-medium tracking-[-0.01em] transition-colors"
+          data-testid="messages-preview-tab-photos"
+        >
+          사진
+        </Link>
+      </nav>
 
       {items.length === 0 ? (
         <p

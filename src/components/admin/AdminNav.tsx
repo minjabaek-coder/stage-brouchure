@@ -2,7 +2,7 @@ import Link from "next/link";
 import { type FC } from "react";
 
 interface AdminNavProps {
-  /** "콘텐츠 관리" or "방명록 관리" — which tab is currently rendered. */
+  /** "콘텐츠 관리" or "응원 메시지 관리" — which tab is currently rendered. */
   active: "content" | "messages";
 }
 
@@ -45,7 +45,7 @@ const AdminNav: FC<AdminNavProps> = ({ active }) => {
         className={linkClass("messages")}
         data-testid="admin-nav-messages"
       >
-        방명록 관리
+        응원 메시지 관리
       </Link>
     </nav>
   );

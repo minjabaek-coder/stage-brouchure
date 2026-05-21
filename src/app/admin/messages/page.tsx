@@ -5,7 +5,7 @@ import AdminMessagesList from "@/components/admin/AdminMessagesList";
 import { getAllMessages, countMessages } from "@/lib/messages";
 
 export const metadata = {
-  title: "관리자 · 방명록 · 어울림 콘서트",
+  title: "관리자 · 응원 메시지 · 어울림 콘서트",
   robots: { index: false, follow: false },
 };
 
@@ -25,10 +25,10 @@ export default async function AdminMessagesPage() {
           Stage Manager
         </p>
         <h1 className="font-serif-ko text-ink mt-2 text-[24px] font-semibold tracking-[-0.01em]">
-          방명록 관리
+          응원 메시지 관리
         </h1>
         <p className="text-muted mt-2 text-[13px] leading-[1.6]">
-          관객이 남긴 메시지를 확인하고 부적절한 글은 삭제합니다.
+          관객이 보낸 응원 메시지를 확인하고 부적절한 글은 삭제합니다.
         </p>
       </header>
 

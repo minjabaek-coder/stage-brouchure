@@ -5,8 +5,8 @@ import { expect, test } from "@playwright/test";
 // Rate Limit on later steps.
 test.describe.configure({ mode: "serial" });
 
-test.describe("방명록 (공개)", () => {
-  test("홈에 방명록 미리보기 섹션이 노출된다", async ({ page }) => {
+test.describe("응원 메시지 (공개)", () => {
+  test("홈에 응원 메시지 미리보기 섹션이 노출된다", async ({ page }) => {
     await page.goto("/");
     await expect(page.getByTestId("messages-preview")).toBeVisible();
     await expect(page.getByTestId("message-form-button")).toBeVisible();
@@ -121,7 +121,7 @@ test.describe("방명록 (공개)", () => {
   });
 });
 
-test.describe("방명록 관리자", () => {
+test.describe("응원 메시지 관리자", () => {
   test.beforeEach(async ({}, info) => {
     test.skip(
       info.project.name === "mobile-chromium",

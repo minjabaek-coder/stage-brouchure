@@ -11,7 +11,7 @@ import {
 import { toast } from "sonner";
 
 interface MessageFormButtonProps {
-  variant?: "primary" | "ghost";
+  variant?: "primary" | "ghost" | "hero";
   label?: string;
 }
 
@@ -30,7 +30,7 @@ interface ApiError {
  */
 const MessageFormButton: FC<MessageFormButtonProps> = ({
   variant = "primary",
-  label = "메시지 남기기",
+  label = "응원 메시지 보내기",
 }) => {
   const router = useRouter();
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -97,10 +97,13 @@ const MessageFormButton: FC<MessageFormButtonProps> = ({
     }
   };
 
+  const isHero = variant === "hero";
   const buttonClass =
     variant === "primary"
       ? "bg-[var(--color-gold-soft)] text-ink hover:brightness-[1.03] shadow-card"
-      : "border-line bg-paper text-ink hover:bg-cream-100";
+      : variant === "hero"
+        ? "bg-burgundy text-paper hover:opacity-90 shadow-card w-full"
+        : "border-line bg-paper text-ink hover:bg-cream-100";
 
   return (
     <>
@@ -108,13 +111,22 @@ const MessageFormButton: FC<MessageFormButtonProps> = ({
         type="button"
         onClick={() => setOpen(true)}
         className={[
-          "inline-flex h-10 items-center justify-center gap-1.5 rounded-full px-5 text-[13px] font-medium tracking-[-0.01em] transition-[transform,filter,background-color] hover:-translate-y-0.5",
+          isHero
+            ? "inline-flex h-12 items-center justify-center gap-1.5 rounded-xl px-5 text-[14px] font-medium tracking-[-0.01em] transition-opacity"
+            : "inline-flex h-10 items-center justify-center gap-1.5 rounded-full px-5 text-[13px] font-medium tracking-[-0.01em] transition-[transform,filter,background-color] hover:-translate-y-0.5",
           buttonClass,
         ].join(" ")}
         style={variant === "ghost" ? { borderWidth: "0.5px" } : undefined}
         data-testid="message-form-button"
       >
-        <i className="ti ti-pencil text-[15px]" aria-hidden />
+        <i
+          className={
+            isHero
+              ? "ti ti-plus text-[16px]"
+              : "ti ti-pencil text-[15px]"
+          }
+          aria-hidden
+        />
         {label}
       </button>
 
@@ -145,10 +157,10 @@ const MessageFormButton: FC<MessageFormButtonProps> = ({
               Message
             </p>
             <h2 className="font-serif-ko text-ink mt-2 text-[20px] font-semibold tracking-[-0.01em]">
-              한마디 남기기
+              응원 메시지 보내기
             </h2>
             <p className="text-muted mt-1.5 text-[13px] leading-[1.6]">
-              따뜻한 응원의 한마디를 남겨 주세요.
+              출연자에게 따뜻한 응원의 메시지를 보내 주세요.
             </p>
           </div>
 
@@ -181,7 +193,7 @@ const MessageFormButton: FC<MessageFormButtonProps> = ({
                 maxLength={BODY_MAX}
                 rows={4}
                 required
-                placeholder="공연을 함께하실 분들께 응원의 한마디를 남겨주세요."
+                placeholder="출연자에게 전하고 싶은 응원의 메시지를 적어 주세요."
                 className="border-line text-ink focus:border-gold focus:ring-gold/20 w-full resize-none rounded-lg bg-white px-3 py-2.5 text-[14px] leading-[1.5] outline-none focus:ring-2"
                 style={{ borderWidth: "0.5px" }}
                 data-testid="message-input-body"
@@ -194,11 +206,11 @@ const MessageFormButton: FC<MessageFormButtonProps> = ({
               className="bg-ink text-paper mt-1 inline-flex w-full items-center justify-center gap-1.5 rounded-lg px-4 py-2.5 text-[14px] font-medium tracking-[-0.01em] transition-opacity hover:opacity-90 disabled:opacity-50"
               data-testid="message-submit"
             >
-              {submitting ? "남기는 중…" : "남기기"}
+              {submitting ? "보내는 중…" : "보내기"}
             </button>
           </form>
           <p className="text-muted-light mt-3 text-center text-[11px] leading-[1.5]">
-            남긴 메시지는 즉시 공개됩니다.
+            보낸 메시지는 즉시 공개됩니다.
           </p>
         </div>
       </dialog>

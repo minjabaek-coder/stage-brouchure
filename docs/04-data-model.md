@@ -1,25 +1,25 @@
 # 04 · 데이터 모델 (Data Model)
 
-> 기준 문서: [`00-prd.md`](./00-prd.md) v1.1 · §4.2
+> 기준 문서: [`00-prd.md`](./00-prd.md) v1.2 · §4.2
 
-PostgreSQL (Supabase) + Prisma ORM 기준. PRD §4.2 에 따라 **2 테이블만** 운영한다.
+PostgreSQL (Supabase) + Prisma ORM 기준. PRD §4.2 에 따라 **3 테이블** (`attendees`, `assets`, `messages`) + 선택 백업 1개 (`csv_backups`) 를 운영한다.
 
 ## 1. ERD (텍스트)
 
 ```
-┌──────────────┐        ┌──────────────┐
-│  attendees   │        │    assets    │
-│              │        │              │
-│  id (PK)     │        │  key (PK)    │
-│  name        │        │  url         │
-│  phone_last4 │        │  updated_at  │
-│  seat        │        │              │
-│  note        │        │              │
-│  created_at  │        │              │
-│  updated_at  │        │              │
-└──────────────┘        └──────────────┘
-        ↑
-        │ (논리적, FK 없음)
+┌──────────────┐        ┌──────────────┐        ┌──────────────┐
+│  attendees   │        │    assets    │        │   messages   │
+│              │        │              │        │              │
+│  id (PK)     │        │  key (PK)    │        │  id (PK)     │
+│  name        │        │  url         │        │  nickname    │
+│  phone_last4 │        │  updated_at  │        │  body        │
+│  seat        │        │              │        │  created_at  │
+│  note        │        │              │        │              │
+│  created_at  │        │              │        │              │
+│  updated_at  │        │              │        │              │
+└──────────────┘        └──────────────┘        └──────────────┘
+        ↑                                              ↑
+        │ (논리적, FK 없음)                            │ (독립)
         │
 ┌──────────────────┐
 │  csv_backups     │   (선택, 자동 백업용)
@@ -83,6 +83,25 @@ CSV 업로드 직전 데이터를 자동 백업. 최근 3개 버전만 유지 (P
 
 > 단순화: Supabase Storage 의 디렉터리 listing 만으로 관리할 수도 있어 본 테이블은 **선택 사항**.
 
+### ENT-04 · messages
+응원 메시지 (PRD §2.4, FR-G09/G10, FR-A05). 닉네임 + 본문만 저장. 작성자 식별 정보(IP/이메일/전화 등) 미저장 (NFR-09).
+
+| 필드 | 타입 | 제약 | 비고 |
+|------|------|------|------|
+| id | text (cuid) | PK | `@default(cuid())` |
+| nickname | varchar(10) | not null | 2–10자, trim 후 저장 |
+| body | varchar(200) | not null | 1–200자, 줄바꿈 허용 |
+| created_at | timestamptz | default now() | 인덱스 (DESC) — 최신순 조회 최적화 |
+
+**인덱스**:
+- `(created_at DESC)` — `/messages` 와 홈 미리보기의 최신순 조회 패턴에 일치
+
+**운영 정책**:
+- 즉시 공개 (별도 모더레이션 큐 없음)
+- 작성 Rate Limit: 1분 / IP (FR-G10). IP 는 `@upstash/ratelimit` 의 키로만 사용, DB·로그 미저장
+- 삭제는 운영자만 (`DELETE /api/admin/messages/[id]`, FR-A05), hard delete
+- 작성자 본인 삭제·수정 기능 없음 (단순화)
+
 ## 3. Prisma 스키마
 
 ```prisma
@@ -124,6 +143,16 @@ model CsvBackup {
   rowCount     Int?     @map("row_count")
 
   @@map("csv_backups")
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  nickname  String   @db.VarChar(10)
+  body      String   @db.VarChar(200)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([createdAt(sort: Desc)])
+  @@map("messages")
 }
 ```
 
@@ -193,12 +222,17 @@ await prisma.asset.upsert({
 |----------|-------------|
 | §4.2 attendees 표 | `Attendee.*` |
 | §4.2 assets 표 | `Asset.*` |
+| §4.2 messages 표 | `Message.*` |
 | §3.3.4 자동 백업 | `CsvBackup.*` + Storage |
 | §2.2.3 검색 로직 | `Attendee.findFirst({ where: { name, phoneLast4 } })` |
 | §3.3.3 검증 규칙 | CSV 파서 단계 zod 스키마 |
+| §2.4.3 작성 입력 검증 | `MessageInput` zod 스키마 (`src/lib/messages.ts`) |
+| §2.4.4 도배 방지 | `@upstash/ratelimit` messages 트랙 (1/min/IP) |
+| §3.6.2 삭제 흐름 | `prisma.message.delete({ where: { id } })` + `revalidatePath` |
 
 ## 8. 데이터 보관 정책
 
 - 행사 종료 6개월 후 `attendees` 자동 삭제 (cron) — 개인정보 최소화 (NFR-09)
 - `csv_backups` Storage 도 동일하게 6개월 후 정리
 - 이미지 자산은 보관 (다음 회차 재사용 가능)
+- `messages` 는 식별 정보가 없으므로 보관해도 무방. 다음 회차 사이트로 마이그레이션할지 폐기할지는 운영자가 행사 후 판단

@@ -2,7 +2,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/db";
 
 /**
- * 방명록 (ENT-04) — 한마디 모음.
+ * 응원 메시지 (ENT-04) — 출연자에게 보내는 한 줄 응원.
  * 닉네임 2–10자, 본문 1–200자. IP·이메일 미저장.
  * 즉시 공개. 삭제는 /admin/messages 에서만.
  */
