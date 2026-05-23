@@ -26,11 +26,11 @@
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",
-    "@supabase/supabase-js": "^2.105.4",
     "@tabler/icons-webfont": "^3.44.0",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.38.0",
     "@vercel/analytics": "^2.0.1",
+    "@vercel/blob": "^2.4.0",
     "iconv-lite": "^0.7.2",
     "next": "16.2.6",
     "papaparse": "^5.5.3",

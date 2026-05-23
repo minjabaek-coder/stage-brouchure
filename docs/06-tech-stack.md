@@ -1,6 +1,8 @@
 # 06 · 기술 스택 (Tech Stack)
 
-> 기준 문서: [`00-prd.md`](./00-prd.md) v1.1 — 기술 사양은 **Option B (Next.js + Supabase)** 채택
+> 기준 문서: [`00-prd.md`](./00-prd.md) v1.2 — 기술 사양은 **Option B (Next.js + Neon + Vercel Blob)** 채택
+>
+> **2026-02-27 마이그레이션**: 프로덕션 DB/Storage가 Supabase → Neon Postgres + Vercel Blob으로 교체됨. 사유는 PRD §4.1 옵션 B 이력 참조.
 
 ## 1. 한눈에 보기
 
@@ -12,8 +14,8 @@
 | UI 라이브러리 | **React 19** | Server Components + Server Actions |
 | 스타일 | **Tailwind CSS 4** + **shadcn/ui** | 디자인 토큰 이식 |
 | 폰트 | **Noto Serif KR**, **Cormorant Garamond** | `next/font/google` |
-| DB (production) | **PostgreSQL** (Supabase) | |
-| DB (local dev/test) | **PostgreSQL** (로컬 설치, Homebrew) | Supabase 대신 로컬 인스턴스 사용 |
+| DB (production) | **PostgreSQL** (Neon, Vercel Marketplace) | Free Tier 10 프로젝트 · auto-suspend + 자동 wake |
+| DB (local dev/test) | **PostgreSQL** (로컬 설치, Homebrew) | 프로덕션 Neon 대신 로컬 인스턴스 사용 |
 | ORM | **Prisma** 6+ | |
 | 폼 | **react-hook-form** + **zod** | CSV 검증 포함 |
 | 이미지 | **next/image** + **sharp** | 업로드 시 1600px 리사이즈 + JPG 80% |
@@ -24,7 +26,7 @@
 | 패키지 매니저 | **pnpm** | |
 | 린트/포맷 | ESLint, Prettier | |
 | 배포 | **Vercel** | Preview Deploy 활용 |
-| 스토리지 | **Supabase Storage** | CSV 백업 + 이미지 자산 |
+| 스토리지 | **Vercel Blob** (`@vercel/blob`) | CSV 백업 + 이미지 자산. Hobby Free 1 GB. `BLOB_READ_WRITE_TOKEN`로 인증 |
 | 모니터링 | **Vercel Analytics** (채택) + **Sentry** (선택) | Analytics: `@vercel/analytics/next` 의 `<Analytics />` 를 root `layout.tsx` 에 마운트. 쿠키 미사용·IP 익명화로 NFR-09 와 부합 |
 
 > PRD §4.1 의 **Option A (정적 + Google Sheets)** 는 운영비 최소화 대안으로 참고만 한다. 본 프로젝트는 확장성·관리자 UI 품질을 위해 Option B 를 채택했다.
@@ -61,7 +63,7 @@ stage_brochure/
 │  │  ├─ ratelimit.ts             upstash
 │  │  ├─ csv.ts                   Papaparse + zod 검증
 │  │  ├─ image.ts                 sharp 최적화
-│  │  ├─ storage.ts               Supabase Storage 헬퍼
+│  │  ├─ storage.ts               Vercel Blob 헬퍼 (로컬 dev는 fs fallback)
 │  │  └─ youtube.ts               URL → ID 파싱
 │  ├─ styles/
 │  │  └─ globals.css              Tailwind + 디자인 토큰
@@ -193,38 +195,45 @@ export async function optimize(input: Buffer): Promise<Buffer> {
 
 ## 7. 환경 변수 (.env)
 
-### 7.1 로컬 개발 (`.env.local`)
+### 7.1 로컬 개발 (`.env.local` 또는 `.env`)
 
 ```
 # 로컬 PostgreSQL (Homebrew 설치)
 DATABASE_URL="postgresql://postgres:postgres@localhost:5432/eoullim_dev"
+DIRECT_URL="postgresql://postgres:postgres@localhost:5432/eoullim_dev"
 
-# Supabase Storage 는 로컬에서도 그대로 사용 (이미지 업로드 테스트용 무료 티어)
-SUPABASE_URL="..."
-SUPABASE_SERVICE_ROLE="..."
-SUPABASE_ANON_KEY="..."
-SUPABASE_STORAGE_BUCKET="eoullim-assets"
+# Vercel Blob — 비우면 storage.ts 가 자동으로 로컬 fs (public/uploads + .backups) 로 폴백
+# 토큰은 `vercel env pull` 또는 Vercel 대시보드의 Storage → Blob → Connect Project 에서 발급
+BLOB_READ_WRITE_TOKEN=""
 
-# Upstash 도 로컬에서 그대로 (무료 티어)
-UPSTASH_REDIS_REST_URL="..."
-UPSTASH_REDIS_REST_TOKEN="..."
+# Upstash 는 로컬에서도 그대로 (무료 티어). 비우면 in-memory fallback.
+UPSTASH_REDIS_REST_URL=""
+UPSTASH_REDIS_REST_TOKEN=""
 
 ADMIN_PATH_SUFFIX=""
 ```
 
 ### 7.2 프로덕션 (Vercel 환경변수)
 
+Vercel Marketplace의 **Neon** 통합과 **Vercel Blob** 스토어를 프로젝트에 연결하면 다음 변수가 자동 주입됨:
+
 ```
-DATABASE_URL="postgresql://...supabase.co..."   # Supabase PG 커넥션 문자열
-SUPABASE_URL="..."
-SUPABASE_SERVICE_ROLE="..."
-SUPABASE_ANON_KEY="..."
-SUPABASE_STORAGE_BUCKET="eoullim-assets"
+# Neon (자동 주입)
+DATABASE_URL="postgresql://...@<region>-pooler.aws.neon.tech/...?sslmode=require"
+DIRECT_URL="postgresql://...@<region>.aws.neon.tech/...?sslmode=require"
+
+# Vercel Blob (자동 주입)
+BLOB_READ_WRITE_TOKEN="vercel_blob_rw_..."
+
+# 수동 등록
 UPSTASH_REDIS_REST_URL="..."
 UPSTASH_REDIS_REST_TOKEN="..."
-SENTRY_DSN="..."
+SENTRY_DSN="..."                    # 선택
 ADMIN_PATH_SUFFIX="<랜덤 문자열>"
+NEXT_PUBLIC_SITE_URL="https://stage-brochure.vercel.app"
 ```
+
+> Neon은 `?pgbouncer=true` 가 hostname의 `-pooler` 접미사로 대체된다. Migration용 `DIRECT_URL`은 pooler 없는 hostname으로 지정.
 
 `AUTH_SECRET` 등 인증 관련 변수는 사용하지 않는다.
 
@@ -291,7 +300,7 @@ pnpm test:e2e -- s07     # 특정 단계 파일
 pnpm db:reset
 
 # 배포: Vercel git 연동, main → production, PR → preview
-# Vercel 환경변수의 DATABASE_URL 은 Supabase PG 를 가리킴
+# Vercel 환경변수의 DATABASE_URL 은 Neon Postgres (Vercel Marketplace 통합)를 가리킴
 ```
 
 ## 9. 라이브러리 선정 근거
@@ -304,7 +313,8 @@ pnpm db:reset
 | Papaparse | 한글 CSV·BOM·EUC-KR 안정 처리 | |
 | sharp | 서버사이드 이미지 리사이즈/압축 표준 | |
 | Upstash Ratelimit | 서버리스 환경에서 안정적 Rate Limit, 무료 티어 충분 | |
-| Supabase | DB + Storage 통합, 무료 티어로 행사 1회 충분 | |
+| Neon Postgres | Vercel Marketplace 1-클릭 통합, Free 10 프로젝트, auto-suspend + 자동 wake (Supabase의 수동 복구 필요한 7일 pause 회피) | 2026-02 마이그레이션 |
+| Vercel Blob | Hobby 1 GB 무료, 같은 벤더에서 통합 관리, 토큰 자동 주입 | 2026-02 마이그레이션 |
 | sonner | shadcn 표준 토스트 | |
 
 ## 10. 의도적으로 채택하지 않은 것 (v1.0 대비 변경)
@@ -328,7 +338,7 @@ PRD v1.1 은 v1.0 대비 스코프가 줄어 다음 라이브러리는 **모두 
 | NFR-03 (첫 로딩 2s) | next/image, 폰트 preload, Vercel Edge, Tailwind 트리쉐이킹 |
 | NFR-04 (검색 1s) | `(name, phone_last4)` 복합 인덱스, RSC 가 아닌 단발 fetch |
 | NFR-05 (lazy) | `<img loading="lazy">` 또는 next/image 기본 동작 |
-| NFR-06 (동시 100명) | Vercel Edge + Supabase 커넥션 풀 |
+| NFR-06 (동시 100명) | Vercel Fluid Compute + Neon pooler 커넥션 (PgBouncer 호환) |
 | NFR-07 (HTTPS) | Vercel 기본 |
 | NFR-08 (Rate Limit) | Upstash 30/min |
 | NFR-09 (개인정보) | `phone_last4` char(4) 만 저장, 전체 번호 컬럼 부재 |

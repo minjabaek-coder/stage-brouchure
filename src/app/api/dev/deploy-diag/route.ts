@@ -5,9 +5,10 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /**
- * 임시 배포 진단 — Vercel + Supabase 배포 직후 Prisma 가 어떤 에러를 던지는지
- * 빠르게 회수. 환경변수 마스킹된 요약 + 가벼운 prisma 호출 한 번 + 잡힌 에러
- * 전체 메시지/code/meta 를 반환. 운영 시작 전 (실명단 업로드 전) 에 삭제 예정.
+ * 임시 배포 진단 — Vercel + Neon + Vercel Blob 배포 직후 Prisma 가 어떤 에러를
+ * 던지는지 빠르게 회수. 환경변수 마스킹된 요약 + 가벼운 prisma 호출 한 번 +
+ * 잡힌 에러 전체 메시지/code/meta 를 반환. 운영 시작 전 (실명단 업로드 전)
+ * 에 삭제 예정.
  */
 export async function GET() {
   const env = {
@@ -16,8 +17,7 @@ export async function GET() {
     DATABASE_URL_host: safeHost(process.env.DATABASE_URL),
     DIRECT_URL_set: Boolean(process.env.DIRECT_URL),
     DIRECT_URL_host: safeHost(process.env.DIRECT_URL),
-    SUPABASE_URL: process.env.SUPABASE_URL ?? null,
-    SUPABASE_SERVICE_ROLE_KEY_set: Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY),
+    BLOB_TOKEN_set: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
     ADMIN_PATH_SUFFIX: process.env.ADMIN_PATH_SUFFIX ?? null,
   };
 

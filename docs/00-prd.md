@@ -366,25 +366,26 @@ name,phone_last4,seat,note
 
 ### 4.1 권장 기술 스택
 
-#### 옵션 A: 가장 간단한 구성 (운영비 최소) — **권장**
+#### 옵션 A: 가장 간단한 구성 (운영비 최소)
 
 - **프론트엔드**: 정적 HTML + CSS + JavaScript (현재 만들어둔 페이지 활용)
 - **백엔드**: Google Sheets + Apps Script (DB 대용)
-  - 또는 Supabase 무료 티어
-- **이미지 저장**: Cloudinary 무료 티어 / Supabase Storage
+- **이미지 저장**: Cloudinary 무료 티어
 - **호스팅**: Netlify / Vercel / GitHub Pages (무료)
 - **장점**: 무료, 유지보수 쉬움
 - **단점**: 동시접속 매우 많을 때 일부 지연 가능
 
-#### 옵션 B: 정식 백엔드 구성
+#### 옵션 B: 정식 백엔드 구성 — **채택**
 
-- **프론트엔드**: Next.js (React)
-- **백엔드**: Next.js API Routes
-- **DB**: Supabase / Firebase Firestore (무료 티어로 충분)
-- **이미지 저장**: Supabase Storage / Firebase Storage
+- **프론트엔드**: Next.js 15 (React 19, App Router)
+- **백엔드**: Next.js API Routes (Vercel Functions / Fluid Compute)
+- **DB (production)**: **Neon Postgres** (Vercel Marketplace 통합, Free Tier — 10 프로젝트, auto-suspend + 자동 wake)
+- **DB (local dev/test)**: PostgreSQL 로컬 설치 (Homebrew)
+- **이미지/파일 저장**: **Vercel Blob** (Hobby Free Tier — 1 GB, public bucket)
 - **호스팅**: Vercel
-- **장점**: 확장성, 정식 관리자 UI
+- **장점**: 확장성, 정식 관리자 UI, 단일 벤더(Vercel)에서 통합 관리, "1 행사 = 1 Neon 프로젝트" 자연스러운 격리
 - **단점**: 초기 구축 시간 더 필요
+- **이력**: 2026-02-27 — 기존 Supabase (DB + Storage) 조합에서 Neon + Vercel Blob로 마이그레이션. 사유: Supabase Free Tier 7일 자동 pause 사고 발생 + Supabase Free 2-프로젝트 제한이 단발성 행사 다수 운영에 부적합. Neon은 10 프로젝트 무료 + cold wake-up 자동.
 
 ### 4.2 데이터 저장 구조
 

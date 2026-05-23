@@ -1,59 +1,51 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { del, put } from "@vercel/blob";
 
 /**
- * Storage adapter — Supabase Storage 가 우선, 환경변수가 없으면 로컬 파일시스템.
+ * Storage adapter — Vercel Blob 이 우선, 환경변수가 없으면 로컬 파일시스템.
  *
- * Buckets (수동 생성 필요, docs/09-deployment.md §3 참조):
- *   - images   (public read)  : seatmap.jpg, brochure-NN.jpg
- *   - backups  (private)      : CSV 자동 백업
+ * 단일 Blob store 안에서 폴더로 분리 (docs/09-deployment.md §3 참조):
+ *   - images/<file>    (public read)  : seatmap.jpg, brochure-NN.jpg
+ *   - backups/<file>   (public read*) : CSV 자동 백업
+ *
+ * *Vercel Blob 은 현재 store 단위로 access mode 가 설정되며 Hobby 에서는
+ *  public 만 지원한다. 백업 CSV 의 보안은 (1) URL 추측 불가능한 random
+ *  suffix + (2) `ADMIN_PATH_SUFFIX` 로 가려진 admin UI 에서만 다운로드
+ *  링크를 노출 — 두 가지 layer 로 처리한다.
  *
  * Vercel 서버리스 파일시스템은 ephemeral 이라 dev/test 외에는 로컬 fs 를
- * 못 쓴다. SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY 가 설정되면 자동 전환.
+ * 못 쓴다. BLOB_READ_WRITE_TOKEN 이 설정되면 자동 전환.
  */
 
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const IMAGES_BUCKET = process.env.SUPABASE_IMAGES_BUCKET ?? "images";
-const BACKUPS_BUCKET = process.env.SUPABASE_BACKUPS_BUCKET ?? "backups";
+const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN;
 
 const LOCAL_BACKUP_DIR =
   process.env.LOCAL_BACKUP_DIR ?? path.join(process.cwd(), ".backups");
 const PUBLIC_UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
 
-function isSupabaseEnabled(): boolean {
-  return Boolean(SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY);
-}
-
-let cachedClient: SupabaseClient | null = null;
-function client(): SupabaseClient {
-  if (cachedClient) return cachedClient;
-  // isSupabaseEnabled() 가 true 일 때만 호출되므로 non-null 단언 안전
-  cachedClient = createClient(SUPABASE_URL as string, SUPABASE_SERVICE_ROLE_KEY as string, {
-    auth: { persistSession: false },
-  });
-  return cachedClient;
+function isBlobEnabled(): boolean {
+  return Boolean(BLOB_TOKEN);
 }
 
 /**
- * CSV 백업 저장. Storage 사용 시 객체 path 반환 (`<filename>`), 로컬 fs 사용
- * 시 프로젝트 루트 기준 상대 경로 반환. 호출부는 그 값을 그대로 csv_backups
- * .storagePath 에 저장한다.
+ * CSV 백업 저장. Blob 사용 시 객체 URL 을 반환, 로컬 fs 사용 시 프로젝트
+ * 루트 기준 상대 경로 반환. 호출부는 그 값을 그대로 csv_backups.storagePath
+ * 에 저장한다. (Blob 은 삭제 시 같은 URL 이 필요하므로 URL 전체를 저장.)
  */
 export async function saveBackupCsv(
   filename: string,
   content: string,
 ): Promise<string> {
-  if (isSupabaseEnabled()) {
-    const { error } = await client()
-      .storage.from(BACKUPS_BUCKET)
-      .upload(filename, content, {
-        contentType: "text/csv; charset=utf-8",
-        upsert: true,
-      });
-    if (error) throw new Error(`Supabase backup upload failed: ${error.message}`);
-    return filename;
+  if (isBlobEnabled()) {
+    const result = await put(`backups/${filename}`, content, {
+      access: "public",
+      contentType: "text/csv; charset=utf-8",
+      // 같은 filename 재업로드 시 새 random suffix 가 붙도록 둔다 (default).
+      // 과거 백업 삭제는 deleteBackupCsv(URL) 로 명시적으로 한다.
+      token: BLOB_TOKEN,
+    });
+    return result.url;
   }
 
   await fs.mkdir(LOCAL_BACKUP_DIR, { recursive: true });
@@ -71,17 +63,17 @@ export async function saveImageAsset(
   filename: string,
   content: Buffer,
 ): Promise<string> {
-  if (isSupabaseEnabled()) {
-    const sb = client();
-    const { error } = await sb.storage
-      .from(IMAGES_BUCKET)
-      .upload(filename, content, {
-        contentType: "image/jpeg",
-        upsert: true,
-      });
-    if (error) throw new Error(`Supabase image upload failed: ${error.message}`);
-    const { data } = sb.storage.from(IMAGES_BUCKET).getPublicUrl(filename);
-    return `${data.publicUrl}?v=${Date.now()}`;
+  if (isBlobEnabled()) {
+    const result = await put(`images/${filename}`, content, {
+      access: "public",
+      contentType: "image/jpeg",
+      // 같은 filename 으로 덮어쓰기. 운영자가 seatmap.jpg 를 재업로드하면
+      // 기존 객체를 그대로 교체하고 같은 URL 유지.
+      allowOverwrite: true,
+      addRandomSuffix: false,
+      token: BLOB_TOKEN,
+    });
+    return `${result.url}?v=${Date.now()}`;
   }
 
   await fs.mkdir(PUBLIC_UPLOAD_DIR, { recursive: true });
@@ -93,17 +85,18 @@ export async function saveImageAsset(
 /**
  * Best-effort delete (S11 의 "백업 3개 보존" 정책에서 가장 오래된 백업 prune).
  * 존재하지 않는 파일은 에러 아님.
+ *
+ * storagePath: Blob 모드에서는 saveBackupCsv 가 반환한 URL 전체.
+ * fs 모드에서는 path.relative 결과.
  */
 export async function deleteBackupCsv(storagePath: string): Promise<void> {
-  if (isSupabaseEnabled()) {
-    // Storage 에 저장할 때 filename 만 넣으므로 storagePath 도 filename.
-    // 과거 로컬 fs 시절에 저장된 `path.relative()` 형식이 들어올 수도 있어
-    // basename 으로 정규화한다.
-    const key = path.basename(storagePath);
-    const { error } = await client().storage.from(BACKUPS_BUCKET).remove([key]);
-    if (error) {
-      // 404 인 경우는 무시
-      if (!/not\s*found/i.test(error.message)) throw error;
+  if (isBlobEnabled()) {
+    try {
+      await del(storagePath, { token: BLOB_TOKEN });
+    } catch (e) {
+      // 이미 삭제된 경우는 무시
+      const msg = e instanceof Error ? e.message : String(e);
+      if (!/not\s*found|404/i.test(msg)) throw e;
     }
     return;
   }
