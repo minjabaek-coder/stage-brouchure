@@ -15,8 +15,8 @@ export async function GET() {
     NODE_ENV: process.env.NODE_ENV,
     DATABASE_URL_set: Boolean(process.env.DATABASE_URL),
     DATABASE_URL_host: safeHost(process.env.DATABASE_URL),
-    DIRECT_URL_set: Boolean(process.env.DIRECT_URL),
-    DIRECT_URL_host: safeHost(process.env.DIRECT_URL),
+    DATABASE_URL_UNPOOLED_set: Boolean(process.env.DATABASE_URL_UNPOOLED),
+    DATABASE_URL_UNPOOLED_host: safeHost(process.env.DATABASE_URL_UNPOOLED),
     BLOB_TOKEN_set: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
     ADMIN_PATH_SUFFIX: process.env.ADMIN_PATH_SUFFIX ?? null,
   };
