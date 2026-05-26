@@ -15,9 +15,9 @@ interface MessagesPreviewContentProps {
 }
 
 const TABS: Array<{ key: TabKey; label: string; href: string }> = [
-  { key: "cheer", label: "응원 메시지", href: "/messages" },
+  { key: "cheer", label: "응원 메시지", href: "/messages?tab=cheer" },
   { key: "review", label: "관람 후기", href: "/messages?tab=review" },
-  { key: "photos", label: "사진", href: "/messages?tab=photos" },
+  { key: "photos", label: "사진", href: "/messages" },
 ];
 
 /**
@@ -37,7 +37,9 @@ const MessagesPreviewContent = ({
   reviewCta,
   photosCta,
 }: MessagesPreviewContentProps) => {
-  const [active, setActive] = useState<TabKey>("cheer");
+  // v1.6: 디폴트 탭을 사진으로. 공연 중 실시간 업로드되는 사진이 가장
+  // 노출 가치가 높다 — 첫 진입자가 바로 현장 분위기를 보게 한다.
+  const [active, setActive] = useState<TabKey>("photos");
 
   const panels: Record<TabKey, ReactNode> = {
     cheer: cheerPanel,

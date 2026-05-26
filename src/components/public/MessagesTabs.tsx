@@ -21,17 +21,18 @@ const VALID_TABS = new Set<TabKey>(["cheer", "review", "photos"]);
 
 function parseTab(raw: string | null): TabKey {
   if (raw && VALID_TABS.has(raw as TabKey)) return raw as TabKey;
-  return "cheer";
+  return "photos";
 }
 
 /**
- * 3-tab navigation for /messages. The cheer tab is the implemented panel
- * (SSR-rendered messages list passed in as `cheerPanel`); review/photos
- * panels are coming-soon placeholders until after the concert (PRD §7).
+ * 3-tab navigation for /messages. All three tabs are real content (응원 / 후기 /
+ * 사진).
  *
  * Tab state lives in the URL (`?tab=cheer|review|photos`) so it survives
- * refresh, back/forward, and direct linking. The default tab (`cheer`)
- * uses no query param to keep the canonical `/messages` URL clean.
+ * refresh, back/forward, and direct linking. The **default tab (`photos`)**
+ * uses no query param to keep the canonical `/messages` URL clean — v1.6
+ * 변경 (이전: 응원 메시지가 디폴트). 공연 진행 중 실시간 업로드되는 사진을
+ * 첫 방문자에게 곧장 노출하기 위한 결정.
  */
 const MessagesTabs = ({
   cheerPanel,
@@ -52,7 +53,8 @@ const MessagesTabs = ({
   const handleSelect = (key: TabKey) => {
     if (key === active) return;
     const params = new URLSearchParams(searchParams.toString());
-    if (key === "cheer") params.delete("tab");
+    // photos = 디폴트 = canonical URL (?tab 없음). 나머지는 명시.
+    if (key === "photos") params.delete("tab");
     else params.set("tab", key);
     const query = params.toString();
     router.replace(query ? `${pathname}?${query}` : pathname, {
