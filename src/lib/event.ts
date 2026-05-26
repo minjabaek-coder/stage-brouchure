@@ -54,13 +54,13 @@ export const EVENT = {
   sponsors: [
     {
       name: "(주)아트컴퍼니본",
-      url: "http://www.bon-art.kr",
+      url: "https://kyungjunpark.com",
       logo: "/sponsor-bjon.png",
       tone: "burgundy" as const, // 와인색 배경 박스
     },
     {
       name: "(주)카이로스팀",
-      url: "https://www.kairosse.com",
+      url: "https://kairosse.com/book",
       logo: "/sponsor-kairosse.jpg",
       tone: "paper" as const, // 흰 배경 박스
     },
