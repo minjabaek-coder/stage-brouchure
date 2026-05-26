@@ -1,8 +1,8 @@
 # 04 · 데이터 모델 (Data Model)
 
-> 기준 문서: [`00-prd.md`](./00-prd.md) v1.2 · §4.2
+> 기준 문서: [`00-prd.md`](./00-prd.md) v1.3 · §4.2
 
-PostgreSQL (Supabase) + Prisma ORM 기준. PRD §4.2 에 따라 **3 테이블** (`attendees`, `assets`, `messages`) + 선택 백업 1개 (`csv_backups`) 를 운영한다.
+PostgreSQL (Neon Postgres) + Prisma ORM 기준. PRD §4.2 에 따라 **5 테이블** (`attendees`, `assets`, `messages`, `reviews`, `photos`) + 선택 백업 1개 (`csv_backups`) 를 운영한다.
 
 ## 1. ERD (텍스트)
 
@@ -102,6 +102,38 @@ CSV 업로드 직전 데이터를 자동 백업. 최근 3개 버전만 유지 (P
 - 삭제는 운영자만 (`DELETE /api/admin/messages/[id]`, FR-A05), hard delete
 - 작성자 본인 삭제·수정 기능 없음 (단순화)
 
+### ENT-05 · reviews
+관람 후기 (PRD §2.4, v1.3 추가). 응원 메시지와 같은 구조이되 본문 길이를 늘려 진솔한 감상에 적합.
+
+| 필드 | 타입 | 제약 | 비고 |
+|------|------|------|------|
+| id | text (cuid) | PK | `@default(cuid())` |
+| nickname | varchar(10) | not null | 2–10자 |
+| body | varchar(500) | not null | 1–500자 |
+| created_at | timestamptz | default now() | 인덱스 (DESC) |
+
+**운영 정책**:
+- 즉시 공개. 작성 Rate Limit: 5분 / IP. 운영자만 hard delete.
+
+### ENT-06 · photos
+관객 업로드 사진 (PRD §2.4, v1.3 추가). 닉네임 + (선택) 캡션 + 이미지 메타데이터.
+
+| 필드 | 타입 | 제약 | 비고 |
+|------|------|------|------|
+| id | text (cuid) | PK | `@default(cuid())` |
+| nickname | varchar(10) | not null | 2–10자 |
+| caption | varchar(100) | nullable | 0–100자 (선택) |
+| url | text | not null | Vercel Blob public URL (`photos/<random>.jpg`) |
+| width | int | not null | 압축 후 가로(px) |
+| height | int | not null | 압축 후 세로(px) |
+| byte_size | int | not null | 압축 후 바이트 수 — Blob 1GB 한도 모니터링 |
+| created_at | timestamptz | default now() | 인덱스 (DESC) |
+
+**운영 정책**:
+- 즉시 공개. 업로드 Rate Limit: 10분 / IP · 1회 최대 3장.
+- 클라이언트 1차 압축 + 서버 sharp 2차 압축 (EXIF/GPS strip). 자세한 사양은 PRD §4.5
+- 삭제는 운영자만. DB row 제거 + Vercel Blob 객체(`del(url)`) 동시 제거.
+
 ## 3. Prisma 스키마
 
 ```prisma
@@ -153,6 +185,30 @@ model Message {
 
   @@index([createdAt(sort: Desc)])
   @@map("messages")
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  nickname  String   @db.VarChar(10)
+  body      String   @db.VarChar(500)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([createdAt(sort: Desc)])
+  @@map("reviews")
+}
+
+model Photo {
+  id        String   @id @default(cuid())
+  nickname  String   @db.VarChar(10)
+  caption   String?  @db.VarChar(100)
+  url       String
+  width     Int
+  height    Int
+  byteSize  Int      @map("byte_size")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([createdAt(sort: Desc)])
+  @@map("photos")
 }
 ```
 
@@ -226,13 +282,17 @@ await prisma.asset.upsert({
 | §3.3.4 자동 백업 | `CsvBackup.*` + Storage |
 | §2.2.3 검색 로직 | `Attendee.findFirst({ where: { name, phoneLast4 } })` |
 | §3.3.3 검증 규칙 | CSV 파서 단계 zod 스키마 |
-| §2.4.3 작성 입력 검증 | `MessageInput` zod 스키마 (`src/lib/messages.ts`) |
-| §2.4.4 도배 방지 | `@upstash/ratelimit` messages 트랙 (1/min/IP) |
-| §3.6.2 삭제 흐름 | `prisma.message.delete({ where: { id } })` + `revalidatePath` |
+| §2.4.3 응원 작성 입력 검증 | `MessageInput` zod 스키마 (`src/lib/messages.ts`) |
+| §2.4.4 후기 작성 입력 검증 | `ReviewInput` zod 스키마 (`src/lib/reviews.ts`) |
+| §2.4.5 사진 업로드 입력 검증 | `PhotoInput` zod 스키마 + multipart 파싱 (`src/lib/photos.ts`) |
+| §2.4.6 도배 방지 | `@upstash/ratelimit` 3개 트랙 — messages(1/min/IP), reviews(1/5min/IP), photos(1/10min/IP) |
+| §4.5 이미지 압축 정책 | client: `browser-image-compression`, server: `optimizeUserPhoto` (`src/lib/image.ts`, sharp + `withMetadata:false`) |
+| §3.6.2 삭제 흐름 | `prisma.{message,review,photo}.delete()` + photo는 `del(url)` Blob 제거 + `revalidatePath` |
 
 ## 8. 데이터 보관 정책
 
 - 행사 종료 6개월 후 `attendees` 자동 삭제 (cron) — 개인정보 최소화 (NFR-09)
 - `csv_backups` Storage 도 동일하게 6개월 후 정리
 - 이미지 자산은 보관 (다음 회차 재사용 가능)
-- `messages` 는 식별 정보가 없으므로 보관해도 무방. 다음 회차 사이트로 마이그레이션할지 폐기할지는 운영자가 행사 후 판단
+- `messages` / `reviews` 는 식별 정보가 없으므로 보관해도 무방. 다음 회차 사이트로 마이그레이션할지 폐기할지는 운영자가 행사 후 판단
+- `photos` 는 행사 종료 후 운영자가 일괄 다운로드하여 보관본 확보 후, 1년 경과 시 자동 삭제(향후 cron). Vercel Blob 객체도 `del()` 로 동시 제거

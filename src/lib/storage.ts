@@ -83,6 +83,60 @@ export async function saveImageAsset(
 }
 
 /**
+ * 관객 업로드 사진 저장 — `photos/<random>.jpg`.
+ * Blob 모드: random suffix 가 자동으로 붙어 URL 추측이 어렵다.
+ * 로컬 fs 모드: timestamp + random 으로 충돌 방지.
+ *
+ * 반환값은 항상 공개 URL (next/image 가 그대로 사용 가능).
+ */
+export async function saveUserPhoto(content: Buffer): Promise<string> {
+  if (isBlobEnabled()) {
+    const result = await put("photos/photo.jpg", content, {
+      access: "public",
+      contentType: "image/jpeg",
+      addRandomSuffix: true,
+      token: BLOB_TOKEN,
+    });
+    return result.url;
+  }
+
+  await fs.mkdir(PUBLIC_UPLOAD_DIR, { recursive: true });
+  const filename = `photo-${Date.now()}-${Math.random()
+    .toString(36)
+    .slice(2, 8)}.jpg`;
+  const fullPath = path.join(PUBLIC_UPLOAD_DIR, filename);
+  await fs.writeFile(fullPath, content);
+  return `/uploads/${filename}`;
+}
+
+/**
+ * 관객 사진 삭제 — Blob 모드에서는 url 전체, 로컬 fs 모드에서는 `/uploads/...` 경로.
+ * 존재하지 않으면 에러 아님 (best-effort).
+ */
+export async function deleteUserPhoto(url: string): Promise<void> {
+  if (isBlobEnabled()) {
+    try {
+      await del(url, { token: BLOB_TOKEN });
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      if (!/not\s*found|404/i.test(msg)) throw e;
+    }
+    return;
+  }
+
+  // 로컬 fs 모드: url 이 "/uploads/<filename>" 형태.
+  const rel = url.startsWith("/uploads/")
+    ? url.slice("/uploads/".length).split("?")[0]!
+    : path.basename(url);
+  const full = path.join(PUBLIC_UPLOAD_DIR, rel);
+  try {
+    await fs.unlink(full);
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
+  }
+}
+
+/**
  * Best-effort delete (S11 의 "백업 3개 보존" 정책에서 가장 오래된 백업 prune).
  * 존재하지 않는 파일은 에러 아님.
  *

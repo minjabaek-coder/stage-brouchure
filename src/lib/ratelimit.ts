@@ -2,10 +2,12 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
 /**
- * Two rate limiters share the same Upstash Redis instance (or in-memory
+ * Four rate limiters share the same Upstash Redis instance (or in-memory
  * fallback when env vars are missing):
  *   • search   — 30 / minute / IP (PRD §4.4, NFR-08)
- *   • messages — 1 / minute / IP (방명록 작성 도배 방지)
+ *   • messages — 1  / minute / IP (응원 메시지 도배 방지)
+ *   • reviews  — 1  / 5 min  / IP (관람 후기 — 정성스러운 글 유도, PRD §2.4.6)
+ *   • photos   — 1  / 10 min / IP (사진 — 스토리지·업로드 비용 보호)
  *
  * Local dev/test without UPSTASH_* env vars uses a per-process Map.
  * Production must set UPSTASH_REDIS_REST_URL/TOKEN — Vercel serverless
@@ -60,6 +62,8 @@ function createLimiter(opts: LimiterOptions): RateLimiter {
 const globalForRatelimit = globalThis as unknown as {
   ratelimit: RateLimiter | undefined;
   messagesRatelimit: RateLimiter | undefined;
+  reviewsRatelimit: RateLimiter | undefined;
+  photosRatelimit: RateLimiter | undefined;
 };
 
 export const ratelimit: RateLimiter =
@@ -80,7 +84,27 @@ export const messagesRatelimit: RateLimiter =
     windowMs: 60_000,
   });
 
+export const reviewsRatelimit: RateLimiter =
+  globalForRatelimit.reviewsRatelimit ??
+  createLimiter({
+    prefix: "reviews",
+    limit: 1,
+    window: "5 m",
+    windowMs: 5 * 60_000,
+  });
+
+export const photosRatelimit: RateLimiter =
+  globalForRatelimit.photosRatelimit ??
+  createLimiter({
+    prefix: "photos",
+    limit: 1,
+    window: "10 m",
+    windowMs: 10 * 60_000,
+  });
+
 if (process.env.NODE_ENV !== "production") {
   globalForRatelimit.ratelimit = ratelimit;
   globalForRatelimit.messagesRatelimit = messagesRatelimit;
+  globalForRatelimit.reviewsRatelimit = reviewsRatelimit;
+  globalForRatelimit.photosRatelimit = photosRatelimit;
 }

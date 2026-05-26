@@ -45,7 +45,7 @@ const AdminNav: FC<AdminNavProps> = ({ active }) => {
         className={linkClass("messages")}
         data-testid="admin-nav-messages"
       >
-        응원 메시지 관리
+        관객 콘텐츠 관리
       </Link>
     </nav>
   );

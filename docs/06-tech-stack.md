@@ -18,7 +18,8 @@
 | DB (local dev/test) | **PostgreSQL** (로컬 설치, Homebrew) | 프로덕션 Neon 대신 로컬 인스턴스 사용 |
 | ORM | **Prisma** 6+ | |
 | 폼 | **react-hook-form** + **zod** | CSV 검증 포함 |
-| 이미지 | **next/image** + **sharp** | 업로드 시 1600px 리사이즈 + JPG 80% |
+| 이미지 (서버) | **next/image** + **sharp** | 운영자 업로드 시 1600px·JPG 80%. 관객 사진 2차 압축 시 1200px·JPG 75% + EXIF/GPS strip |
+| 이미지 (클라이언트) | **browser-image-compression** | 관객 사진 1차 압축 (1600px·80%·≤800KB) — Vercel 4.5MB body 한도 회피 + 모바일 업로드 속도 |
 | 라이트박스 | **yet-another-react-lightbox** (또는 자체) | 브로셔 풀스크린 확대 |
 | CSV 파싱 | **Papaparse** | UTF-8/EUC-KR 자동 감지 |
 | Rate Limit | **@upstash/ratelimit** + **@upstash/redis** | 검색 1분 30회 |
@@ -176,21 +177,61 @@ export const ratelimit = new Ratelimit({
 
 운영 환경: Upstash Redis 무료 티어로 충분 (행사 1회용).
 
-## 6. 이미지 최적화 (PRD §2.3.4, §3.5.2)
+## 6. 이미지 최적화 (PRD §2.3.4, §3.5.2, §4.5)
+
+### 6.1 운영자 업로드 (좌석배치도·브로셔) — 1단계 (서버만)
 
 ```ts
 // lib/image.ts
 import sharp from "sharp";
 
-export async function optimize(input: Buffer): Promise<Buffer> {
+export async function optimizeImage(input: Buffer): Promise<Buffer> {
   return await sharp(input)
+    .rotate()                                              // EXIF orientation
     .resize({ width: 1600, withoutEnlargement: true })
     .jpeg({ quality: 80, mozjpeg: true })
     .toBuffer();
 }
 ```
 
-- 좌석배치도 1장, 브로셔 8장 모두 업로드 시 변환 후 Storage 저장
+### 6.2 관객 사진 업로드 — 2단계 (클라이언트 + 서버)
+
+**클라이언트 (브라우저, 업로드 직전):**
+
+```ts
+import imageCompression from "browser-image-compression";
+
+const compressed = await imageCompression(file, {
+  maxSizeMB: 0.8,
+  maxWidthOrHeight: 1600,
+  useWebWorker: true,
+  fileType: "image/jpeg",
+  initialQuality: 0.8,
+});
+formData.append("files", compressed);
+```
+
+**서버 (`POST /api/photos`):**
+
+```ts
+// lib/image.ts
+export async function optimizeUserPhoto(input: Buffer): Promise<{
+  buffer: Buffer; width: number; height: number; byteSize: number;
+}> {
+  // withMetadata: false 가 기본값이므로 EXIF/GPS 자동 strip.
+  // 추가로 ICC profile/Orientation 까지 적용 후 제거.
+  const pipeline = sharp(input).rotate();
+  const meta = await pipeline.metadata();
+  const buffer = await pipeline
+    .resize({ width: 1200, withoutEnlargement: true })
+    .jpeg({ quality: 75, mozjpeg: true })
+    .toBuffer();
+  return { buffer, width: meta.width ?? 0, height: meta.height ?? 0, byteSize: buffer.byteLength };
+}
+```
+
+- 좌석배치도·브로셔: 변환 후 Vercel Blob `images/` 폴더에 저장
+- 관객 사진: 2단계 압축 후 Vercel Blob `photos/<random>.jpg` 에 저장 (random suffix → 추측 어려움)
 - 클라이언트에서는 `next/image` 로 표시 (자동 srcset)
 
 ## 7. 환경 변수 (.env)

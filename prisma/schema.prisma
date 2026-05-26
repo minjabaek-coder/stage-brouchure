@@ -51,7 +51,7 @@ model CsvBackup {
   @@map("csv_backups")
 }
 
-// ENT-04 — 방명록 한마디. 닉네임 + 본문만 저장 (NFR-09). IP·이메일 미저장.
+// ENT-04 — 응원 메시지. 닉네임 + 본문만 저장 (NFR-09). IP·이메일 미저장.
 // 즉시 공개, 관리자가 /admin/messages 에서만 삭제 가능. Rate Limit 1/분/IP.
 model Message {
   id        String   @id @default(cuid())
@@ -61,4 +61,34 @@ model Message {
 
   @@index([createdAt(sort: Desc)])
   @@map("messages")
+}
+
+// ENT-05 — 관람 후기. 응원과 같은 구조이되 본문 500자로 확장 (PRD §2.4.4).
+// Rate Limit 5분/1회/IP. 사후 삭제만 허용.
+model Review {
+  id        String   @id @default(cuid())
+  nickname  String   @db.VarChar(10)
+  body      String   @db.VarChar(500)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([createdAt(sort: Desc)])
+  @@map("reviews")
+}
+
+// ENT-06 — 관객 업로드 사진 (PRD §2.4.5, §4.5). 닉네임 + (선택) 캡션 +
+// Vercel Blob URL + 메타데이터. 위치정보(EXIF GPS) 는 서버 압축 단계에서
+// strip 되어 저장되지 않는다. Rate Limit 10분/1회/IP, 1회 최대 3장.
+// 사후 삭제 시 DB row + Blob 객체 동시 제거.
+model Photo {
+  id        String   @id @default(cuid())
+  nickname  String   @db.VarChar(10)
+  caption   String?  @db.VarChar(100)
+  url       String
+  width     Int
+  height    Int
+  byteSize  Int      @map("byte_size")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([createdAt(sort: Desc)])
+  @@map("photos")
 }
