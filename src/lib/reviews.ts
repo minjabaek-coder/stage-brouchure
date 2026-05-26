@@ -42,7 +42,19 @@ function serialize(r: {
   };
 }
 
+const DEFAULT_LIMIT = 20;
 const MAX_LIMIT = 100;
+
+export async function getRecentReviews(
+  take = DEFAULT_LIMIT,
+): Promise<PublicReview[]> {
+  const clamped = Math.max(1, Math.min(take, MAX_LIMIT));
+  const rows = await prisma.review.findMany({
+    orderBy: { createdAt: "desc" },
+    take: clamped,
+  });
+  return rows.map(serialize);
+}
 
 export async function getAllReviews(): Promise<PublicReview[]> {
   const rows = await prisma.review.findMany({

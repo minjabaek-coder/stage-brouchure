@@ -3,6 +3,12 @@ import type { PublicReview } from "@/lib/reviews";
 
 interface ReviewItemProps {
   review: PublicReview;
+  /**
+   * Home preview wants a teaser-sized card: truncate body to 3 lines so
+   * 500-char reviews don't blow up the home page. Default is the full
+   * /messages?tab=review experience.
+   */
+  compact?: boolean;
 }
 
 function formatDate(iso: string): string {
@@ -14,12 +20,7 @@ function formatDate(iso: string): string {
   return `${m}/${day}`;
 }
 
-/**
- * Single review entry — nickname, body (up to 500 chars), KST short date.
- * Used in /messages?tab=review. Visual tone mirrors MessageItem so the
- * three tabs feel cohesive; only the body length cap differs.
- */
-const ReviewItem: FC<ReviewItemProps> = ({ review }) => (
+const ReviewItem: FC<ReviewItemProps> = ({ review, compact = false }) => (
   <article
     className="border-line bg-paper rounded-xl px-[18px] py-4"
     style={{ borderWidth: "0.5px" }}
@@ -37,7 +38,10 @@ const ReviewItem: FC<ReviewItemProps> = ({ review }) => (
       </span>
     </header>
     <p
-      className="font-serif-ko text-ink text-[14px] leading-[1.6] whitespace-pre-wrap"
+      className={[
+        "font-serif-ko text-ink text-[14px] leading-[1.6] whitespace-pre-wrap",
+        compact ? "line-clamp-3" : "",
+      ].join(" ")}
       data-testid="review-body"
     >
       {review.body}

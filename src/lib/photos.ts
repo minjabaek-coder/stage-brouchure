@@ -53,7 +53,19 @@ function serialize(p: {
   };
 }
 
+const DEFAULT_LIMIT = 20;
 const MAX_LIMIT = 200;
+
+export async function getRecentPhotos(
+  take = DEFAULT_LIMIT,
+): Promise<PublicPhoto[]> {
+  const clamped = Math.max(1, Math.min(take, MAX_LIMIT));
+  const rows = await prisma.photo.findMany({
+    orderBy: { createdAt: "desc" },
+    take: clamped,
+  });
+  return rows.map(serialize);
+}
 
 export async function getAllPhotos(): Promise<PublicPhoto[]> {
   const rows = await prisma.photo.findMany({
