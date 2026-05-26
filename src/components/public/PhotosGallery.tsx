@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { type FC, useState } from "react";
 import Lightbox from "yet-another-react-lightbox";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import "yet-another-react-lightbox/styles.css";
 import type { PublicPhoto } from "@/lib/photos";
 
@@ -68,6 +69,7 @@ const PhotosGallery: FC<PhotosGalleryProps> = ({ items }) => {
         open={openIndex !== null}
         index={openIndex ?? 0}
         close={() => setOpenIndex(null)}
+        plugins={[Zoom]}
         slides={items.map((p) => ({
           src: p.url,
           alt: p.caption ?? `${p.nickname} 님의 사진`,
@@ -83,6 +85,13 @@ const PhotosGallery: FC<PhotosGalleryProps> = ({ items }) => {
           imageProps: {
             style: { width: "100%", height: "100%", objectFit: "contain" },
           },
+        }}
+        zoom={{
+          // 모바일 핀치/더블탭 + 데스크탑 휠/더블클릭으로 확대.
+          maxZoomPixelRatio: 3,
+          scrollToZoom: true,
+          doubleTapDelay: 250,
+          doubleClickDelay: 250,
         }}
       />
     </>

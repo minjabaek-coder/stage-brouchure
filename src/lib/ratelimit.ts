@@ -7,7 +7,11 @@ import { Redis } from "@upstash/redis";
  *   • search   — 30 / minute / IP (PRD §4.4, NFR-08)
  *   • messages — 1  / minute / IP (응원 메시지 도배 방지)
  *   • reviews  — 1  / 5 min  / IP (관람 후기 — 정성스러운 글 유도, PRD §2.4.6)
- *   • photos   — 1  / 10 min / IP (사진 — 스토리지·업로드 비용 보호)
+ *   • photos   — 10 / minute / IP (사진 — 공연 중 실시간 다량 업로드 허용)
+ *
+ * 사진 한도가 후하다 — 공연 진행 중 1인이 여러 장면을 잇따라 올리는 패턴이
+ * 자연스럽기 때문. 한 요청당 최대 3장 (MAX_PHOTOS_PER_REQUEST) 정책은
+ * 그대로이므로, 최악의 경우 분당 30장까지 허용된다.
  *
  * Local dev/test without UPSTASH_* env vars uses a per-process Map.
  * Production must set UPSTASH_REDIS_REST_URL/TOKEN — Vercel serverless
@@ -97,9 +101,9 @@ export const photosRatelimit: RateLimiter =
   globalForRatelimit.photosRatelimit ??
   createLimiter({
     prefix: "photos",
-    limit: 1,
-    window: "10 m",
-    windowMs: 10 * 60_000,
+    limit: 10,
+    window: "1 m",
+    windowMs: 60_000,
   });
 
 if (process.env.NODE_ENV !== "production") {
